@@ -1,0 +1,23 @@
+{
+  "name": "gauge-js",
+  "version": "1.0.0",
+  "description": "JavaScript runner for Gauge",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renjithgr/gauge-js.git"
+  },
+  "keywords": [
+    "gauge",
+    "JavaScript"
+  ],
+  "author": "Renjith G R",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/renjithgr/gauge-js/issues"
+  },
+  "homepage": "https://github.com/renjithgr/gauge-js"
+}
