@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/renjithgr/gauge-js/issues"
   },
-  "homepage": "https://github.com/renjithgr/gauge-js"
+  "homepage": "https://github.com/renjithgr/gauge-js",
+  "dependencies": {
+    "protobufjs": "^4.1.2"
+  }
 }
