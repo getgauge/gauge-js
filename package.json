@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/renjithgr/gauge-js",
   "dependencies": {
-    "protobufjs": "^4.1.2"
+    "protobufjs": "^4.1.2",
+    "protocol-buffers": "^3.1.3"
   },
   "devDependencies": {
     "chai": "^3.4.0",
