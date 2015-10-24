@@ -9,4 +9,10 @@ describe('Parsing steps', function() {
     done();
   });
 
+  it('Should parse the parameters.', function(done) {
+    assert.deepEqual(['greeting', 'user'], stepParser.getParams('Say <greeting> to <user>'));
+    assert.deepEqual([], stepParser.getParams('A step without any parameters'));
+    done();
+  });
+
 });

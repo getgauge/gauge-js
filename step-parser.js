@@ -11,3 +11,8 @@ exports = module.exports;
 exports.generalise = function(stepName) {
   return stepName.replace(/(<.*?>)/g, '{}');
 };
+
+exports.getParams = function(step) {
+  var matches = step.match(/(<.*?>)/g);
+  return (matches === null) ? [] : matches.map(function(item) { return item.substring(1, item.length-1); });
+}
