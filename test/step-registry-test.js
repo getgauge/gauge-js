@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 var StepRegistry = require('../step-registry');
 
-describe('Store and retrieve steps', function(){
+describe('Store and retrieve steps', function() {
 
    it('Should store and retrive steps', function(done) {
        var sampleFunction = function() {};
@@ -11,6 +11,25 @@ describe('Store and retrieve steps', function(){
 
        assert.equal(sampleFunction, stepRegistry.get('Sample Step'));
        done();
-   })
+   });
+
+});
+
+describe('Step validation', function() {
+
+  it('Should return true for implemented step', function(done) {
+    var stepRegistry = new StepRegistry();
+    stepRegistry.add('Say {} to {}', function(){});
+
+    assert.equal(true, stepRegistry.exists('Say {} to {}'));
+    done();
+  });
+
+  it('Should return false for unimplemented step', function(done) {
+    var stepRegistry = new StepRegistry();
+
+    assert.equal(false, stepRegistry.exists('Say {} to {}'));
+    done();
+  });
 
 });

@@ -21,7 +21,7 @@ MessageProcessor = function() {
 };
 
 MessageProcessor.prototype.getResponseFor = function(request){
-    console.log(request, "--Incoming Request");
+    // console.log(request, "--Incoming Request");
     return this.processors[request.messageType](request);
 };
 

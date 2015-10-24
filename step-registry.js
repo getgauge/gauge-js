@@ -24,3 +24,13 @@ StepRegistry.prototype.add = function (stepName, stepFunction) {
 StepRegistry.prototype.get = function (stepName) {
     return this.registry[stepName];
 };
+
+/**
+* Checks if a given step exists.
+*
+* @param stepName Name of the step.
+* @return boolean true if the step exists. false if it is not.
+*/
+StepRegistry.prototype.exists = function(stepName) {
+  return stepName in this.registry;
+};
