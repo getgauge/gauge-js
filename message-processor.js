@@ -53,8 +53,7 @@ function executionResponse(isFailed, executionTime, messageId) {
 }
 
 function validateStep(request) {
-    //var stepImpl = steps[request.stepValidateRequest.stepText];
-    var stepImpl = true;
+    var stepImpl = stepRegistry.exists(request.stepValidateRequest.stepText);
     var response = null;
     if (stepImpl) {
         response = new message({
