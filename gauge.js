@@ -1,6 +1,8 @@
 #! /usr/bin/env node
 
 var connection = require('./connection');
+require('./gauge-global');
+require('./impl-loader');
 
 console.log("JavaScript is awesome!!");
 
