@@ -20,12 +20,12 @@ MessageProcessor = function() {
     this.processors[message.MessageType.SpecExecutionEnding] = successExecutionStatus;
     this.processors[message.MessageType.ExecutionStarting] = successExecutionStatus;
     this.processors[message.MessageType.ExecutionEnding] = successExecutionStatus;
-    this.processors[message.MessageType.ExecuteStep] = successExecutionStatus;
+    this.processors[message.MessageType.ExecuteStep] = executeStep;
     this.processors[message.MessageType.KillProcessRequest] = killProcess;
 };
 
 MessageProcessor.prototype.getResponseFor = function(request){
-    console.log(request.messageType, "--Incoming Request");
+    // console.log(request.messageType, "--Incoming Request");
     return this.processors[request.messageType](request);
 };
 
@@ -54,6 +54,13 @@ function executionResponse(isFailed, executionTime, messageId) {
             }
         }
     });
+}
+
+function executeStep (request) {
+    // console.log(request);
+    var parsedStepText = request.executeStepRequest.parsedStepText;
+    stepRegistry.get(parsedStepText)();
+    return successExecutionStatus(request);
 }
 
 function validateStep(request) {

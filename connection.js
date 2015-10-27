@@ -32,7 +32,7 @@ var ExecutionConnection = function (host, port) {
     };
 
     writeMessage = function(socket, response) {
-        console.log("Inside Write Message*********", response.messageType);
+        // console.log("Inside Write Message*********", response.messageType);
         socket.write(encode(response));
     };
 
