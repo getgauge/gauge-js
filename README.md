@@ -2,7 +2,7 @@
 [![forthebadge](http://forthebadge.com/images/badges/uses-badges.svg)](http://forthebadge.com)
 [![Gauge Badge](https://cdn.rawgit.com/renjithgr/gauge-js/72f332d11f54e16b74aedb875f702643708156f7/Gauge_Badge_1.svg)](http://getgauge.io)
 [![Gauge Badge](https://cdn.rawgit.com/renjithgr/gauge-js/b61a17dba8383993aaa84f59b5d0c675c99bae5c/Gauge_Badge_2.svg)](http://getgauge.io)
-[![Gauge Badge](https://cdn.rawgit.com/renjithgr/gauge-js/c13bf03f8cb29abb71f00bc195fd12216167b59b/Gauge_Badge_3.svg)](http://getgauge.io)
+[![Gauge Badge](https://cdn.rawgit.com/renjithgr/gauge-js/f9e0a8de1c6a7af4e2fa4dd53dabdb36ece06726/Gauge_Badge_3.svg)](http://getgauge.io)
 
 ## License
 
