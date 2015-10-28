@@ -1,6 +1,6 @@
 # gauge-js
 [![forthebadge](http://forthebadge.com/images/badges/uses-badges.svg)](http://forthebadge.com)
-[![Gauge Badge](https://cdn.rawgit.com/renjithgr/gauge-js/master/Gauge_Badge_1.svg)](http://getgauge.io)
+[![Gauge Badge](https://cdn.rawgit.com/renjithgr/gauge-js/72f332d11f54e16b74aedb875f702643708156f7/Gauge_Badge_1.svg)](http://getgauge.io)
 [![Gauge Badge](https://raw.githubusercontent.com/renjithgr/gauge-js/master/Gauge_Badge_2.svg)](http://getgauge.io)
 [![Gauge Badge](https://raw.githubusercontent.com/renjithgr/gauge-js/master/Gauge_Badge_3.svg)](http://getgauge.io)
 
