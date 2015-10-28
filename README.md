@@ -1,8 +1,8 @@
 # gauge-js
 [![forthebadge](http://forthebadge.com/images/badges/uses-badges.svg)](http://forthebadge.com)
-[![Gauge Badge](Gauge_Badge_1.svg)](http://getgauge.io)
-[![Gauge Badge](Gauge_Badge_2.svg)](http://getgauge.io)
-[![Gauge Badge](Gauge_Badge_3.svg)](http://getgauge.io)
+[![Gauge Badge](https://raw.githubusercontent.com/renjithgr/gauge-js/master/Gauge_Badge_1.svg)](http://getgauge.io)
+[![Gauge Badge](https://raw.githubusercontent.com/renjithgr/gauge-js/master/Gauge_Badge_2.svg)](http://getgauge.io)
+[![Gauge Badge](https://raw.githubusercontent.com/renjithgr/gauge-js/master/Gauge_Badge_3.svg)](http://getgauge.io)
 
 ## License
 
