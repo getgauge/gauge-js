@@ -3,6 +3,7 @@ var ByteBuffer = ProtoBuf.ByteBuffer;
 var builder = ProtoBuf.loadProtoFile("./gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
 var errorType = builder.build("gauge.messages.StepValidateResponse.ErrorType");
+var ResponseFactory = require('./response-factory');
 require('./gauge-global');
 
 MessageProcessor = function() {
@@ -30,13 +31,7 @@ MessageProcessor.prototype.getResponseFor = function(request){
 };
 
 var doNothing = function(request) {
-    return new message({
-        messageId: request.messageId,
-        messageType: message.MessageType.StepNamesResponse,
-        stepNamesResponse: {
-            steps: []
-        }
-    });
+  return ResponseFactory.getStepNamesResponseMessage(request.messageId);
 };
 
 function successExecutionStatus(request) {
@@ -44,17 +39,7 @@ function successExecutionStatus(request) {
 }
 
 function executionResponse(isFailed, executionTime, messageId) {
-    var m = new message({
-        messageId: messageId,
-        messageType: message.MessageType.ExecutionStatusResponse,
-        executionStatusResponse: {
-            executionResult: {
-                failed: isFailed,
-                executionTime: executionTime
-            }
-        }
-    });
-    return m;
+    return ResponseFactory.getExecutionStatusResponseMessage (messageId, isFailed, executionTime);
 }
 
 function executeStep (request) {
@@ -68,28 +53,8 @@ function executeStep (request) {
 }
 
 function validateStep(request) {
-    var stepImpl = stepRegistry.exists(request.stepValidateRequest.stepText);
-    var response = null;
-    if (stepImpl) {
-        response = new message({
-            messageId: request.messageId,
-            messageType: message.MessageType.StepValidateResponse,
-            stepValidateResponse: {
-                isValid: true
-            }
-        });
-    }
-    else {
-        response = new message({
-            messageId: request.messageId,
-            messageType: message.MessageType.StepValidateResponse,
-            stepValidateResponse: {
-                isValid: false,
-                errorType: errorType.STEP_IMPLEMENTATION_NOT_FOUND
-            }
-        });
-    }
-    return response;
+    var stepImplemented = stepRegistry.exists(request.stepValidateRequest.stepText);
+    return ResponseFactory.getStepValidateResponseMessage(request.messageId, stepImplemented);
 }
 
 function killProcess() {
