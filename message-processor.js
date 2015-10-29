@@ -44,7 +44,7 @@ function successExecutionStatus(request) {
 }
 
 function executionResponse(isFailed, executionTime, messageId) {
-    return new message({
+    var m = new message({
         messageId: messageId,
         messageType: message.MessageType.ExecutionStatusResponse,
         executionStatusResponse: {
@@ -54,13 +54,17 @@ function executionResponse(isFailed, executionTime, messageId) {
             }
         }
     });
+    return m;
 }
 
 function executeStep (request) {
-    // console.log(request);
     var parsedStepText = request.executeStepRequest.parsedStepText;
-    stepRegistry.get(parsedStepText)();
-    return successExecutionStatus(request);
+    try {
+      stepRegistry.get(parsedStepText)();
+      return executionResponse(false, 0, request.messageId);
+    } catch (error) {
+      return executionResponse(true, 0, request.messageId);
+    }
 }
 
 function validateStep(request) {
