@@ -42,7 +42,11 @@ function executionResponse(isFailed, executionTime, messageId) {
 function executeStep (request) {
   var parsedStepText = request.executeStepRequest.parsedStepText;
   try {
-    stepRegistry.get(parsedStepText)();
+    var parameters = request.executeStepRequest.parameters.map(function(item) {
+      return item['value'] ? item['value'] : item['table'];
+    });
+
+    stepRegistry.get(parsedStepText).apply(null, parameters);
     return executionResponse(false, 0, request.messageId);
   } catch (error) {
     return executionResponse(true, 0, request.messageId);
