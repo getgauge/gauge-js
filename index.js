@@ -13,8 +13,8 @@ if(process.argv[2] === '--init') {
       else console.error(err); // something else went wrong
     }
     else {
-      fs.createReadStream(__dirname + '/step_implementations/sample.js')
-        .pipe(fs.createWriteStream(GAUGE_PROJECT_ROOT + '/step_implementations/sample.js'));
+      fs.createReadStream(__dirname + '/skel/step_implementation.js')
+        .pipe(fs.createWriteStream(GAUGE_PROJECT_ROOT + '/step_implementations/step_implementation.js'));
     }
   });
 }
