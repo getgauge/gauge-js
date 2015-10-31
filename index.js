@@ -20,5 +20,5 @@ if(process.argv[2] === '--init') {
 }
 else if(process.argv[2] === '--start') {
   console.log('Running specs');
-  require('./gauge').run();
+  require('./lib/gauge').run();
 }

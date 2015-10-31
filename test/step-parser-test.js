@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var stepParser = require('../step-parser');
+var stepParser = require('../lib/step-parser');
 
 describe('Parsing steps', function() {
 
