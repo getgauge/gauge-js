@@ -3,9 +3,9 @@
   "version" : "0.0.1",
   "description": "Javascript support for gauge",
   "run": {
-    "windows": ["gauge.js", "--start"],
-    "linux": ["./gauge.js", "--start"],
-    "darwin": ["./gauge.js", "--start"]
+    "windows": ["index.js", "--start"],
+    "linux": ["./index.js", "--start"],
+    "darwin": ["./index.js", "--start"]
   },
   "init": {
     "windows": ["gauge.js", "--init"],

@@ -1,15 +1,10 @@
-#! /usr/bin/env node
-
-var connection = require('./connection');
-require('./gauge-global');
-require('./impl-loader');
-
-console.log("JavaScript is awesome!!");
-
-if(process.argv[2] === '--init') {
-    console.log('Initializing project.');
+function run() {
+  var connection = require('./connection');
+  require('./gauge-global');
+  require('./impl-loader');
+  new connection('localhost', process.env.GAUGE_INTERNAL_PORT).run();
 }
-else if(process.argv[2] === '--start') {
-    console.log('Running specs');
-    new connection('localhost', process.env.GAUGE_INTERNAL_PORT).run();
+
+module.exports= {
+  run: run
 }
