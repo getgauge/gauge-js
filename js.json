@@ -8,9 +8,9 @@
     "darwin": ["./index.js", "--start"]
   },
   "init": {
-    "windows": ["gauge.js", "--init"],
-    "linux": ["./gauge.js", "--init"],
-    "darwin": ["./gauge.js", "--init"]
+    "windows": ["index.js", "--init"],
+    "linux": ["./index.js", "--init"],
+    "darwin": ["./index.js", "--init"]
   },
   "lib": "libs",
   "gaugeVersionSupport": {
