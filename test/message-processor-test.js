@@ -6,7 +6,7 @@ var message = builder.build("gauge.messages.Message");
 require('../lib/gauge-global');
 var messageProcessor = require('../lib/message-processor');
 
-describe('Request Processing', function () {
+xdescribe('Request Processing', function () {
 
   var stepValidateRequest = [
     new message({
