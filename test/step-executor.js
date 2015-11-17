@@ -73,6 +73,17 @@ describe('Step Execution', function() {
           done();
         });
       });
+
+      it.only('should fail when test function times out', function(done) {
+        var asyncFn = function(gaugeDone) {
+
+        };
+
+        StepExecutor.execute(asyncFn, [], function(result) {
+          assert.equal("failure", result.result);
+          done();
+        });
+      });
     })
   });
 
