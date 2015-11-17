@@ -3,12 +3,47 @@
 
 JavaScript Runner for Gauge.
 
-### Step Implementation
-```js
-gauge('Say <greeting> to <user>', function(greeting, user) {
-    //TODO    
-});
+### Installation Instructions
+Clone Gauge-JS plugin repo:
+```sh
+git clone git@github.com:renjithgr/gauge-js.git
 ```
+
+Initialize gauge-proto submodule:
+```sh
+git submodule init
+```
+
+Fetch gauge-proto submodule:
+```sh
+git submodule update
+```
+
+Install npm dependencies:
+```sh
+npm install
+```
+
+Run tests:
+```sh
+npm test
+```
+
+Copy all contents of the gauge-js dir to the following directories:
+- Windows: %APPDATA%\.gauge\plugins\js\0.0.1\
+- MacOS: ~/.gauge/plugins/js/0.0.1/
+- Linux: ~/.gauge/plugins/js/0.0.1/
+
+To initialize a project with gauge-js, in an empty directory run:
+```sh
+gauge --init js
+```
+
+Run specs
+```sh
+gauge specs/
+```
+
 ## License
 
 ![GNU Public License version 3.0](http://www.gnu.org/graphics/gplv3-127x51.png)
