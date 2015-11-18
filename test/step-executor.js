@@ -74,7 +74,7 @@ describe('Step Execution', function() {
         });
       });
 
-      it.only('should fail when test function times out', function(done) {
+      it('should fail when test function times out', function(done) {
         var asyncFn = function(gaugeDone) {
 
         };
