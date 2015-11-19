@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var StepRegistry = require('../lib/step-registry');
+var StepRegistry = require('../src/step-registry');
 
 describe('Store and retrieve steps', function() {
 

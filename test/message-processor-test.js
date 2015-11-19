@@ -3,8 +3,8 @@ var sinon  = require('sinon');
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
-require('../lib/gauge-global');
-var messageProcessor = require('../lib/message-processor');
+require('../src/gauge-global');
+var messageProcessor = require('../src/message-processor');
 
 xdescribe('Request Processing', function () {
 

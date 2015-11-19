@@ -3,10 +3,10 @@ var sinon  = require('sinon');
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
-require('../../lib/gauge-global');
-var ExcecuteStepProcessor = require('../../lib/processor/ExecuteStepProcessor');
+require('../../src/gauge-global');
+var ExcecuteStepProcessor = require('../../src/processor/ExecuteStepProcessor');
 var Q = require('q');
-var StepExecutor = require('../../lib/step-executor');
+var StepExecutor = require('../../src/step-executor');
 
 describe('Processing Excecute Step Request', function() {
 

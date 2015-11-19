@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var sinon  = require('sinon');
-require('../lib/gauge-global');
+require('../src/gauge-global');
 
 describe('Calling Step Registry', function() {
 

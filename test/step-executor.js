@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var sinon  = require('sinon');
-var StepExecutor = require('../lib/step-executor');
+var StepExecutor = require('../src/step-executor');
 
 describe('Step Execution', function() {
 
