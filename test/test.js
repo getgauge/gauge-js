@@ -2,7 +2,7 @@ var Test = require('../src/test');
 var expect = require('chai').expect;
 var sinon  = require('sinon');
 
-describe.only('Test function execution', function() {
+describe('Test function execution', function() {
 
   it('should set async to true if passed in test has additional param', function() {
     var asyncTestFunction = function(param1, param2, done) {};
@@ -51,6 +51,27 @@ describe.only('Test function execution', function() {
     it('should resolve the promise', function(done) {
       var result = new Test(function() {}, []).run();
       result.then(function(value) { done(); });
+    });
+  });
+
+  describe('when test function executes asynchronously', function() {
+    it('should resolve the promise only when async execution finishes', function(done) {
+      var asyncComplete = false;
+
+      var testFunction = function(gaugeDone) {
+        setTimeout(function () {
+          asyncComplete = true;
+          gaugeDone();
+        }, 800);
+      };
+
+      var result = new Test(testFunction, []).run();
+
+      result.then(function() {
+        expect(asyncComplete).to.equal(true);
+        done();
+      }).done();
+
     });
   });
 

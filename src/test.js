@@ -6,20 +6,29 @@ var Test = function(fn, params) {
   this.async = fn.length > params.length;
 };
 
-Test.prototype.run = function () {
-  var deferred = Q.defer();
-  if(this.async) this.params.push( function() {} );
+var done = function() {
+  this.deferred.resolve("Value");
+};
 
+var runFn = function() {
   try {
     this.fn.apply({}, this.params);
-    deferred.resolve("Value");
+    done.call(this);
   } catch (e) {
-    deferred.reject("Reason");
-  } finally {
-
+    this.deferred.reject("Reason");
   }
+};
 
-  return deferred.promise;
+var runFnAsync = function() {
+  var self = this;
+  this.params.push( function() { done.call(self); } );
+  this.fn.apply({}, this.params);
+};
+
+Test.prototype.run = function () {
+  this.deferred = Q.defer();
+  this.async ? runFnAsync.call(this) : runFn.call(this);
+  return this.deferred.promise;
 };
 
 module.exports = Test;
