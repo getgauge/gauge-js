@@ -11,18 +11,19 @@ var done = function() {
 };
 
 var runFn = function() {
+  var self = this;
   try {
-    this.fn.apply({}, this.params);
-    done.call(this);
+    self.fn.apply({}, self.params);
+    done.call(self);
   } catch (e) {
-    this.deferred.reject("Reason");
+    self.deferred.reject("Reason");
   }
 };
 
 var runFnAsync = function() {
   var self = this;
-  this.params.push( function() { done.call(self); } );
-  this.fn.apply({}, this.params);
+  self.params.push( function() { done.call(self); } );
+  self.fn.apply({}, self.params);
 };
 
 Test.prototype.run = function () {
