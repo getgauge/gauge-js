@@ -4,10 +4,29 @@ var Test = function(fn, params) {
   this.fn = fn;
   this.params = params;
   this.async = fn.length > params.length;
+  this.start = new Date();
+  this.finished = false;
 };
 
-var done = function() {
-  this.deferred.resolve("Value");
+var done = function(err) {
+  var self = this;
+
+  if(self.finished) return;
+  self.duration = new Date() - self.start;
+  self.finished = true;
+
+  if(err) {
+    self.deferred.reject({
+      exception: err,
+      duration: self.duration
+    });
+    return;
+  } else{
+    self.deferred.resolve({
+      duration: self.duration
+    });
+    return;
+  }
 };
 
 var runFn = function() {
@@ -16,7 +35,8 @@ var runFn = function() {
     self.fn.apply({}, self.params);
     done.call(self);
   } catch (e) {
-    self.deferred.reject("Reason");
+    var exception = e ? e : new Error('Undefined error thrown');
+    done.apply(this, [exception]);
   }
 };
 

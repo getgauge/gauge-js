@@ -41,16 +41,26 @@ describe('Test function execution', function() {
 
   describe('when a test function fails', function() {
     it('should reject the promise', function(done) {
-      var testFunction = sinon.stub().throws();
+      var exception = new Error('Error!');
+      var testFunction = sinon.stub().throws(exception);
       var result = new Test(testFunction, []).run();
-      result.then(function() {}, function(reason) { done(); }).done();
+      result.then(
+        function() {},
+        function(reason) {
+          expect(reason.exception).to.equal(exception);
+          expect(reason.duration).to.be.a('number');
+          done();
+        }).done();
     });
   });
 
   describe('when test function runs without any error', function() {
     it('should resolve the promise', function(done) {
       var result = new Test(function() {}, []).run();
-      result.then(function(value) { done(); });
+      result.then(function(value) {
+        expect(value.duration).to.be.a('number');
+        done();
+      }).done();
     });
   });
 
