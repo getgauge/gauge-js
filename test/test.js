@@ -52,6 +52,21 @@ describe('Test function execution', function() {
           done();
         }).done();
     });
+
+    it('should reject the promise when if test function times out', function(done) {
+      var asyncFn = function(gaugeDone) {
+
+      };
+      var result = new Test(asyncFn, []).run();
+      result.then(
+        function() {},
+        function(reason) {
+          done();
+        }
+      ).done();
+
+    });
+
   });
 
   describe('when test function runs without any error', function() {
@@ -72,7 +87,7 @@ describe('Test function execution', function() {
         setTimeout(function () {
           asyncComplete = true;
           gaugeDone();
-        }, 800);
+        }, 900);
       };
 
       var result = new Test(testFunction, []).run();
