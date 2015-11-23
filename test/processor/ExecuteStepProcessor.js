@@ -1,4 +1,4 @@
-var assert = require('chai').assert;
+var expect = require('chai').expect;
 var sinon  = require('sinon');
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
@@ -6,7 +6,7 @@ var message = builder.build("gauge.messages.Message");
 require('../../src/gauge-global');
 var ExcecuteStepProcessor = require('../../src/processor/ExecuteStepProcessor');
 var Q = require('q');
-var StepExecutor = require('../../src/step-executor');
+
 
 describe('Processing Excecute Step Request', function() {
 
@@ -24,51 +24,49 @@ describe('Processing Excecute Step Request', function() {
     }
   });
 
-  var stepImpl = sinon.spy();
+  var executeStepMessageFailing = new message({
+    messageId: 1,
+    messageType: message.MessageType.ExecuteStep,
+    executeStepRequest: {
+      actualStepText: 'failing test',
+      parsedStepText: 'failing test',
+      scenarioFailing: null,
+      parameters: []
+    }
+  });
+
 
   before( function(done) {
-    stepRegistry.add('Say {} to {}', stepImpl);
+    stepRegistry.add('Say {} to {}', function() {});
+    stepRegistry.add('failing test', function() {throw "Error";});
     sinon.spy(stepRegistry, 'get');
-    sinon.spy(StepExecutor, 'execute');
     done();
   });
 
   after( function(done) {
     stepRegistry.get.restore();
-    StepExecutor.execute.restore();
     done();
   });
 
-  it('Should call step-executor to run the function and get the callback', function() {
+  it('Should resolve promise when test function passes', function(done) {
     var promise = ExcecuteStepProcessor(executeStepMessage);
-    assert(StepExecutor.execute.calledOnce);
-    assert.deepEqual(stepImpl, StepExecutor.execute.getCall(0).args[0]);
-    assert.deepEqual(['hello', 'gauge'], StepExecutor.execute.getCall(0).args[1]);
+    promise.then(
+      function(value) {
+        expect(value.executionStatusResponse.executionResult.failed).to.equal(false);
+        done();
+      }
+    ).done();
   });
 
-  // it('Should resolve promise with ExecutionStatusResponse when test finishes', function() {
-  //
-  //   var promise = ExcecuteStepProcessor(executeStepMessage);
-  //
-  //   promise.done(function(response) {
-  //     console.log(response);
-  //   });
-  //
-  //
-  // });
-
-  // it('Should execute the specified step in the executeStepRequest', function(done) {
-  //   var promise = ExcecuteStepProcessor(executeStepMessage);
-  //   assert(stepRegistry.get.calledOnce);
-  //   assert.equal('Say {} to {}', stepRegistry.get.getCall(0).args[0]);
-  //
-  //   assert(stepImpl.calledOnce);
-  //   assert.deepEqual(['hello', 'gauge'], stepImpl.getCall(0).args);
-  //
-  //   promise.done(function(response) {
-  //     assert.equal(1, response.messageId);
-  //     done();
-  //   });
-  // });
+  it('Should reject the promise when test function fails', function(done) {
+    var promise = ExcecuteStepProcessor(executeStepMessageFailing);
+    promise.then(
+      function(value) {},
+      function(reason) {
+        expect(reason.executionStatusResponse.executionResult.failed).to.equal(true);
+        done();
+      }
+    ).done();
+  });
 
 });

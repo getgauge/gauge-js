@@ -4,7 +4,7 @@ var message = builder.build("gauge.messages.Message");
 var ResponseFactory = require('../response-factory');
 var Q = require('q');
 require('../gauge-global');
-var StepExecutor = require('../step-executor');
+var Test = require('../test');
 
 function executionResponse(isFailed, executionTime, messageId) {
   return ResponseFactory.getExecutionStatusResponseMessage (messageId, isFailed, executionTime);
@@ -19,15 +19,26 @@ var executeStep = function(request) {
     return item['value'] ? item['value'] : item['table'];
   });
 
-  StepExecutor.execute(stepRegistry.get(parsedStepText), parameters, function(result) {
-    if(result.result === "success") {
+  new Test(stepRegistry.get(parsedStepText), parameters).run().then(
+    function(value) {
       var response = executionResponse(false, 0, request.messageId);
       deferred.resolve(response);
-    } else if (result.result === "false") {
+    },
+
+    function(reason) {
       var errorResponse = executionResponse(true, 0, request.messageId);
-      deferred.resolve(errorResponse);
+      deferred.reject(errorResponse);
     }
-  });
+  );
+  // StepExecutor.execute(stepRegistry.get(parsedStepText), parameters, function(result) {
+  //   if(result.result === "success") {
+  //     var response = executionResponse(false, 0, request.messageId);
+  //     deferred.resolve(response);
+  //   } else if (result.result === "false") {
+  //     var errorResponse = executionResponse(true, 0, request.messageId);
+  //     deferred.resolve(errorResponse);
+  //   }
+  // });
 
   // try {
   //   var parameters = request.executeStepRequest.parameters.map(function(item) {
