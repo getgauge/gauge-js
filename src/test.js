@@ -37,7 +37,7 @@ var resetTimeout = function() {
   var self = this;
   if(self.timer) clearTimeout(self.timer);
   self.timer = setTimeout( function() {
-    done.apply(self, []);
+    done.apply(self, [new Error("Timed out")]);
     self.timedOut = true;
   }, self.ms);
 };
