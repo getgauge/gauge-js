@@ -1,9 +1,5 @@
-var ProtoBuf = require("protobufjs");
-var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
-var message = builder.build("gauge.messages.Message");
 var ResponseFactory = require('../response-factory');
 var Q = require('q');
-require('../gauge-global');
 var Test = require('../test');
 
 function executionResponse(isFailed, executionTime, messageId) {
