@@ -53,8 +53,16 @@ function executionResponse(isFailed, executionTime, messageId) {
 }
 
 function executeStep (request) {
+  var self = this;
   var promise = ExecuteStepProcessor(request);
-  promise.done(this._emit.bind(this));
+  promise.then(
+    function(value) {
+      self._emit(value);
+    },
+    function(reason) {
+      self._emit(reason);
+    }
+  );
 }
 
 function validateStep(request) {
