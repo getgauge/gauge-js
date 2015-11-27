@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/78f5eca45e38482a910309c7f2757f60)](https://www.codacy.com/app/grenjithr/gauge-js)
+
 # Gauge-JS
 [![Gauge Badge](https://cdn.rawgit.com/renjithgr/gauge-js/72f332d11f54e16b74aedb875f702643708156f7/Gauge_Badge_1.svg)](http://getgauge.io)
 
