@@ -1,3 +1,3 @@
 [submodule "gauge-proto"]
 	path = gauge-proto
-	url = git@github.com:getgauge/gauge-proto.git
+	url = https://github.com/getgauge/gauge-proto.git
