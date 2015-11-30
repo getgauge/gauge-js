@@ -7,7 +7,7 @@ var Test = function(fn, params, ms) {
   this.start = new Date();
   this.finished = false;
   this.timedOut = false;
-  this.ms = ms | 1000;
+  this.ms = ms || 1000;
 };
 
 var done = function(err) {

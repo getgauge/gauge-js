@@ -7,7 +7,7 @@ if(process.argv[2] === '--init') {
   console.log('Initializing project.');
   fs.mkdir(GAUGE_PROJECT_ROOT + '/step_implementations', 484, function(err) {
     if (err) {
-      if (err.code == 'EEXIST') {
+      if (err.code === 'EEXIST') {
 
       } // ignore the error if the folder already exists
       else console.error(err); // something else went wrong
