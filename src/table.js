@@ -14,6 +14,14 @@
 
 var Table = function(protoTable) {
   this.protoTable = protoTable;
+
+  this.headers = protoTable.headers.cells.map(function(header) {
+    return header;
+  });
+
+  this.rows = protoTable.rows.map(function(row) {
+    return row.cells;
+  });
 };
 
 module.exports = Table;
