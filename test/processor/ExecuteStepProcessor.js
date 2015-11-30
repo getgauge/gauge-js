@@ -5,7 +5,6 @@ var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
 require('../../src/gauge-global');
 var ExcecuteStepProcessor = require('../../src/processor/ExecuteStepProcessor');
-var Q = require('q');
 
 
 describe('Processing Excecute Step Request', function() {
