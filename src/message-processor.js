@@ -7,37 +7,6 @@ var util = require("util");
 require('./gauge-global');
 var ExecuteStepProcessor = require('./processor/ExecuteStepProcessor');
 
-MessageProcessor = function() {
-  EventEmitter.call(this);
-  var self = this;
-  this.processors = {};
-  this.processors[message.MessageType.StepNamesRequest] = doNothing;
-  this.processors[message.MessageType.StepValidateRequest] = validateStep;
-  this.processors[message.MessageType.SuiteDataStoreInit] = successExecutionStatus;
-  this.processors[message.MessageType.SpecDataStoreInit] = successExecutionStatus;
-  this.processors[message.MessageType.SpecExecutionStarting] = successExecutionStatus;
-  this.processors[message.MessageType.ScenarioDataStoreInit] = successExecutionStatus;
-  this.processors[message.MessageType.ScenarioExecutionStarting] = successExecutionStatus;
-  this.processors[message.MessageType.StepExecutionStarting] = successExecutionStatus;
-  this.processors[message.MessageType.StepExecutionEnding] = successExecutionStatus;
-  this.processors[message.MessageType.ScenarioExecutionEnding] = successExecutionStatus;
-  this.processors[message.MessageType.SpecExecutionEnding] = successExecutionStatus;
-  this.processors[message.MessageType.ExecutionStarting] = successExecutionStatus;
-  this.processors[message.MessageType.ExecutionEnding] = successExecutionStatus;
-  this.processors[message.MessageType.ExecuteStep] = executeStep;
-  this.processors[message.MessageType.KillProcessRequest] = killProcess;
-};
-
-util.inherits(MessageProcessor, EventEmitter);
-
-MessageProcessor.prototype.getResponseFor = function(request){
-  this.processors[request.messageType].call(this, request);
-};
-
-MessageProcessor.prototype._emit = function(data) {
-  this.emit('messageProcessed', data);
-};
-
 var doNothing = function(request) {
   var response = ResponseFactory.getStepNamesResponseMessage(request.messageId);
   this._emit(response);
@@ -74,5 +43,36 @@ function validateStep(request) {
 function killProcess() {
   process.exit();
 }
+
+MessageProcessor = function() {
+  EventEmitter.call(this);
+  var self = this;
+  this.processors = {};
+  this.processors[message.MessageType.StepNamesRequest] = doNothing;
+  this.processors[message.MessageType.StepValidateRequest] = validateStep;
+  this.processors[message.MessageType.SuiteDataStoreInit] = successExecutionStatus;
+  this.processors[message.MessageType.SpecDataStoreInit] = successExecutionStatus;
+  this.processors[message.MessageType.SpecExecutionStarting] = successExecutionStatus;
+  this.processors[message.MessageType.ScenarioDataStoreInit] = successExecutionStatus;
+  this.processors[message.MessageType.ScenarioExecutionStarting] = successExecutionStatus;
+  this.processors[message.MessageType.StepExecutionStarting] = successExecutionStatus;
+  this.processors[message.MessageType.StepExecutionEnding] = successExecutionStatus;
+  this.processors[message.MessageType.ScenarioExecutionEnding] = successExecutionStatus;
+  this.processors[message.MessageType.SpecExecutionEnding] = successExecutionStatus;
+  this.processors[message.MessageType.ExecutionStarting] = successExecutionStatus;
+  this.processors[message.MessageType.ExecutionEnding] = successExecutionStatus;
+  this.processors[message.MessageType.ExecuteStep] = executeStep;
+  this.processors[message.MessageType.KillProcessRequest] = killProcess;
+};
+
+util.inherits(MessageProcessor, EventEmitter);
+
+MessageProcessor.prototype.getResponseFor = function(request){
+  this.processors[request.messageType].call(this, request);
+};
+
+MessageProcessor.prototype._emit = function(data) {
+  this.emit('messageProcessed', data);
+};
 
 module.exports = new MessageProcessor();
