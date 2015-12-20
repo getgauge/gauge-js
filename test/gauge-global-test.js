@@ -16,7 +16,7 @@ describe('Calling Step Registry', function() {
   });
 
   it('Should add test function to step registry', function(done) {
-    sampleFunction = function() {};
+    var sampleFunction = function() {};
 
     gauge('Step 1', sampleFunction);
 

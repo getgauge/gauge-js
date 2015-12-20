@@ -10,7 +10,9 @@ if(process.argv[2] === '--init') {
       if (err.code === 'EEXIST') {
 
       } // ignore the error if the folder already exists
-      else console.error(err); // something else went wrong
+      else {
+        console.error(err); // something else went wrong
+      }
     }
     else {
       fs.createReadStream(__dirname + '/skel/step_implementation.js')
