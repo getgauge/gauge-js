@@ -3,12 +3,12 @@
   "version" : "0.0.1",
   "description": "Javascript support for gauge",
   "run": {
-    "windows": ["index.js", "--start"],
+    "windows": ["index.bat", "--start"],
     "linux": ["./index.js", "--start"],
     "darwin": ["./index.js", "--start"]
   },
   "init": {
-    "windows": ["index.js", "--init"],
+    "windows": ["index.bat", "--init"],
     "linux": ["./index.js", "--init"],
     "darwin": ["./index.js", "--init"]
   },
