@@ -6,7 +6,7 @@ var message = builder.build("gauge.messages.Message");
 require('../src/gauge-global');
 var messageProcessor = require('../src/message-processor');
 
-xdescribe('Request Processing', function () {
+describe('Request Processing', function () {
 
   var stepValidateRequest = [
     new message({
@@ -31,11 +31,13 @@ xdescribe('Request Processing', function () {
   before( function(done) {
     stepRegistry.add('Say {} to {}', function(){});
     sinon.spy(stepRegistry, 'exists');
+    messageProcessor.removeAllListeners('messageProcessed');
     done();
   });
 
   after( function(done) {
     stepRegistry.exists.restore();
+    messageProcessor.removeAllListeners('messageProcessed');
     done();
   });
 
@@ -50,27 +52,23 @@ xdescribe('Request Processing', function () {
   });
 
   it('StepValidateRequest should get back StepValidateResponse with isValid set to true if the step exists', function (done) {
-
-    var response = messageProcessor.getResponseFor(stepValidateRequest[1]);
-
-    assert.deepEqual(stepValidateRequest[1].messageId, response.messageId);
-    assert.equal(message.MessageType.StepValidateResponse, response.messageType);
-    assert.equal(true, response.stepValidateResponse.isValid);
-
-    done();
-
+    messageProcessor.on('messageProcessed', function(response) {
+      assert.deepEqual(stepValidateRequest[1].messageId, response.messageId);
+      assert.equal(message.MessageType.StepValidateResponse, response.messageType);
+      assert.equal(true, response.stepValidateResponse.isValid);
+      done();
+    });
+    messageProcessor.getResponseFor(stepValidateRequest[1]);
   });
 
-  it('StepValidateRequest should get back StepValidateResponse with isValid set to false if the step doesn not exist', function (done) {
-
-    var response = messageProcessor.getResponseFor(stepValidateRequest[0]);
-
-    assert.deepEqual(stepValidateRequest[0].messageId, response.messageId);
-    assert.equal(message.MessageType.StepValidateResponse, response.messageType);
-    assert.equal(false, response.stepValidateResponse.isValid);
-
-    done();
-
+  it.skip('StepValidateRequest should get back StepValidateResponse with isValid set to false if the step doesn not exist', function (done) {
+    messageProcessor.on('messageProcessed', function(response) {
+      assert.deepEqual(stepValidateRequest[0].messageId, response.messageId);
+      assert.equal(message.MessageType.StepValidateResponse, response.messageType);
+      assert.equal(false, response.stepValidateResponse.isValid);
+      done();
+    });
+    messageProcessor.getResponseFor(stepValidateRequest[0]);
   });
 
 });
