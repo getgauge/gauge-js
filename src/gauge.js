@@ -1,6 +1,5 @@
 var connection = require('./connection');
 var impl_loader = require('./impl-loader');
-var events = require('events');
 require('./gauge-global');
 var MessageProcessor = require('./message-processor');
 
