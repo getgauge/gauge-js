@@ -1,7 +1,6 @@
 var connection = require('./connection');
 var impl_loader = require('./impl-loader');
 var events = require('events');
-var eventEmitter = new events.EventEmitter();
 require('./gauge-global');
 var MessageProcessor = require('./message-processor');
 

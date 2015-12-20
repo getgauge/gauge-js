@@ -16,12 +16,12 @@ var executeStep = function(request) {
   });
 
   new Test(stepRegistry.get(parsedStepText), parameters).run().then(
-    function(value) {
+    function() {
       var response = executionResponse(false, 0, request.messageId);
       deferred.resolve(response);
     },
 
-    function(reason) {
+    function() {
       var errorResponse = executionResponse(true, 0, request.messageId);
       deferred.reject(errorResponse);
     }
