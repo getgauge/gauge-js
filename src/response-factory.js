@@ -1,5 +1,4 @@
 var ProtoBuf = require("protobufjs");
-var ByteBuffer = ProtoBuf.ByteBuffer;
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
 var errorType = builder.build("gauge.messages.StepValidateResponse.ErrorType");

@@ -65,7 +65,12 @@ var runFnAsync = function() {
 
 Test.prototype.run = function () {
   this.deferred = Q.defer();
-  this.async ? runFnAsync.call(this) : runFn.call(this);
+  if(this.async) {
+    runFnAsync.call(this);
+  }
+  else {
+    runFn.call(this);
+  }
   return this.deferred.promise;
 };
 

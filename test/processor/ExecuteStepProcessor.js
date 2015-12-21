@@ -60,7 +60,7 @@ describe('Processing Excecute Step Request', function() {
   it('Should reject the promise when test function fails', function(done) {
     var promise = ExcecuteStepProcessor(executeStepMessageFailing);
     promise.then(
-      function(value) {},
+      function() {},
       function(reason) {
         expect(reason.executionStatusResponse.executionResult.failed).to.equal(true);
         done();

@@ -12,13 +12,13 @@ var doNothing = function(request) {
   this._emit(response);
 };
 
+function executionResponse(isFailed, executionTime, messageId) {
+  return ResponseFactory.getExecutionStatusResponseMessage (messageId, isFailed, executionTime);
+}
+
 function successExecutionStatus(request) {
   var response = executionResponse(false, 0, request.messageId);
   this._emit(response);
-}
-
-function executionResponse(isFailed, executionTime, messageId) {
-  return ResponseFactory.getExecutionStatusResponseMessage (messageId, isFailed, executionTime);
 }
 
 function executeStep (request) {
@@ -46,7 +46,6 @@ function killProcess() {
 
 MessageProcessor = function() {
   EventEmitter.call(this);
-  var self = this;
   this.processors = {};
   this.processors[message.MessageType.StepNamesRequest] = doNothing;
   this.processors[message.MessageType.StepValidateRequest] = validateStep;
