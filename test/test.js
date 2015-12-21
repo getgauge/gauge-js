@@ -5,8 +5,12 @@ var sinon  = require('sinon');
 describe('Test function execution', function() {
 
   it('should set async to true if passed in test has additional param', function() {
-    var asyncTestFunction = function(param1, param2, done) {};
-    var syncTestFunction = function(param1, param2){};
+    var asyncTestFunction = function(param1, param2, done) {
+      done(param1 + param2);
+    };
+    var syncTestFunction = function(param1, param2){
+      return param1 + param2;
+    };
     var params = ['param1', 'param2'];
 
     var asyncTest = new Test(asyncTestFunction, params);
@@ -17,7 +21,9 @@ describe('Test function execution', function() {
   });
 
   it('should call test function with params', function() {
-    var testFunction = sinon.spy(function(arg1, arg2) {});
+    var testFunction = sinon.spy(function(arg1, arg2) {
+      return arg1 + arg2;
+    });
     var params = [1,2];
 
     new Test(testFunction, params).run();
@@ -26,7 +32,9 @@ describe('Test function execution', function() {
   });
 
   it('should pass the done function when additional param is present', function() {
-    var testFunction = sinon.spy(function(arg1, arg2, done) {});
+    var testFunction = sinon.spy(function(arg1, arg2, done) {
+      done(arg1+arg2);
+    });
     var params = [1, 2];
 
     new Test(testFunction, params).run();
@@ -55,12 +63,12 @@ describe('Test function execution', function() {
 
     it('should reject the promise when if test function times out', function(done) {
       var asyncFn = function(gaugeDone) {
-
+        return gaugeDone;
       };
       var result = new Test(asyncFn, []).run();
       result.then(
         function() {},
-        function(reason) {
+        function() {
           done();
         }
       ).done();
