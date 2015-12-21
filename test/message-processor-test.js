@@ -28,17 +28,17 @@ describe('Request Processing', function () {
   ];
 
 
-  before( function(done) {
+  before( function() {
     stepRegistry.add('Say {} to {}', function(){});
     sinon.spy(stepRegistry, 'exists');
-    messageProcessor.removeAllListeners('messageProcessed');
-    done();
   });
 
-  after( function(done) {
+  after( function() {
     stepRegistry.exists.restore();
+  });
+
+  beforeEach( function() {
     messageProcessor.removeAllListeners('messageProcessed');
-    done();
   });
 
   it('Should check if step exists in step registry when a StepValidateRequest is received', function(done) {
@@ -61,7 +61,7 @@ describe('Request Processing', function () {
     messageProcessor.getResponseFor(stepValidateRequest[1]);
   });
 
-  it.skip('StepValidateRequest should get back StepValidateResponse with isValid set to false if the step doesn not exist', function (done) {
+  it('StepValidateRequest should get back StepValidateResponse with isValid set to false if the step does not exist', function (done) {
     messageProcessor.on('messageProcessed', function(response) {
       assert.deepEqual(stepValidateRequest[0].messageId, response.messageId);
       assert.equal(message.MessageType.StepValidateResponse, response.messageType);
