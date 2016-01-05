@@ -1,26 +1,25 @@
 #! /usr/bin/env node
-var fs = require('fs');
-console.log("JavaScript is awesome!!");
-var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
+
+var fs = require('fs'),
+    path = require('path');
+
+var skeldir = path.join(__dirname, 'skel'),
+    srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, 'src'),
+    testCode = 'step_implementation.js';
 
 if(process.argv[2] === '--init') {
-  console.log('Initializing project.');
-  fs.mkdir(GAUGE_PROJECT_ROOT + '/step_implementations', 484, function(err) {
-    if (err) {
-      if (err.code === 'EEXIST') {
 
-      } // ignore the error if the folder already exists
-      else {
-        console.error(err); // something else went wrong
-      }
-    }
-    else {
-      fs.createReadStream(__dirname + '/skel/step_implementation.js')
-        .pipe(fs.createWriteStream(GAUGE_PROJECT_ROOT + '/step_implementations/step_implementation.js'));
-    }
-  });
+    console.log("Initialising Gauge JavaScript project");
+    fs.mkdir(srcdir, 484, function(err) {
+        if (err && err.code !== 'EEXIST') {
+            console.error(err);
+        } else {
+            fs.createReadStream(path.join(skeldir, testCode))
+                .pipe(fs.createWriteStream(path.join(srcdir, testCode)));
+        }
+    });
 }
+
 else if(process.argv[2] === '--start') {
-  console.log('Running specs');
-  require('./src/gauge').run();
+    require('./src/gauge').run();
 }
