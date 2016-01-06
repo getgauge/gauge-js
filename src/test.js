@@ -1,4 +1,4 @@
-var Q = require('q');
+var Q = require("q");
 
 var Test = function(fn, params, ms) {
   this.fn = fn;
@@ -51,7 +51,7 @@ var runFn = function() {
     self.fn.apply({}, self.params);
     done.call(self);
   } catch (e) {
-    var exception = e ? e : new Error('Undefined error thrown');
+    var exception = e ? e : new Error("Undefined error thrown");
     done.apply(self, [exception]);
   }
 };

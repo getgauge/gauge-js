@@ -1,5 +1,5 @@
-StepRegistry = require('./step-registry');
-stepParser = require('./step-parser');
+StepRegistry = require("./step-registry");
+stepParser = require("./step-parser");
 
 global.stepRegistry = new StepRegistry();
 

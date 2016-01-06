@@ -1,11 +1,11 @@
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
-var ResponseFactory = require('./response-factory');
-var EventEmitter = require('events').EventEmitter;
+var ResponseFactory = require("./response-factory");
+var EventEmitter = require("events").EventEmitter;
 var util = require("util");
-require('./gauge-global');
-var ExecuteStepProcessor = require('./processor/ExecuteStepProcessor');
+require("./gauge-global");
+var ExecuteStepProcessor = require("./processor/ExecuteStepProcessor");
 
 var doNothing = function(request) {
   var response = ResponseFactory.getStepNamesResponseMessage(request.messageId);
@@ -71,7 +71,7 @@ MessageProcessor.prototype.getResponseFor = function(request){
 };
 
 MessageProcessor.prototype._emit = function(data) {
-  this.emit('messageProcessed', data);
+  this.emit("messageProcessed", data);
 };
 
 module.exports = new MessageProcessor();

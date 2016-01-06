@@ -1,28 +1,28 @@
-var assert = require('chai').assert;
-var StepRegistry = require('../src/step-registry');
+var assert = require("chai").assert;
+var StepRegistry = require("../src/step-registry");
 
-describe('Store and retrieve steps', function() {
+describe("Store and retrieve steps", function() {
 
-  it('Should store and retrive steps', function(done) {
+  it("Should store and retrive steps", function(done) {
     var sampleFunction = function() {};
     var stepRegistry = new StepRegistry();
 
-    stepRegistry.add('Sample Step', sampleFunction);
-    assert.equal(sampleFunction, stepRegistry.get('Sample Step'));
+    stepRegistry.add("Sample Step", sampleFunction);
+    assert.equal(sampleFunction, stepRegistry.get("Sample Step"));
     done();
   });
 
-  it('Should return true for implemented step', function(done) {
+  it("Should return true for implemented step", function(done) {
     var stepRegistry = new StepRegistry();
-    stepRegistry.add('Say {} to {}', function(){});
-    assert.equal(true, stepRegistry.exists('Say {} to {}'));
+    stepRegistry.add("Say {} to {}", function(){});
+    assert.equal(true, stepRegistry.exists("Say {} to {}"));
     done();
   });
 
-  it('Should return false for unimplemented step', function(done) {
+  it("Should return false for unimplemented step", function(done) {
     var stepRegistry = new StepRegistry();
 
-    assert.equal(false, stepRegistry.exists('Say {} to {}'));
+    assert.equal(false, stepRegistry.exists("Say {} to {}"));
     done();
   });
 

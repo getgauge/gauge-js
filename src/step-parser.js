@@ -9,7 +9,7 @@ exports = module.exports;
  * @return {[String]}          Generalised form of the step.
  */
 exports.generalise = function(stepName) {
-  return stepName.replace(/(<.*?>)/g, '{}');
+  return stepName.replace(/(<.*?>)/g, "{}");
 };
 
 exports.getParams = function(step) {
