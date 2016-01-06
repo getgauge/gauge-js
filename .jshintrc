@@ -35,6 +35,7 @@
     "maxcomplexity": 10,
     "maxlen": 120,
     "notypeof": false,
+    "predef" : [ "describe", "it", "gaugejs", "gauge"],
     "proto": false,
     "scripturl": false,
     "smarttabs": false,
