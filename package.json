@@ -4,6 +4,7 @@
   "description": "JavaScript runner for Gauge",
   "main": "index.js",
   "scripts": {
+    "check-style": "./node_modules/.bin/jscs src/ test/",
     "lint": "./node_modules/.bin/jshint src/ test/",
     "test": "./node_modules/.bin/mocha --recursive"
   },
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "chai": "^3.4.0",
+    "jscs": "^2.8.0",
     "jshint": "^2.8.0",
     "mocha": "^2.3.3",
     "sinon": "^1.17.2"
