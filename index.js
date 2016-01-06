@@ -4,7 +4,7 @@ var fs = require("fs"),
     path = require("path");
 
 var skeldir = path.join(__dirname, "skel"),
-    srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, "src"),
+    srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, "tests"),
     testCode = "step_implementation.js";
 
 if(process.argv[2] === "--init") {
