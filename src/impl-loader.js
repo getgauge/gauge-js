@@ -9,4 +9,4 @@ function loadImpl(projectRoot) {
 
 module.exports= {
   load: loadImpl
-}
+};

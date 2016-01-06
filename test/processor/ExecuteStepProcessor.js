@@ -13,7 +13,7 @@ describe("Processing Excecute Step Request", function() {
     messageId: 1,
     messageType: message.MessageType.ExecuteStep,
     executeStepRequest: {
-      actualStepText: "Say "hello" to "gauge"",
+      actualStepText: "Say \"hello\" to \"gauge\"",
       parsedStepText: "Say {} to {}",
       scenarioFailing: null,
       parameters: [
