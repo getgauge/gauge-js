@@ -1,9 +1,6 @@
-
-exports = module.exports = StepRegistry;
-
-function StepRegistry() {
+var StepRegistry = function () {
     this.registry = {};
-}
+};
 
 /**
  * Add a step to the registry
@@ -34,3 +31,5 @@ StepRegistry.prototype.get = function (stepName) {
 StepRegistry.prototype.exists = function(stepName) {
   return stepName in this.registry;
 };
+
+exports = module.exports = StepRegistry;
