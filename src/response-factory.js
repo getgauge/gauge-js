@@ -19,17 +19,16 @@ exports.getStepNamesResponseMessage = function (messageId) {
 
 exports.getStepValidateResponseMessage = function (messageId, isValid) {
 
-  return isValid
-  ?
-  new message({
-    messageId: messageId,
-    messageType: message.MessageType.StepValidateResponse,
-    stepValidateResponse: {
-      isValid: true
-    }
-  })
-  :
-  new message({
+  if (isValid) {
+    return new message({
+      messageId: messageId,
+      messageType: message.MessageType.StepValidateResponse,
+      stepValidateResponse: {
+        isValid: true
+      }
+    });
+  }
+  return new message({
     messageId: messageId,
     messageType: message.MessageType.StepValidateResponse,
     stepValidateResponse: {
