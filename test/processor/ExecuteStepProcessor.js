@@ -3,16 +3,16 @@ var expect = require("chai").expect;
 var sinon  = require("sinon");
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
-var message = builder.build("gauge.messages.Message");
+var Message = builder.build("gauge.messages.Message");
 require("../../src/gauge-global");
 var ExcecuteStepProcessor = require("../../src/processor/ExecuteStepProcessor");
 
 
 describe("Processing Excecute Step Request", function() {
 
-  var executeStepMessage = new message({
+  var executeStepMessage = new Message({
     messageId: 1,
-    messageType: message.MessageType.ExecuteStep,
+    messageType: Message.MessageType.ExecuteStep,
     executeStepRequest: {
       actualStepText: "Say \"hello\" to \"gauge\"",
       parsedStepText: "Say {} to {}",
@@ -24,9 +24,9 @@ describe("Processing Excecute Step Request", function() {
     }
   });
 
-  var executeStepMessageFailing = new message({
+  var executeStepMessageFailing = new Message({
     messageId: 1,
-    messageType: message.MessageType.ExecuteStep,
+    messageType: Message.MessageType.ExecuteStep,
     executeStepRequest: {
       actualStepText: "failing test",
       parsedStepText: "failing test",

@@ -3,24 +3,24 @@ var assert = require("chai").assert;
 var sinon  = require("sinon");
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
-var message = builder.build("gauge.messages.Message");
+var Message = builder.build("gauge.messages.Message");
 require("../src/gauge-global");
 var messageProcessor = require("../src/message-processor");
 
 describe("Request Processing", function () {
 
   var stepValidateRequest = [
-    new message({
+    new Message({
       messageId: 1,
-      messageType: message.MessageType.StepValidateRequest,
+      messageType: Message.MessageType.StepValidateRequest,
       stepValidateRequest: {
         stepText: "A context step which gets executed before every scenario",
         numberOfParameters: 0
       }
     }),
-    new message({
+    new Message({
       messageId: 1,
-      messageType: message.MessageType.StepValidateRequest,
+      messageType: Message.MessageType.StepValidateRequest,
       stepValidateRequest:{
         stepText: "Say {} to {}",
         numberOfParameters: 0
@@ -55,7 +55,7 @@ describe("Request Processing", function () {
   it("StepValidateRequest should get back StepValidateResponse with isValid set to true if the step exists", function (done) {
     messageProcessor.on("messageProcessed", function(response) {
       assert.deepEqual(stepValidateRequest[1].messageId, response.messageId);
-      assert.equal(message.MessageType.StepValidateResponse, response.messageType);
+      assert.equal(Message.MessageType.StepValidateResponse, response.messageType);
       assert.equal(true, response.stepValidateResponse.isValid);
       done();
     });
@@ -65,7 +65,7 @@ describe("Request Processing", function () {
   it("StepValidateRequest should get back StepValidateResponse with isValid set to false if the step does not exist", function (done) {
     messageProcessor.on("messageProcessed", function(response) {
       assert.deepEqual(stepValidateRequest[0].messageId, response.messageId);
-      assert.equal(message.MessageType.StepValidateResponse, response.messageType);
+      assert.equal(Message.MessageType.StepValidateResponse, response.messageType);
       assert.equal(false, response.stepValidateResponse.isValid);
       done();
     });

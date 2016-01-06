@@ -1,4 +1,4 @@
-var connection = require("./connection");
+var Connection = require("./connection");
 var impl_loader = require("./impl-loader");
 require("./gauge-global");
 var MessageProcessor = require("./message-processor");
@@ -10,7 +10,7 @@ function run() {
   impl_loader.load(GAUGE_PROJECT_ROOT);
   console.log("Initializing Connection");
 
-  var gaugeInternalConnection = new connection("localhost", GAUGE_INTERNAL_PORT);
+  var gaugeInternalConnection = new Connection("localhost", GAUGE_INTERNAL_PORT);
   gaugeInternalConnection.run();
 
   gaugeInternalConnection.on("messageReceived", function(decodedData) {

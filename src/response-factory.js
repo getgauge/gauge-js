@@ -1,15 +1,15 @@
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
-var message = builder.build("gauge.messages.Message");
+var Message = builder.build("gauge.messages.Message");
 var errorType = builder.build("gauge.messages.StepValidateResponse.ErrorType");
 
 exports = module.exports;
 
 exports.getStepNamesResponseMessage = function (messageId) {
 
-  return new message({
+  return new Message({
     messageId: messageId,
-    messageType: message.MessageType.StepNamesResponse,
+    messageType: Message.MessageType.StepNamesResponse,
     stepNamesResponse: {
       steps: []
     }
@@ -20,17 +20,17 @@ exports.getStepNamesResponseMessage = function (messageId) {
 exports.getStepValidateResponseMessage = function (messageId, isValid) {
 
   if (isValid) {
-    return new message({
+    return new Message({
       messageId: messageId,
-      messageType: message.MessageType.StepValidateResponse,
+      messageType: Message.MessageType.StepValidateResponse,
       stepValidateResponse: {
         isValid: true
       }
     });
   }
-  return new message({
+  return new Message({
     messageId: messageId,
-    messageType: message.MessageType.StepValidateResponse,
+    messageType: Message.MessageType.StepValidateResponse,
     stepValidateResponse: {
       isValid: false,
       errorType: errorType.STEP_IMPLEMENTATION_NOT_FOUND
@@ -41,9 +41,9 @@ exports.getStepValidateResponseMessage = function (messageId, isValid) {
 
 exports.getExecutionStatusResponseMessage = function (messageId, isFailed, executionTime) {
 
-  return new message({
+  return new Message({
     messageId: messageId,
-    messageType: message.MessageType.ExecutionStatusResponse,
+    messageType: Message.MessageType.ExecutionStatusResponse,
     executionStatusResponse: {
       executionResult: {
         failed: isFailed,
