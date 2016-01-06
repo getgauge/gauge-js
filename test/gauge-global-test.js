@@ -1,4 +1,4 @@
-/* globals stepRegistry, stepParser, before, after */
+/* globals stepRegistry, stepParser */
 var assert = require("chai").assert;
 var sinon  = require("sinon");
 require("../src/gauge-global");
