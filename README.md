@@ -3,48 +3,56 @@
 # Gauge-JS
 JavaScript Runner for [Gauge](http://www.getgauge.io).
 
-### Installation Instructions
-Clone Gauge-JS plugin repo:
+## Installation Instructions
+
+**Clone Gauge-JS plugin repo:**
+
 ```sh
-$ git clone git@github.com:renjithgr/gauge-js.git
+$ git clone git@github.com:renjithgr/gauge-js.git --recursive
 ```
 
-Initialize gauge-proto submodule:
+**Copy:** Copy all contents of the `gauge-js` dir to the following directories:
+
+- Windows: `%APPDATA%\.gauge\plugins\js\0.0.1\`
+- MacOS: `~/.gauge/plugins/js/0.0.1/`
+- Linux: `~/.gauge/plugins/js/0.0.1/`
+
+**Initialize:** To initialize a project with gauge-js, in an empty directory run:
+
 ```sh
-$ git submodule init
+gauge --init js
 ```
 
-Fetch gauge-proto submodule:
+**Run specs:**
+
 ```sh
-$ git submodule update
+gauge specs/
 ```
 
-Install npm dependencies:
+## Develop
+
+**Setup**:
+
+ - Preferably use [EditorConfig](http://editorconfig.org/) with your text editor.
+
+**Install npm dependencies:**
+
 ```sh
 $ npm install
 ```
 
-Run tests:
+**Run tests:**
+
 ```sh
 $ npm run check-style
 $ npm run lint
 $ npm test
 ```
 
-Copy all contents of the gauge-js dir to the following directories:
-- Windows: `%APPDATA%\.gauge\plugins\js\0.0.1\`
-- MacOS: `~/.gauge/plugins/js/0.0.1/`
-- Linux: `~/.gauge/plugins/js/0.0.1/`
+### Code Style
 
-To initialize a project with gauge-js, in an empty directory run:
-```sh
-gauge --init js
-```
-
-Run specs
-```sh
-gauge specs/
-```
+- Indent: 2 spaces
+- Line ending: LF
 
 ## License
 
