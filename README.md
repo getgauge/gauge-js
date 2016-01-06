@@ -6,27 +6,29 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
 ### Installation Instructions
 Clone Gauge-JS plugin repo:
 ```sh
-git clone git@github.com:renjithgr/gauge-js.git
+$ git clone git@github.com:renjithgr/gauge-js.git
 ```
 
 Initialize gauge-proto submodule:
 ```sh
-git submodule init
+$ git submodule init
 ```
 
 Fetch gauge-proto submodule:
 ```sh
-git submodule update
+$ git submodule update
 ```
 
 Install npm dependencies:
 ```sh
-npm install
+$ npm install
 ```
 
 Run tests:
 ```sh
-npm test
+$ npm run check-style
+$ npm run lint
+$ npm test
 ```
 
 Copy all contents of the gauge-js dir to the following directories:
