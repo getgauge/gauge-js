@@ -32,9 +32,9 @@ $ npm test
 ```
 
 Copy all contents of the gauge-js dir to the following directories:
-- Windows: %APPDATA%\.gauge\plugins\js\0.0.1\
-- MacOS: ~/.gauge/plugins/js/0.0.1/
-- Linux: ~/.gauge/plugins/js/0.0.1/
+- Windows: `%APPDATA%\.gauge\plugins\js\0.0.1\`
+- MacOS: `~/.gauge/plugins/js/0.0.1/`
+- Linux: `~/.gauge/plugins/js/0.0.1/`
 
 To initialize a project with gauge-js, in an empty directory run:
 ```sh
