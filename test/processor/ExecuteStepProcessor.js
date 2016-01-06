@@ -1,3 +1,4 @@
+/* globals stepRegistry */
 var expect = require("chai").expect;
 var sinon  = require("sinon");
 var ProtoBuf = require("protobufjs");
@@ -48,7 +49,7 @@ describe("Processing Excecute Step Request", function() {
   });
 
   it("Should resolve promise when test function passes", function(done) {
-    var promise = ExcecuteStepProcessor(executeStepMessage);
+    var promise = new ExcecuteStepProcessor(executeStepMessage);
     promise.then(
       function(value) {
         expect(value.executionStatusResponse.executionResult.failed).to.equal(false);
@@ -58,7 +59,7 @@ describe("Processing Excecute Step Request", function() {
   });
 
   it("Should reject the promise when test function fails", function(done) {
-    var promise = ExcecuteStepProcessor(executeStepMessageFailing);
+    var promise = new ExcecuteStepProcessor(executeStepMessageFailing);
     promise.then(
       function() {},
       function(reason) {

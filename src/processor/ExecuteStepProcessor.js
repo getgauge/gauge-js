@@ -1,3 +1,4 @@
+/* globals stepRegistry */
 var ResponseFactory = require("../response-factory");
 var Q = require("q");
 var Test = require("../test");
@@ -12,7 +13,7 @@ var executeStep = function(request) {
   var parsedStepText = request.executeStepRequest.parsedStepText;
 
   var parameters = request.executeStepRequest.parameters.map(function(item) {
-    return item["value"] ? item["value"] : item["table"];
+    return item.value ? item.value : item.table;
   });
 
   new Test(stepRegistry.get(parsedStepText), parameters).run().then(
