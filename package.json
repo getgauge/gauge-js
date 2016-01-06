@@ -4,7 +4,8 @@
   "description": "JavaScript runner for Gauge",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive"
+    "lint": "./node_modules/.bin/jshint src/ test/",
+    "test": "./node_modules/.bin/mocha --recursive"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "chai": "^3.4.0",
+    "jshint": "^2.8.0",
     "mocha": "^2.3.3",
     "sinon": "^1.17.2"
   }
