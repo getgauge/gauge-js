@@ -33,7 +33,6 @@
     "loopfunc": false,
     "multistr": false,
     "maxcomplexity": 10,
-    "maxlen": 120,
     "mocha": true,
     "notypeof": false,
     "predef" : [ "gaugejs", "gauge"],
