@@ -4,7 +4,9 @@
   "description": "JavaScript runner for Gauge",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive"
+    "check-style": "./node_modules/.bin/jscs *.js src/ test/",
+    "lint": "./node_modules/.bin/jshint *.js src/ test/",
+    "test": "./node_modules/.bin/mocha --recursive"
   },
   "repository": {
     "type": "git",
@@ -15,7 +17,7 @@
     "JavaScript"
   ],
   "author": "Renjith G R",
-  "license": "ISC",
+  "license": "GPLv3",
   "bugs": {
     "url": "https://github.com/renjithgr/gauge-js/issues"
   },
@@ -27,6 +29,8 @@
   },
   "devDependencies": {
     "chai": "^3.4.0",
+    "jscs": "^2.8.0",
+    "jshint": "^2.8.0",
     "mocha": "^2.3.3",
     "sinon": "^1.17.2"
   }

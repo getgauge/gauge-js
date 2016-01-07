@@ -1,0 +1,10 @@
+{
+    "disallowMixedSpacesAndTabs": true,
+    "disallowSpaceBeforeComma": true,
+    "requireCapitalizedConstructors": true,
+    "requireSemicolons": true,
+    "requireSpacesInForStatement": true,
+    "validateIndentation": 2,
+    "validateLineBreaks": "LF",
+    "validateQuoteMarks": { "mark": "\"", "escape": true }
+}

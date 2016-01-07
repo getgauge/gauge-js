@@ -1,34 +1,35 @@
-var expect = require('chai').expect;
-var sinon  = require('sinon');
+/* globals stepRegistry */
+var expect = require("chai").expect;
+var sinon  = require("sinon");
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
-var message = builder.build("gauge.messages.Message");
-require('../../src/gauge-global');
-var ExcecuteStepProcessor = require('../../src/processor/ExecuteStepProcessor');
+var Message = builder.build("gauge.messages.Message");
+require("../../src/gauge-global");
+var ExcecuteStepProcessor = require("../../src/processor/ExecuteStepProcessor");
 
 
-describe('Processing Excecute Step Request', function() {
+describe("Processing Excecute Step Request", function() {
 
-  var executeStepMessage = new message({
+  var executeStepMessage = new Message({
     messageId: 1,
-    messageType: message.MessageType.ExecuteStep,
+    messageType: Message.MessageType.ExecuteStep,
     executeStepRequest: {
-      actualStepText: 'Say "hello" to "gauge"',
-      parsedStepText: 'Say {} to {}',
+      actualStepText: "Say \"hello\" to \"gauge\"",
+      parsedStepText: "Say {} to {}",
       scenarioFailing: null,
       parameters: [
-        { parameterType: 1, value: 'hello', name: '', table: null },
-        { parameterType: 1, value: 'gauge', name: '', table: null }
+        { parameterType: 1, value: "hello", name: "", table: null },
+        { parameterType: 1, value: "gauge", name: "", table: null }
       ]
     }
   });
 
-  var executeStepMessageFailing = new message({
+  var executeStepMessageFailing = new Message({
     messageId: 1,
-    messageType: message.MessageType.ExecuteStep,
+    messageType: Message.MessageType.ExecuteStep,
     executeStepRequest: {
-      actualStepText: 'failing test',
-      parsedStepText: 'failing test',
+      actualStepText: "failing test",
+      parsedStepText: "failing test",
       scenarioFailing: null,
       parameters: []
     }
@@ -36,9 +37,9 @@ describe('Processing Excecute Step Request', function() {
 
 
   before( function(done) {
-    stepRegistry.add('Say {} to {}', function() {});
-    stepRegistry.add('failing test', function() {throw "Error";});
-    sinon.spy(stepRegistry, 'get');
+    stepRegistry.add("Say {} to {}", function() {});
+    stepRegistry.add("failing test", function() {throw "Error";});
+    sinon.spy(stepRegistry, "get");
     done();
   });
 
@@ -47,8 +48,8 @@ describe('Processing Excecute Step Request', function() {
     done();
   });
 
-  it('Should resolve promise when test function passes', function(done) {
-    var promise = ExcecuteStepProcessor(executeStepMessage);
+  it("Should resolve promise when test function passes", function(done) {
+    var promise = new ExcecuteStepProcessor(executeStepMessage);
     promise.then(
       function(value) {
         expect(value.executionStatusResponse.executionResult.failed).to.equal(false);
@@ -57,8 +58,8 @@ describe('Processing Excecute Step Request', function() {
     ).done();
   });
 
-  it('Should reject the promise when test function fails', function(done) {
-    var promise = ExcecuteStepProcessor(executeStepMessageFailing);
+  it("Should reject the promise when test function fails", function(done) {
+    var promise = new ExcecuteStepProcessor(executeStepMessageFailing);
     promise.then(
       function() {},
       function(reason) {
