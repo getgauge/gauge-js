@@ -1,12 +1,13 @@
 {
   "name": "gauge-js",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "JavaScript runner for Gauge",
   "main": "index.js",
   "scripts": {
     "check-style": "./node_modules/.bin/jscs *.js src/ test/",
     "lint": "./node_modules/.bin/jshint *.js src/ test/",
-    "test": "./node_modules/.bin/mocha --recursive"
+    "test": "./node_modules/.bin/mocha --recursive",
+    "installPlugin": "node ./scripts/install.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "chai": "^3.4.0",
+    "fs-extra": "^0.26.4",
     "jscs": "^2.8.0",
     "jshint": "^2.8.0",
     "mocha": "^2.3.3",
