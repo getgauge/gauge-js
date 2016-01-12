@@ -11,11 +11,13 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
 $ git clone git@github.com:renjithgr/gauge-js.git --recursive
 ```
 
-**Copy:** Copy all contents of the `gauge-js` dir to the following directories:
+**Install plugin:**
 
-- Windows: `%APPDATA%\.gauge\plugins\js\0.0.1\`
-- MacOS: `~/.gauge/plugins/js/0.0.1/`
-- Linux: `~/.gauge/plugins/js/0.0.1/`
+```sh
+$ cd gauge-js
+$ npm install
+$ npm run installPlugin
+```
 
 **Initialize:** To initialize a project with gauge-js, in an empty directory run:
 
