@@ -16,14 +16,16 @@ var executeStep = function(request) {
     return item.value ? item.value : item.table;
   });
 
+  var timestamp = Date.now();
+
   new Test(stepRegistry.get(parsedStepText), parameters).run().then(
     function() {
-      var response = executionResponse(false, 0, request.messageId);
+      var response = executionResponse(false, (Date.now() - timestamp), request.messageId);
       deferred.resolve(response);
     },
 
     function() {
-      var errorResponse = executionResponse(true, 0, request.messageId);
+      var errorResponse = executionResponse(true, (Date.now() - timestamp), request.messageId);
       deferred.reject(errorResponse);
     }
   );
