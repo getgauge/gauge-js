@@ -18,7 +18,7 @@ HookRegistry.prototype.types = [
   "afterStep"
 ];
 
-HookRegistry.prototype.add = function (hookName, hookFn) {
+HookRegistry.prototype.add = function (hookName, hookFn, options) {
   if (!hookName) {
     throw new InvalidHookException("Need a hook name");
   }
@@ -28,7 +28,7 @@ HookRegistry.prototype.add = function (hookName, hookFn) {
   }
 
   this.registry[hookName] = this.registry[hookName] || [];
-  this.registry[hookName].push(hookFn);
+  this.registry[hookName].push({'fn': hookFn, 'options': options});
 };
 
 HookRegistry.prototype.get = function (hookName) {

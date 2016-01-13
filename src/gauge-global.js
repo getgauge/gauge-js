@@ -12,8 +12,8 @@ global.gauge = function(stepName, stepFunction) {
 };
 
 global.hookRegistry.types.forEach(function (type) {
-  global[type] = function (fn) {
-    global.hookRegistry.add(type, fn);
+  global[type] = function (fn, options) {
+    global.hookRegistry.add(type, fn, options);
   };
 });
 
