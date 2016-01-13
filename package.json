@@ -6,7 +6,7 @@
   "scripts": {
     "check-style": "./node_modules/.bin/jscs *.js src/ test/",
     "lint": "./node_modules/.bin/jshint *.js src/ test/",
-    "test": "./node_modules/.bin/mocha --recursive",
+    "test": "npm run check-style && npm run lint && ./node_modules/.bin/mocha --recursive",
     "installPlugin": "node ./scripts/install.js"
   },
   "repository": {
