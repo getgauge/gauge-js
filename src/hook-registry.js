@@ -28,7 +28,7 @@ HookRegistry.prototype.add = function (hookName, hookFn, options) {
   }
 
   this.registry[hookName] = this.registry[hookName] || [];
-  this.registry[hookName].push({'fn': hookFn, 'options': options});
+  this.registry[hookName].push({"fn": hookFn, "options": options});
 };
 
 HookRegistry.prototype.get = function (hookName) {
