@@ -8,7 +8,6 @@ var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
 function run() {
   impl_loader.load(GAUGE_PROJECT_ROOT);
-  console.log("Initializing Connection");
 
   var gaugeInternalConnection = new Connection("localhost", GAUGE_INTERNAL_PORT);
   gaugeInternalConnection.run();
