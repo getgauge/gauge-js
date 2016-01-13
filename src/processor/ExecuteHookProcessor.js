@@ -1,11 +1,6 @@
 /* globals hookRegistry */
-var ResponseFactory = require("../response-factory");
+var factory = require("../response-factory");
 var Q = require("q");
-//var Test = require("../test");
-
-function executionResponse(isFailed, executionTime, messageId, e) {
-  return ResponseFactory.getExecutionStatusResponseMessage (messageId, isFailed, executionTime, e);
-}
 
 /**
  * Source: http://stackoverflow.com/a/26034767/575242
@@ -33,7 +28,7 @@ function filterHooks(hooks, tags) {
   });
 }
 
-var ExecuteHook = function(request, hookLevel, currentExecutionInfo) {
+var executeHook = function(request, hookLevel, currentExecutionInfo) {
   var deferred = Q.defer(),
       timestamp = Date.now(),
       tags = [];
@@ -51,14 +46,14 @@ var ExecuteHook = function(request, hookLevel, currentExecutionInfo) {
     try {
       filteredHooks[i].fn.apply({}, [currentExecutionInfo, hookLevel]);
     } catch (e) {
-      deferred.reject(executionResponse(true, (Date.now() - timestamp), request.messageId, e));
+      deferred.reject(factory.createExecutionStatusResponse(request.messageId, true, Date.now() - timestamp, e));
       return deferred.promise;
     }
   }
 
-  deferred.resolve(executionResponse(false, (Date.now() - timestamp), request.messageId));
+  deferred.resolve(factory.createExecutionStatusResponse(request.messageId, false, Date.now() - timestamp));
 
   return deferred.promise;
 };
 
-module.exports = ExecuteHook;
+module.exports = executeHook;

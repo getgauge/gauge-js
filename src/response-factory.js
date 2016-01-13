@@ -5,7 +5,7 @@ var errorType = builder.build("gauge.messages.StepValidateResponse.ErrorType");
 
 exports = module.exports;
 
-exports.getStepNamesResponseMessage = function (messageId) {
+exports.createStepNamesResponse = function (messageId) {
 
   return new Message({
     messageId: messageId,
@@ -17,7 +17,7 @@ exports.getStepNamesResponseMessage = function (messageId) {
 
 };
 
-exports.getStepValidateResponseMessage = function (messageId, isValid) {
+exports.createStepValidateResponse = function (messageId, isValid) {
 
   if (isValid) {
     return new Message({
@@ -39,7 +39,7 @@ exports.getStepValidateResponseMessage = function (messageId, isValid) {
 
 };
 
-exports.getExecutionStatusResponseMessage = function (messageId, isFailed, executionTime, err) {
+exports.createExecutionStatusResponse = function (messageId, isFailed, executionTime, err) {
 
   return new Message({
     messageId: messageId,

@@ -2,20 +2,20 @@
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
-var ResponseFactory = require("./response-factory");
+var factory = require("./response-factory");
 var EventEmitter = require("events").EventEmitter;
 var util = require("util");
 require("./gauge-global");
-var ExecuteStepProcessor = require("./processor/ExecuteStepProcessor");
-var ExecuteHookProcessor = require("./processor/ExecuteHookProcessor");
+var executeStepFn = require("./processor/ExecuteStepProcessor");
+var executeHookFn = require("./processor/ExecuteHookProcessor");
 
 var doNothing = function(request) {
-  var response = ResponseFactory.getStepNamesResponseMessage(request.messageId);
+  var response = factory.createStepNamesResponse(request.messageId);
   this._emit(response);
 };
 
 function executionResponse(isFailed, executionTime, messageId) {
-  return ResponseFactory.getExecutionStatusResponseMessage (messageId, isFailed, executionTime);
+  return factory.createExecutionStatusResponse(messageId, isFailed, executionTime);
 }
 
 function successExecutionStatus(request) {
@@ -25,7 +25,7 @@ function successExecutionStatus(request) {
 
 function executeStep (request) {
   var self = this;
-  var promise = new ExecuteStepProcessor(request);
+  var promise = executeStepFn(request);
   promise.then(
     function(value) {
       self._emit(value);
@@ -38,7 +38,7 @@ function executeStep (request) {
 
 function executeHook (request, hookName, currentExecutionInfo) {
   var self = this;
-  var promise = new ExecuteHookProcessor(request, hookName, currentExecutionInfo);
+  var promise = executeHookFn(request, hookName, currentExecutionInfo);
   promise.then(
     function(value) {
       self._emit(value);
@@ -83,7 +83,7 @@ function executeAfterStepHook (request) {
 
 function validateStep(request) {
   var stepImplemented = stepRegistry.exists(request.stepValidateRequest.stepText);
-  var response = ResponseFactory.getStepValidateResponseMessage(request.messageId, stepImplemented);
+  var response = factory.createStepValidateResponse(request.messageId, stepImplemented);
   this._emit(response);
 }
 
