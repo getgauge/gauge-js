@@ -30,12 +30,16 @@ var createDir = function (dirPath) {
   }
 };
 
+var recreateDir = function (dirPath) {
+  cleanDir(dirPath);
+  createDir(dirPath);
+};
+
 var prepareFiles = function () {
   var buildDir = localPath("build"),
       copyList = ["gauge-proto", "src", "index.js", "js.json", "package.json", "README.md"];
 
-  cleanDir(buildDir);
-  createDir(buildDir);
+  recreateDir(buildDir);
 
   copyList.forEach(function (item) {
     try {
@@ -65,8 +69,7 @@ var prepareFiles = function () {
 };
 
 var installPluginFiles = function () {
-  cleanDir(pluginInstallDir);
-  createDir(pluginInstallDir);
+  recreateDir(pluginInstallDir);
 
   prepareFiles();
 
@@ -86,8 +89,7 @@ var createPackage = function () {
       buildDir = localPath("build"),
       packageFile = "gauge-" + plugin.id + "-" + plugin.version + ".zip";
 
-  cleanDir(deployDir);
-  createDir(deployDir);
+  recreateDir(deployDir);
   prepareFiles();
 
   var package = fs.createWriteStream(path.join(deployDir, packageFile));
