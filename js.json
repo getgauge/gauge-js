@@ -1,6 +1,6 @@
 {
   "id" : "js",
-  "version" : "0.0.1",
+  "version" : "0.1.0",
   "description": "Javascript support for gauge",
   "run": {
     "windows": ["index.bat", "--start"],
