@@ -17,7 +17,7 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
 **Clone Gauge-JS plugin repo:**
 
 ```sh
-$ git clone git@github.com:renjithgr/gauge-js.git --recursive
+$ git clone git@github.com:getgauge-contrib/gauge-js.git --recursive
 ```
 
 **Install plugin:**
