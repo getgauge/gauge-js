@@ -1,6 +1,8 @@
 # Gauge-JS
 JavaScript Runner for [Gauge](http://www.getgauge.io).
 
+[![Build Status](https://snap-ci.com/getgauge-contrib/gauge-js/branch/master/build_image)](https://snap-ci.com/getgauge-contrib/gauge-js/branch/master)
+
 ## Installation Instructions
 
 **Clone Gauge-JS plugin repo:**
