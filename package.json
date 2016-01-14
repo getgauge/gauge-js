@@ -7,7 +7,8 @@
     "check-style": "./node_modules/.bin/jscs *.js src/ skel/ test/",
     "lint": "./node_modules/.bin/jshint *.js src/ skel/ test/",
     "test": "npm run check-style && npm run lint && ./node_modules/.bin/mocha --recursive",
-    "installPlugin": "node ./scripts/install.js"
+    "installPlugin": "node ./scripts/install.js",
+    "package": "node ./scripts/install.js --package"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "q": "^1.4.1"
   },
   "devDependencies": {
+    "archiver": "^0.21.0",
     "chai": "^3.4.0",
     "fs-extra": "^0.26.4",
     "jscs": "^2.8.0",

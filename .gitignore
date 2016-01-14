@@ -39,3 +39,7 @@ node_modules
 *~
 \#*\#
 .\#*
+
+# Ignore build and deploy dirs
+/build/
+/deploy/
