@@ -1,7 +1,7 @@
 /* globals hookRegistry */
 var factory = require("../response-factory");
 var Q = require("q");
-
+var Test = require("../test");
 /**
  * Source: http://stackoverflow.com/a/26034767/575242
  */
@@ -41,17 +41,29 @@ var executeHook = function(request, hookLevel, currentExecutionInfo) {
 
   var hooks = hookRegistry.get(hookLevel);
   var filteredHooks = hooks.length ? filterHooks(hooks, tags) : [];
-
-  for (var i = 0; i < filteredHooks.length; i++) {
-    try {
-      filteredHooks[i].fn.apply({}, [currentExecutionInfo, hookLevel]);
-    } catch (e) {
-      deferred.reject(factory.createExecutionStatusResponse(request.messageId, true, Date.now() - timestamp, e));
-      return deferred.promise;
-    }
+  
+  if (!filteredHooks.length){
+    deferred.resolve(factory.createExecutionStatusResponse(request.messageId, false, Date.now() - timestamp));
+    return deferred.promise;
   }
 
-  deferred.resolve(factory.createExecutionStatusResponse(request.messageId, false, Date.now() - timestamp));
+  var number = 0;
+  var onPass = function () {
+    if (number === filteredHooks.length - 1) {
+      var response = factory.createExecutionStatusResponse(request.messageId, false, Date.now() - timestamp);
+      deferred.resolve(response);
+    }
+    number++;
+  };
+
+  var onError = function() {
+    var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, Date.now() - timestamp);
+    deferred.reject(errorResponse);
+  };
+
+  for (var i = 0; i < filteredHooks.length; i++) {
+    new Test(filteredHooks[i].fn, [currentExecutionInfo], 10000).run().then(onPass, onError);
+  }
 
   return deferred.promise;
 };
