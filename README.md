@@ -1,5 +1,3 @@
-[![Build Status](https://snap-ci.com/renjithgr/gauge-js/branch/master/build_image)](https://snap-ci.com/renjithgr/gauge-js/branch/master)
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/78f5eca45e38482a910309c7f2757f60)](https://www.codacy.com/app/grenjithr/gauge-js)
 # Gauge-JS
 JavaScript Runner for [Gauge](http://www.getgauge.io).
 
