@@ -4,7 +4,13 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
 [![Build Status](https://snap-ci.com/getgauge-contrib/gauge-js/branch/master/build_image)](https://snap-ci.com/getgauge-contrib/gauge-js/branch/master)
 
 ## Install
+- Before installing gauge-js, make sure Gauge `v0.3.0` or above is installed.
 
+    ```sh
+    gauge -v
+    ```
+    
+### Installing from zip file
 - Download `gauge-js-<version>.zip` from the [releases](https://github.com/getgauge-contrib/gauge-js/releases) page.
 - Install plugin from downloaded file:
 
@@ -12,21 +18,21 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
     $ gauge --install js --file <path-to-zip-file>/gauge-js-<version>.zip`
     ```
 
-## Install from source
+### Installing from source
 
-**Clone Gauge-JS plugin repo:**
+- Clone Gauge-JS plugin repo.
 
-```sh
-$ git clone git@github.com:getgauge-contrib/gauge-js.git --recursive
-```
+    ```sh
+    $ git clone git@github.com:getgauge-contrib/gauge-js.git --recursive
+    ```
 
-**Install plugin:**
+- Install plugin.
 
-```sh
-$ cd gauge-js
-$ npm install
-$ npm run installPlugin
-```
+    ```sh
+    $ cd gauge-js
+    $ npm install
+    $ npm run installPlugin
+    ```
 
 ## Usage
 
