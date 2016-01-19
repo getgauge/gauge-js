@@ -9,9 +9,9 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
     ```sh
     gauge -v
     ```
-    
+
 ### Installing from zip file
-- Download `gauge-js-<version>.zip` from the [releases](https://github.com/getgauge-contrib/gauge-js/releases) page.
+- Download `gauge-js-<version>.zip` from the [releases](https://github.com/getgauge-contrib/gauge-js/releases/latest) page.
 - Install plugin from downloaded file:
 
     ```sh
