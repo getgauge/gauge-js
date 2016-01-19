@@ -37,7 +37,7 @@ var recreateDir = function (dirPath) {
 
 var prepareFiles = function () {
   var buildDir = localPath("build"),
-      copyList = ["gauge-proto", "src", "skel", "index.js", "js.json", "package.json", "README.md"];
+      copyList = ["gauge-proto", "src", "skel", "index.js", "index.bat", "js.json", "package.json", "README.md"];
 
   recreateDir(buildDir);
 
