@@ -41,7 +41,7 @@ var executeHook = function(request, hookLevel, currentExecutionInfo) {
 
   var hooks = hookRegistry.get(hookLevel);
   var filteredHooks = hooks.length ? filterHooks(hooks, tags) : [];
-  
+
   if (!filteredHooks.length){
     deferred.resolve(factory.createExecutionStatusResponse(request.messageId, false, Date.now() - timestamp));
     return deferred.promise;
