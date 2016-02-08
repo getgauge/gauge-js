@@ -7,7 +7,7 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
 - Before installing gauge-js, make sure Gauge `v0.3.0` or above is installed.
 
     ```sh
-    gauge -v
+    $ gauge -v
     ```
 
 ### Installing from zip file
@@ -41,13 +41,13 @@ If you are new to Gauge, please consult the [Gauge documentation](http://getgaug
 **Initialize:** To initialize a project with gauge-js, in an empty directory run:
 
 ```sh
-gauge --init js
+$ gauge --init js
 ```
 
 **Run specs:**
 
 ```sh
-gauge specs/
+$ gauge specs/
 ```
 
 ## Methods
