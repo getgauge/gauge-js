@@ -49,7 +49,7 @@ exports.createExecutionStatusResponse = function (messageId, isFailed, execution
         failed: isFailed,
         executionTime: executionTime || 0,
         stackTrace: err && err.stack ? err.stack : null,
-        errorMessage: err && err.message ? err.message : null
+        errorMessage: err ? err.toString() : null
       }
     }
   });

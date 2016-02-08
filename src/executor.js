@@ -38,16 +38,14 @@ var executeStep = function(request) {
     return item.value ? item.value : item.table;
   });
 
-  var timestamp = Date.now();
-
   new Test(stepRegistry.get(parsedStepText), parameters).run().then(
-    function() {
-      var response = factory.createExecutionStatusResponse(request.messageId, false, Date.now() - timestamp);
+    function(result) {
+      var response = factory.createExecutionStatusResponse(request.messageId, false, result.duration);
       deferred.resolve(response);
     },
 
-    function() {
-      var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, Date.now() - timestamp);
+    function(result) {
+      var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, result.duration, result.exception);
       deferred.reject(errorResponse);
     }
   );
@@ -57,8 +55,8 @@ var executeStep = function(request) {
 
 var executeHook = function(request, hookLevel, currentExecutionInfo) {
   var deferred = Q.defer(),
-      timestamp = Date.now(),
-      tags = [];
+      tags = [],
+      timestamp = Date.now();
 
   if (currentExecutionInfo) {
     var specTags = currentExecutionInfo.currentSpec ? currentExecutionInfo.currentSpec.tags : [];
@@ -75,16 +73,16 @@ var executeHook = function(request, hookLevel, currentExecutionInfo) {
   }
 
   var number = 0;
-  var onPass = function () {
+  var onPass = function (result) {
     if (number === filteredHooks.length - 1) {
-      var response = factory.createExecutionStatusResponse(request.messageId, false, Date.now() - timestamp);
+      var response = factory.createExecutionStatusResponse(request.messageId, false, result.duration);
       deferred.resolve(response);
     }
     number++;
   };
 
-  var onError = function() {
-    var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, Date.now() - timestamp);
+  var onError = function(result) {
+    var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, result.duration, result.exception);
     deferred.reject(errorResponse);
   };
 
