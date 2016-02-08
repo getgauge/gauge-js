@@ -1,16 +1,16 @@
-/* globals hookRegistry */
-var factory = require("../response-factory");
+/* globals stepRegistry, hookRegistry */
+var factory = require("./response-factory");
 var Q = require("q");
-var Test = require("../test");
-/**
- * Source: http://stackoverflow.com/a/26034767/575242
- */
+var Test = require("./test");
+
+
+// Source: http://stackoverflow.com/a/26034767/575242
 var hasIntersection = function (arr1, arr2) {
   var intArr = arr1.filter(function (elem) { return arr2.indexOf(elem) > -1; });
   return intArr.length;
 };
 
-function filterHooks(hooks, tags) {
+var filterHooks = function (hooks, tags) {
   return hooks.filter(function(hook) {
     var hookTags = (hook.options && hook.options.tags) ? hook.options.tags : [];
     var hookOperator = (hook.options && hook.options.operator) ? hook.options.operator : "AND";
@@ -26,7 +26,34 @@ function filterHooks(hooks, tags) {
     }
     return false;
   });
-}
+};
+
+
+var executeStep = function(request) {
+  var deferred = Q.defer();
+
+  var parsedStepText = request.executeStepRequest.parsedStepText;
+
+  var parameters = request.executeStepRequest.parameters.map(function(item) {
+    return item.value ? item.value : item.table;
+  });
+
+  var timestamp = Date.now();
+
+  new Test(stepRegistry.get(parsedStepText), parameters).run().then(
+    function() {
+      var response = factory.createExecutionStatusResponse(request.messageId, false, Date.now() - timestamp);
+      deferred.resolve(response);
+    },
+
+    function() {
+      var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, Date.now() - timestamp);
+      deferred.reject(errorResponse);
+    }
+  );
+
+  return deferred.promise;
+};
 
 var executeHook = function(request, hookLevel, currentExecutionInfo) {
   var deferred = Q.defer(),
@@ -68,4 +95,8 @@ var executeHook = function(request, hookLevel, currentExecutionInfo) {
   return deferred.promise;
 };
 
-module.exports = executeHook;
+
+module.exports = {
+  step: executeStep,
+  hook: executeHook
+};

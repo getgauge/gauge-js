@@ -5,9 +5,10 @@ var message = builder.build("gauge.messages.Message");
 var factory = require("./response-factory");
 var EventEmitter = require("events").EventEmitter;
 var util = require("util");
+
 require("./gauge-global");
-var executeStepFn = require("./processor/ExecuteStepProcessor");
-var executeHookFn = require("./processor/ExecuteHookProcessor");
+
+var executor = require("./executor");
 
 var doNothing = function(request) {
   var response = factory.createStepNamesResponse(request.messageId);
@@ -25,7 +26,7 @@ function successExecutionStatus(request) {
 
 function executeStep (request) {
   var self = this;
-  var promise = executeStepFn(request);
+  var promise = executor.step(request);
   promise.then(
     function(value) {
       self._emit(value);
@@ -38,7 +39,7 @@ function executeStep (request) {
 
 function executeHook (request, hookName, currentExecutionInfo) {
   var self = this;
-  var promise = executeHookFn(request, hookName, currentExecutionInfo);
+  var promise = executor.hook(request, hookName, currentExecutionInfo);
   promise.then(
     function(value) {
       self._emit(value);

@@ -4,11 +4,11 @@ var sinon  = require("sinon");
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var Message = builder.build("gauge.messages.Message");
-require("../../src/gauge-global");
-var ExcecuteStepProcessor = require("../../src/processor/ExecuteStepProcessor");
+require("../src/gauge-global");
+var executor = require("../src/executor");
 
 
-describe("Processing Excecute Step Request", function() {
+describe("Processing Execute Step Request", function() {
 
   var executeStepMessage = new Message({
     messageId: 1,
@@ -49,7 +49,7 @@ describe("Processing Excecute Step Request", function() {
   });
 
   it("Should resolve promise when test function passes", function(done) {
-    var promise = new ExcecuteStepProcessor(executeStepMessage);
+    var promise = executor.step(executeStepMessage);
     promise.then(
       function(value) {
         expect(value.executionStatusResponse.executionResult.failed).to.equal(false);
@@ -59,7 +59,7 @@ describe("Processing Excecute Step Request", function() {
   });
 
   it("Should reject the promise when test function fails", function(done) {
-    var promise = new ExcecuteStepProcessor(executeStepMessageFailing);
+    var promise = executor.step(executeStepMessageFailing);
     promise.then(
       function() {},
       function(reason) {
