@@ -122,8 +122,6 @@ $ npm install
 **Run tests:**
 
 ```sh
-$ npm run check-style
-$ npm run lint
 $ npm test
 ```
 
