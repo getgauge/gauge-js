@@ -10,10 +10,6 @@ var localPath = function (relativePath) {
 
 var plugin = require(localPath("./js.json"));
 
-var homeDir = process.env[(process.platform == "win32") ? "USERPROFILE" : "HOME"];
-
-var pluginInstallDir = path.resolve(homeDir, ".gauge", "plugins", plugin.id, plugin.version);
-
 var cleanDir = function (dirPath) {
   try {
     fs.removeSync(dirPath);
@@ -60,6 +56,7 @@ var prepareFiles = function () {
   }
 
   try {
+    console.log("Installing npm packages...");
     child_process.execSync("npm install --production", { cwd: buildDir });
   } catch (err) {
     console.error("Error installing modules from NPM: %s", err.message);
@@ -68,26 +65,13 @@ var prepareFiles = function () {
 
 };
 
-var installPluginFiles = function () {
-  recreateDir(pluginInstallDir);
-
-  prepareFiles();
-
-  try {
-    fs.copySync(localPath("build"), pluginInstallDir);
-  } catch (err) {
-    console.error("Failed to install plugin: %s", err.message);
-    console.error(err.stack);
-  }
-
-  console.log("Installed gauge-%s v%s", plugin.id, plugin.version);
-};
-
-var createPackage = function () {
+var createPackage = function (callback) {
   var zip = archiver("zip"),
       deployDir = localPath("deploy"),
       buildDir = localPath("build"),
       packageFile = "gauge-" + plugin.id + "-" + plugin.version + ".zip";
+
+  callback = callback || function () {};
 
   recreateDir(deployDir);
   prepareFiles();
@@ -101,12 +85,33 @@ var createPackage = function () {
   package.on("close", function () {
     console.log("Created: %s", path.join("deploy", packageFile));
     console.log("To install this plugin, run:\n\t$ gauge --install js --file %s", path.join("deploy", packageFile));
+    typeof callback == "function" && callback(path.join(deployDir, packageFile));
   });
 
   zip.pipe(package);
 
   zip.directory(buildDir, "/").finalize();
+};
 
+var installPluginFiles = function () {
+  createPackage(function (packageFilePath) {
+
+    try {
+      child_process.execSync("gauge --uninstall " + plugin.id + " --plugin-version \"" + plugin.version + "\"");
+    } catch (err) {
+      console.error("Failed to uninstall existing plugin: %s", err.message);
+      console.error(err.stack);
+    }
+
+    try {
+      child_process.execSync("gauge --install " + plugin.id + " --file \"" + packageFilePath + "\"");
+    } catch (err) {
+      console.error("Failed to install plugin: %s", err.message);
+      console.error(err.stack);
+    }
+
+    console.log("Installed gauge-%s v%s", plugin.id, plugin.version);
+  });
 };
 
 if (process.argv[2] === "--package") {
