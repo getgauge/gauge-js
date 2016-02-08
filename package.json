@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "check-style": "./node_modules/.bin/jscs *.js src/ skel/ test/",
-    "lint": "./node_modules/.bin/jshint *.js src/ skel/ test/",
+    "lint": "./node_modules/.bin/jshint *.js src/ skel/ test/ scripts/",
     "test": "npm run check-style && npm run lint && ./node_modules/.bin/mocha --recursive",
     "installPlugin": "node ./scripts/install.js",
     "package": "node ./scripts/install.js --package"
