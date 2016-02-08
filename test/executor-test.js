@@ -8,7 +8,7 @@ require("../src/gauge-global");
 var executor = require("../src/executor");
 
 
-describe("Processing Execute Step Request", function() {
+describe("Executing steps", function() {
 
   var executeStepMessage = new Message({
     messageId: 1,
