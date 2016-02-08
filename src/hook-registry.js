@@ -32,7 +32,11 @@ HookRegistry.prototype.add = function (hookName, hookFn, options) {
 };
 
 HookRegistry.prototype.get = function (hookName) {
-  return this.registry[hookName] ? this.registry[hookName] : this.registry;
+  return hookName ? (this.registry[hookName] ? this.registry[hookName] : []) : this.registry;
+};
+
+HookRegistry.prototype.clear = function () {
+  this.registry = {};
 };
 
 module.exports = HookRegistry;
