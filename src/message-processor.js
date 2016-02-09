@@ -10,11 +10,6 @@ require("./gauge-global");
 
 var executor = require("./executor");
 
-var doNothing = function(request) {
-  var response = factory.createStepNamesResponse(request.messageId);
-  this._emit(response);
-};
-
 var processCustomMessages = function (response) {
   var msgs = customMessageRegistry.get();
   response.executionStatusResponse.executionResult.message = response.executionStatusResponse.executionResult.message.concat(msgs);
@@ -97,6 +92,28 @@ function validateStep(request) {
   this._emit(response);
 }
 
+var executeStepNamesRequest = function (request) {
+  var response = factory.createStepNamesResponse(request.messageId);
+  var steps = Object.keys(stepRegistry.get());
+  response.stepNamesResponse.steps = response.stepNamesResponse.steps.concat(steps);
+  this._emit(response);
+};
+
+var executeStepNameRequest = function (request) {
+  var stepValue = request.stepNameRequest.stepValue;
+  var response = factory.createStepNameResponse(request.messageId, stepValue);
+  if (stepRegistry.exists(stepValue)) {
+    response.stepNameResponse.isStepPresent = true;
+  }
+  this._emit(response);
+};
+
+var executeRefactor = function (request) {
+  var response = factory.createRefactorResponse(request.messageId);
+  // TODO: Implement refactoring. Something like: refactor(request).
+  this._emit(response);
+};
+
 function killProcess() {
   process.exit();
 }
@@ -104,7 +121,9 @@ function killProcess() {
 var MessageProcessor = function() {
   EventEmitter.call(this);
   this.processors = {};
-  this.processors[message.MessageType.StepNamesRequest] = doNothing;
+  this.processors[message.MessageType.StepNamesRequest] = executeStepNamesRequest;
+  this.processors[message.MessageType.StepNameRequest] = executeStepNameRequest;
+  this.processors[message.MessageType.RefactorRequest] = executeRefactor;
   this.processors[message.MessageType.StepValidateRequest] = validateStep;
   this.processors[message.MessageType.SuiteDataStoreInit] = successExecutionStatus;
   this.processors[message.MessageType.SpecDataStoreInit] = successExecutionStatus;

@@ -19,7 +19,7 @@ StepRegistry.prototype.add = function (stepName, stepFunction) {
  * @returns Function The function to be executed for this step.
  */
 StepRegistry.prototype.get = function (stepName) {
-  return this.registry[stepName];
+  return stepName ? this.registry[stepName] : this.registry;
 };
 
 /**

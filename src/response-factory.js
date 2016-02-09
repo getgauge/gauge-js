@@ -17,6 +17,34 @@ exports.createStepNamesResponse = function (messageId) {
 
 };
 
+exports.createStepNameResponse = function (messageId, stepName) {
+
+  return new Message({
+    messageId: messageId,
+    messageType: Message.MessageType.StepNameResponse,
+    stepNameResponse: {
+      isStepPresent: false,
+      stepName: stepName || null,
+      hasAlias: false
+    }
+  });
+
+};
+
+exports.createRefactorResponse = function (messageId) {
+
+  return new Message({
+    messageId: messageId,
+    messageType: Message.MessageType.RefactorResponse,
+    refactorResponse: {
+      success: false,
+      error: "",
+      filesChanged: []
+    }
+  });
+
+};
+
 exports.createStepValidateResponse = function (messageId, isValid) {
 
   if (isValid) {
