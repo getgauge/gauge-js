@@ -17,14 +17,14 @@ exports.createStepNamesResponse = function (messageId) {
 
 };
 
-exports.createStepNameResponse = function (messageId, stepName) {
+exports.createStepNameResponse = function (messageId) {
 
   return new Message({
     messageId: messageId,
     messageType: Message.MessageType.StepNameResponse,
     stepNameResponse: {
       isStepPresent: false,
-      stepName: stepName || null,
+      stepName: [],
       hasAlias: false
     }
   });

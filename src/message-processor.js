@@ -9,6 +9,7 @@ var util = require("util");
 require("./gauge-global");
 
 var executor = require("./executor");
+var refactor = require("./refactor");
 
 var processCustomMessages = function (response) {
   var msgs = customMessageRegistry.get();
@@ -94,15 +95,15 @@ function validateStep(request) {
 
 var executeStepNamesRequest = function (request) {
   var response = factory.createStepNamesResponse(request.messageId);
-  var steps = Object.keys(stepRegistry.get());
-  response.stepNamesResponse.steps = response.stepNamesResponse.steps.concat(steps);
+  response.stepNamesResponse.steps = response.stepNamesResponse.steps.concat(stepRegistry.getStepTexts());
   this._emit(response);
 };
 
 var executeStepNameRequest = function (request) {
   var stepValue = request.stepNameRequest.stepValue;
-  var response = factory.createStepNameResponse(request.messageId, stepValue);
+  var response = factory.createStepNameResponse(request.messageId);
   if (stepRegistry.exists(stepValue)) {
+    response.stepNameResponse.stepName.push(stepRegistry.get(stepValue).stepText);
     response.stepNameResponse.isStepPresent = true;
   }
   this._emit(response);
@@ -110,7 +111,8 @@ var executeStepNameRequest = function (request) {
 
 var executeRefactor = function (request) {
   var response = factory.createRefactorResponse(request.messageId);
-  // TODO: Implement refactoring. Something like: refactor(request).
+  console.log(request);
+  refactor(request, response);
   this._emit(response);
 };
 

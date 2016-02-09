@@ -37,8 +37,7 @@ var executeStep = function(request) {
   var parameters = request.executeStepRequest.parameters.map(function(item) {
     return item.value ? item.value : item.table;
   });
-
-  new Test(stepRegistry.get(parsedStepText), parameters).run().then(
+  new Test(stepRegistry.get(parsedStepText).fn, parameters).run().then(
     function(result) {
       var response = factory.createExecutionStatusResponse(request.messageId, false, result.duration);
       deferred.resolve(response);

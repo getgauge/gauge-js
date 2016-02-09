@@ -19,13 +19,14 @@ describe("Calling Step Registry", function() {
   it("Should add test function to step registry", function(done) {
     var sampleFunction = function() {};
 
-    gauge("Step 1", sampleFunction);
+    gauge("Step <1>", sampleFunction);
 
     assert(stepRegistry.add.calledOnce);
     assert(stepParser.generalise.calledOnce);
-    assert.equal("Step 1", stepRegistry.add.getCall(0).args[0]);
-    assert.equal("Step 1", stepParser.generalise.getCall(0).args[0]);
-    assert.deepEqual(sampleFunction, stepRegistry.add.getCall(0).args[1]);
+    assert.equal("Step <1>", stepParser.generalise.getCall(0).args[0]);
+    assert.equal("Step {}", stepRegistry.add.getCall(0).args[0]);
+    assert.equal("Step <1>", stepRegistry.add.getCall(0).args[1]);
+    assert.deepEqual(sampleFunction, stepRegistry.add.getCall(0).args[2]);
     done();
   });
 

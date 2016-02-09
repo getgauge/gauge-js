@@ -10,7 +10,7 @@ global.customMessageRegistry = new CustomMessageRegistry();
 
 global.gauge = function(stepName, stepFunction) {
   var generalisedName = global.stepParser.generalise(stepName);
-  global.stepRegistry.add(generalisedName, stepFunction);
+  global.stepRegistry.add(generalisedName, stepName, stepFunction);
 };
 
 global.hookRegistry.types.forEach(function (type) {

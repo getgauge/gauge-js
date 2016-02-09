@@ -7,8 +7,10 @@ describe("Store and retrieve steps", function() {
     var sampleFunction = function() {};
     var stepRegistry = new StepRegistry();
 
-    stepRegistry.add("Sample Step", sampleFunction);
-    assert.equal(sampleFunction, stepRegistry.get("Sample Step"));
+    stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction);
+    assert.equal(sampleFunction, stepRegistry.get("Sample Step {}").fn);
+    assert.equal("Sample Step {}", stepRegistry.get("Sample Step {}").generalisedText);
+    assert.equal("Sample Step <1>", stepRegistry.get("Sample Step {}").stepText);
     done();
   });
 

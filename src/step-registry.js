@@ -8,8 +8,8 @@ var StepRegistry = function () {
  * @param stepName Name of the step.
  * @param stepFunction Function to be executed for this step.
  */
-StepRegistry.prototype.add = function (stepName, stepFunction) {
-  this.registry[stepName] = stepFunction;
+StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction) {
+  this.registry[generalisedText] = { fn: stepFunction, stepText: stepText, generalisedText: generalisedText };
 };
 
 /**
@@ -20,6 +20,13 @@ StepRegistry.prototype.add = function (stepName, stepFunction) {
  */
 StepRegistry.prototype.get = function (stepName) {
   return stepName ? this.registry[stepName] : this.registry;
+};
+
+StepRegistry.prototype.getStepTexts = function () {
+  var reg = this.registry;
+  return Object.keys(reg).map(function (key) {
+    return reg[key].stepText;
+  });
 };
 
 /**

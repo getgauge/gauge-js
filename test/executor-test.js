@@ -37,8 +37,8 @@ describe("Executing steps", function() {
 
 
   before( function(done) {
-    stepRegistry.add("Say {} to {}", function() {});
-    stepRegistry.add("failing test", function() {throw "Error";});
+    stepRegistry.add("Say {} to {}", "Say <hi> to <me>", function() {});
+    stepRegistry.add("failing test", "failing test", function() {throw "Error";});
     sinon.spy(stepRegistry, "get");
     done();
   });
