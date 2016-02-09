@@ -109,7 +109,7 @@ beforeScenario (function () {
 
 ### Custom messages
 
-**`gaugeMessage(<string>)`** Use the `gaugeMessage(<String>)` function to send custom messages to `gauge` in your step implementations. This method takes only one string as an argument. You can call it multiple times to send multiple messages within the same step.
+**`gaugeMessage(<string>)`**: Use the `gaugeMessage(<String>)` function to send custom messages to `gauge` in your step implementations. This method takes only one string as an argument. You can call it multiple times to send multiple messages within the same step.
 
 Example:
 
@@ -119,34 +119,9 @@ gauge("Vowels in English language are <vowels>.", function(vowelsGiven) {
 });
 ```
 
-## Develop
+## Contributing
 
-**Setup**:
-
- - Preferably use [EditorConfig](http://editorconfig.org/) with your text editor.
-
-**Install npm dependencies:**
-
-```sh
-$ npm install
-```
-
-**Run tests:**
-
-```sh
-$ npm test
-```
-
-### Create package
-
-```sh
-$ npm run package
-```
-
-### Code Style
-
-- Indent: 2 spaces
-- Line ending: LF
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
