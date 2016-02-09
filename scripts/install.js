@@ -95,22 +95,25 @@ var createPackage = function (callback) {
 
 var installPluginFiles = function () {
   createPackage(function (packageFilePath) {
+    var log;
 
     try {
-      child_process.execSync("gauge --uninstall " + plugin.id + " --plugin-version \"" + plugin.version + "\"");
+      log = child_process.execSync("gauge --uninstall " + plugin.id + " --plugin-version \"" + plugin.version + "\"");
+      console.log(log.toString());
     } catch (err) {
       console.error("Failed to uninstall existing plugin: %s", err.message);
       console.error(err.stack);
+      process.exit(1);
     }
 
     try {
-      child_process.execSync("gauge --install " + plugin.id + " --file \"" + packageFilePath + "\"");
+      log = child_process.execSync("gauge --install " + plugin.id + " --file \"" + packageFilePath + "\"");
+      console.log(log.toString());
     } catch (err) {
       console.error("Failed to install plugin: %s", err.message);
       console.error(err.stack);
+      process.exit(1);
     }
-
-    console.log("Installed gauge-%s v%s", plugin.id, plugin.version);
   });
 };
 
