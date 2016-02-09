@@ -8,8 +8,8 @@ var StepRegistry = function () {
  * @param stepName Name of the step.
  * @param stepFunction Function to be executed for this step.
  */
-StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction) {
-  this.registry[generalisedText] = { fn: stepFunction, stepText: stepText, generalisedText: generalisedText };
+StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath) {
+  this.registry[generalisedText] = { fn: stepFunction, stepText: stepText, generalisedText: generalisedText, filePath: filePath };
 };
 
 /**

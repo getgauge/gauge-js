@@ -111,8 +111,7 @@ var executeStepNameRequest = function (request) {
 
 var executeRefactor = function (request) {
   var response = factory.createRefactorResponse(request.messageId);
-  console.log(request);
-  refactor(request, response);
+  response = refactor(request, response);
   this._emit(response);
 };
 

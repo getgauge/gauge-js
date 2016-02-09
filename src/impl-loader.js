@@ -1,8 +1,10 @@
 require("./gauge-global");
-var fileUtil = require("./file-util");
+var fileUtil = require("./file-util"),
+    path = require("path");
 
 function loadImpl(projectRoot) {
-  fileUtil.getListOfFilesFromPath(projectRoot + "/" + "tests").forEach(function(filePath) {
+  fileUtil.getListOfFilesFromPath(path.join(projectRoot, "tests")).forEach(function(filePath) {
+    process.env.GAUGE_STEPFILEPATH = filePath;
     require(filePath);
   });
 }
