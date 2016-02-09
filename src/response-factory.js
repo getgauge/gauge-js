@@ -39,7 +39,7 @@ exports.createStepValidateResponse = function (messageId, isValid) {
 
 };
 
-exports.createExecutionStatusResponse = function (messageId, isFailed, executionTime, err) {
+exports.createExecutionStatusResponse = function (messageId, isFailed, executionTime, err, msg) {
 
   return new Message({
     messageId: messageId,
@@ -49,7 +49,8 @@ exports.createExecutionStatusResponse = function (messageId, isFailed, execution
         failed: isFailed,
         executionTime: executionTime || 0,
         stackTrace: err && err.stack ? err.stack : null,
-        errorMessage: err ? err.toString() : null
+        errorMessage: err ? err.toString() : null,
+        message: msg || []
       }
     }
   });

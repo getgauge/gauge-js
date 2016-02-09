@@ -1,4 +1,4 @@
-/* globals stepRegistry */
+/* globals stepRegistry, customMessageRegistry */
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
@@ -13,6 +13,13 @@ var executor = require("./executor");
 var doNothing = function(request) {
   var response = factory.createStepNamesResponse(request.messageId);
   this._emit(response);
+};
+
+var processCustomMessages = function (response) {
+  var msgs = customMessageRegistry.get();
+  response.executionStatusResponse.executionResult.message = response.executionStatusResponse.executionResult.message.concat(msgs);
+  customMessageRegistry.clear();
+  return response;
 };
 
 function executionResponse(isFailed, executionTime, messageId) {
@@ -41,8 +48,9 @@ function executeHook (request, hookName, currentExecutionInfo) {
   var self = this;
   var promise = executor.hook(request, hookName, currentExecutionInfo);
   promise.then(
-    function(value) {
-      self._emit(value);
+    function(response) {
+      response = processCustomMessages(response);
+      self._emit(response);
     },
     function(reason) {
       self._emit(reason);
@@ -63,6 +71,7 @@ function executeBeforeScenarioHook (request) {
 }
 
 function executeBeforeStepHook (request) {
+  customMessageRegistry.clear();
   executeHook.apply(this, [request, "beforeStep", request.stepExecutionStartingRequest.currentExecutionInfo]);
 }
 

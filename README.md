@@ -107,6 +107,18 @@ beforeScenario (function () {
 }, { tags: [ "single word" ]});
 ```
 
+### Custom messages
+
+**`gaugeMessage(<string>)`** Use the `gaugeMessage(<String>)` function to send custom messages to `gauge` in your step implementations. This method takes only one string as an argument. You can call it multiple times to send multiple messages within the same step.
+
+Example:
+
+```js
+gauge("Vowels in English language are <vowels>.", function(vowelsGiven) {
+  gaugeMessage("Vowels are " + vowelsGiven);
+});
+```
+
 ## Develop
 
 **Setup**:
