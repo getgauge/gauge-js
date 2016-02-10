@@ -1,9 +1,12 @@
 /* globals stepRegistry */
-var fs = require("fs");
+var fs = require("fs"),
+    grasp = require("grasp");
 
 var refactor_content = function (content, info, req) {
-  // TODO: implement actual content replace based on refactorRequest
-  console.log(info, req);
+  var searchstr = "gauge(_str[value=\"{}\"], $fn)".replace("{}", info.stepText);
+  var replacestr = "gauge(\"{}\", {{fn}})".replace("{}", req.newStepValue.parameterizedStepValue);
+
+  content = grasp.replace("equery", searchstr, replacestr, content);
   return content;
 };
 
