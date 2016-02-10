@@ -2,7 +2,8 @@
 var factory = require("./response-factory");
 var Q = require("q");
 var Test = require("./test");
-
+/* If test_timeout env variable is not available set the default to 1000ms */
+var timeout = process.env.test_timeout || 1000;
 
 // Source: http://stackoverflow.com/a/26034767/575242
 var hasIntersection = function (arr1, arr2) {
@@ -37,7 +38,7 @@ var executeStep = function(request) {
   var parameters = request.executeStepRequest.parameters.map(function(item) {
     return item.value ? item.value : item.table;
   });
-  new Test(stepRegistry.get(parsedStepText).fn, parameters).run().then(
+  new Test(stepRegistry.get(parsedStepText).fn, parameters, timeout).run().then(
     function(result) {
       var response = factory.createExecutionStatusResponse(request.messageId, false, result.duration);
       deferred.resolve(response);
@@ -86,7 +87,7 @@ var executeHook = function(request, hookLevel, currentExecutionInfo) {
   };
 
   for (var i = 0; i < filteredHooks.length; i++) {
-    new Test(filteredHooks[i].fn, [currentExecutionInfo], 10000).run().then(onPass, onError);
+    new Test(filteredHooks[i].fn, [currentExecutionInfo], timeout).run().then(onPass, onError);
   }
 
   return deferred.promise;

@@ -5,7 +5,9 @@ var fs = require("fs"),
 
 var skeldir = path.join(__dirname, "skel"),
     srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, "tests"),
-    testCode = "step_implementation.js";
+    envdir = path.join(process.env.GAUGE_PROJECT_ROOT, "env", "default"),
+    testCode = "step_implementation.js",
+    jsPropertyFile = "js.properties";
 
 if(process.argv[2] === "--init") {
 
@@ -16,6 +18,15 @@ if(process.argv[2] === "--init") {
     } else {
       fs.createReadStream(path.join(skeldir, testCode))
         .pipe(fs.createWriteStream(path.join(srcdir, testCode)));
+    }
+  });
+
+  fs.mkdir(envdir, 484, function(err) {
+    if (err && err.code !== "EEXIST") {
+      console.error(err);
+    } else {
+      fs.createReadStream(path.join(skeldir, jsPropertyFile))
+        .pipe(fs.createWriteStream(path.join(envdir, jsPropertyFile)));
     }
   });
 }
