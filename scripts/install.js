@@ -37,6 +37,14 @@ var prepareFiles = function () {
 
   recreateDir(buildDir);
 
+  try {
+    console.log("Updating git submodules...");
+    child_process.execSync("git submodule update --init --recursive", { cwd: localPath() });
+  } catch (err) {
+    console.error("Error updating submodules: %s", err.toString());
+    console.error(err.stack);
+  }
+
   copyList.forEach(function (item) {
     try {
       fs.copySync(localPath(item), path.join(buildDir, item), { clobber: true, filter: function (f) {
