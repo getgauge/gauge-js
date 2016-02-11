@@ -36,8 +36,8 @@ var refactor = function (request, response) {
     content = refactor_content(content, info, request.refactorRequest);
     fs.writeFileSync(info.filePath, content, "utf-8");
   } catch (e) {
-    console.error(e.toString());
     response.refactorResponse.success = false;
+    response.refactorResponse.error = e.toString();
     return response;
   }
   response.refactorResponse.success = true;
