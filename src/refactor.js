@@ -8,12 +8,14 @@ var processNode = function (node, req) {
   node.arguments[0].value = req.newStepValue.parameterizedStepValue;
   node.arguments[0].raw = "\"" + req.newStepValue.parameterizedStepValue + "\"";
   if (node.arguments[1] && node.arguments[1].type === "FunctionExpression") {
+    var asyncparams = node.arguments[1].params.slice(req.oldStepValue.parameters.length);
     node.arguments[1].params = req.newStepValue.parameters.map(function (param) {
       return {
         type: "Identifier",
         name: param
       };
     });
+    node.arguments[1].params = node.arguments[1].params.concat(asyncparams);
   }
   return node;
 };

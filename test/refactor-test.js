@@ -226,4 +226,40 @@ describe( "Refactor", function () {
 
     assert.strictEqual( contentOutput, "gauge('The word <word> has <number> vowels and ends with <end_letter>.', function (word, number, end_letter) {\n});");
   });
+
+  it( "Should perform refactoring while retaining callbacks for async step implementation calls", function () {
+    contentInput = "gauge('The word <word> has <number> vowels.', function (word, number, done) {\n});";
+    request = {
+      refactorRequest: {
+        oldStepValue: {
+          stepValue: "The word {} has {} vowels.",
+          parameterizedStepValue: "The word <word> has <number> vowels.",
+          parameters: [ "word", "number" ]
+        },
+        newStepValue: {
+          stepValue: "This English word {} has {} vowels.",
+          parameterizedStepValue: "This English word <word> has <numbers> vowels.",
+          parameters: [ "word", "numbers" ]
+        },
+        paramPositions: [ {
+          oldPosition: -1,
+          newPosition: 1
+        }, {
+          oldPosition: 0,
+          newPosition: 0
+        } ]
+      }
+    };
+
+    info = {
+      fn: function ( word, number, done ) { word = "such"; number = "wow"; done = "phew."; },
+      stepText: "The word <word> has <number> vowels.",
+      generalisedText: "The word {} has {} vowels.",
+      filePath: "test/data/refactor-output.js"
+    };
+
+    response = refactor( request, response );
+
+    assert.strictEqual( contentOutput, "gauge('This English word <word> has <numbers> vowels.', function (word, numbers, done) {\n});");
+  });
 });
