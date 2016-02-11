@@ -1,13 +1,32 @@
 /* globals stepRegistry */
 var fs = require("fs"),
-    grasp = require("grasp");
+    esprima = require("esprima"),
+    estraverse = require("estraverse"),
+    escodegen = require("escodegen");
 
 var refactor_content = function (content, info, req) {
-  var searchstr = "gauge(_str[value=\"{}\"], $fn)".replace("{}", info.stepText);
-  var replacestr = "gauge(\"{}\", {{fn}})".replace("{}", req.newStepValue.parameterizedStepValue);
 
-  content = grasp.replace("equery", searchstr, replacestr, content);
-  return content;
+  var ast = esprima.parse(content);
+  estraverse.replace(ast, {
+    enter: function (node, parent) {
+      if (node.type === "CallExpression" && node.callee.name === "gauge" && node.arguments[0].value === info.stepText) {
+        node.arguments[0].value = req.newStepValue.parameterizedStepValue;
+        if (node.arguments[1] && node.arguments[1].type === "FunctionExpression") {
+          var newparams = [];
+
+          req.paramPositions.forEach(function (param) {
+            newparams[param.newPosition] = node.arguments[1].params[param.oldPosition];
+          });
+
+          node.arguments[1].params = newparams;
+
+        }
+      }
+      return node;
+    }
+  });
+
+  return escodegen.generate(ast);
 };
 
 var refactor = function (request, response) {
