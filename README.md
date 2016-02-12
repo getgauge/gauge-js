@@ -10,6 +10,12 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
     $ gauge -v
     ```
 
+### Install through gauge (Recommended)
+
+```sh
+$ gauge --install js
+```
+
 ### Installing from zip file
 - Download `gauge-js-<version>.zip` from the [releases](https://github.com/getgauge-contrib/gauge-js/releases/latest) page.
 - Install plugin from downloaded file:
@@ -131,17 +137,18 @@ The JS runner plugin will alter the step text and callback signature in your ste
 
 ## Configuration
 
-JavaScript specific configuration changes can be made in the env/default/js.properties file.
+JavaScript specific configuration changes can be made in the `env/default/js.properties` file.
 
 Configuration options are the following:
 
-#### test_timeout
+**`test_timeout`**
 
-Specify test timeout in milliseconds. If any async test takes more time than specified by this option, gauge-js will fail that test. Default value is ```1000ms```.
+Specify test timeout in milliseconds. If any async test takes more time than specified by this option, `gauge-js` will fail that test. Default value is `1000ms`.
 
 Example:
+
 ```
-test_timeout=1000
+test_timeout=1500
 ```
 
 ## Contributing
