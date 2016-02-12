@@ -131,7 +131,7 @@ The JS runner plugin will alter the step text and callback signature in your ste
 
 ## Configuration
 
-JavaScript Specific configuration changes can be made in the env/default/js.properties file.
+JavaScript specific configuration changes can be made in the env/default/js.properties file.
 
 Configuration options are the following:
 
