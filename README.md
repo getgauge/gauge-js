@@ -129,6 +129,20 @@ $ gauge --refactor "Existing step text" "New step text"
 
 The JS runner plugin will alter the step text and callback signature in your step implementations. It does not change the callback body.
 
+## Configuration
+
+JavaScript Specific configuration changes can be made in the env/default/js.properties file.
+
+Configuration options are the following:
+
+#### test_timeout
+
+Specify test timeout in milliseconds. If any async test takes more time than specified by this option, gauge-js will fail that test. Default value is ```1000ms```.
+
+Example:
+```
+test_timeout=1000
+```
 
 ## Contributing
 
