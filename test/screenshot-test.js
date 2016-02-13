@@ -7,7 +7,7 @@ var base64 = /^(?:[A-Z0-9+\/]{4})*(?:[A-Z0-9+\/]{2}==|[A-Z0-9+\/]{3}=|[A-Z0-9+\/
 describe("Screenshot", function () {
 
   it("should take screenshot and return base64", function () {
-    var imgstr = screenshot();
+    var imgstr = screenshot("screenshot-test.png");
     assert(base64.test(imgstr));
   });
 
