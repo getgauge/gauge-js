@@ -1,12 +1,14 @@
 var StepRegistry = require("./step-registry"),
     HookRegistry = require("./hook-registry"),
     CustomMessageRegistry = require("./custom-message-registry"),
-    stepParser = require("./step-parser");
+    stepParser = require("./step-parser"),
+    DataStore = require("./data-store-factory");
 
 global.stepParser = stepParser;
 global.stepRegistry = new StepRegistry();
 global.hookRegistry = new HookRegistry();
 global.customMessageRegistry = new CustomMessageRegistry();
+global.dataStore = new DataStore();
 
 global.gauge = function(stepName, stepFunction) {
   if (!stepName || !stepName.length) {

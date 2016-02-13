@@ -1,4 +1,4 @@
-/* globals stepRegistry, customMessageRegistry */
+/* globals stepRegistry, customMessageRegistry, dataStore */
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
@@ -72,14 +72,17 @@ function executeBeforeStepHook (request) {
 }
 
 function executeAfterSuiteHook (request) {
+  dataStore.suiteStore.clear();
   executeHook.apply(this, [request, "afterSuite", request.executionEndingRequest.currentExecutionInfo]);
 }
 
 function executeAfterSpecHook (request) {
+  dataStore.specStore.clear();
   executeHook.apply(this, [request, "afterSpec", request.specExecutionEndingRequest.currentExecutionInfo]);
 }
 
 function executeAfterScenarioHook (request) {
+  dataStore.scenarioStore.clear();
   executeHook.apply(this, [request, "afterScenario", request.scenarioExecutionEndingRequest.currentExecutionInfo]);
 }
 

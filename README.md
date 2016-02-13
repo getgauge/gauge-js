@@ -119,6 +119,62 @@ gauge("Vowels in English language are <vowels>.", function(vowelsGiven) {
 });
 ```
 
+### Data Stores
+
+Step implementations can share custom data across scenarios, specifications and suites using data stores.
+
+There are 3 different types of data stores based on the lifecycle of when it gets cleared.
+
+#### Scenario store
+
+This data store keeps values added to it in the lifecycle of the scenario execution. Values are cleared after every scenario executes.
+
+**Store a value:**
+
+```js
+dataStore.scenarioStore.put(key, value);
+```
+
+**Retrieve a value:**
+
+```js
+dataStore.scenarioStore.get(key);
+```
+
+#### Specification store
+
+This data store keeps values added to it in the lifecycle of the specification execution. Values are cleared after every specification executes.
+
+**Store a value:**
+
+```js
+dataStore.specStore.put(key, value);
+```
+
+**Retrieve a value:**
+
+```js
+dataStore.specStore.get(key);
+```
+
+#### Suite store
+
+This data store keeps values added to it in the lifecycle of the entire suite's execution. Values are cleared after entire suite executes.
+
+**Store a value:**
+
+```js
+dataStore.suiteStore.put(key, value);
+```
+
+**Retrieve a value:**
+
+```js
+dataStore.suiteStore.get(key);
+```
+
+**Note:** Suite Store is not advised to be used when executing specs in parallel. The values are not retained between parallel streams of execution.
+
 ### Refactoring
 
 `gauge-js` supports refactoring your specifications and step implementations. Refactoring can be done using the following command signature:
