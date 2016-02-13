@@ -24,22 +24,6 @@ $ gauge --install js
     $ gauge --install js --file <path-to-zip-file>/gauge-js-<version>.zip`
     ```
 
-### Installing from source
-
-- Clone Gauge-JS plugin repo.
-
-    ```sh
-    $ git clone git@github.com:getgauge-contrib/gauge-js.git --recursive
-    ```
-
-- Install plugin.
-
-    ```sh
-    $ cd gauge-js
-    $ npm install
-    $ npm run installPlugin
-    ```
-
 ## Usage
 
 If you are new to Gauge, please consult the [Gauge documentation](http://getgauge.io/documentation/user/current/) to know about how Gauge works.

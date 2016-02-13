@@ -32,6 +32,12 @@ $ npm test
 $ npm run package
 ```
 
+### Installing from source
+
+```sh
+$ npm run installPlugin
+```
+
 ### Code Style
 
 - Indent: 2 spaces
