@@ -39,4 +39,8 @@ StepRegistry.prototype.exists = function(stepName) {
   return stepName in this.registry;
 };
 
+StepRegistry.prototype.clear = function () {
+  this.registry = {};
+};
+
 exports = module.exports = StepRegistry;

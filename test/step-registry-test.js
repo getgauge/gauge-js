@@ -29,4 +29,11 @@ describe("Store and retrieve steps", function() {
     done();
   });
 
+  it("Should clear registry", function(done) {
+    stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction);
+    stepRegistry.clear();
+    assert.deepEqual({}, stepRegistry.get());
+    done();
+  });
+
 });
