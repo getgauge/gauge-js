@@ -5,20 +5,8 @@ require("../src/gauge-global");
 
 describe("Calling global gauge()", function() {
 
-  before( function(done) {
-    sinon.spy(stepRegistry, "add");
-    sinon.spy(stepParser, "generalise");
-    done();
-  });
-
   beforeEach(function() {
     stepRegistry.clear();
-  });
-
-  after( function(done) {
-    stepRegistry.add.restore();
-    stepParser.generalise.restore();
-    done();
   });
 
   it("should throw error if steptext is empty", function (done) {
@@ -31,6 +19,9 @@ describe("Calling global gauge()", function() {
   });
 
   it("should add test function to step registry", function(done) {
+    sinon.spy(stepRegistry, "add");
+    sinon.spy(stepParser, "generalise");
+
     var sampleFunction = function() {};
 
     gauge("Step <1>", sampleFunction);
@@ -41,13 +32,20 @@ describe("Calling global gauge()", function() {
     assert.equal("Step {}", stepRegistry.add.getCall(0).args[0]);
     assert.equal("Step <1>", stepRegistry.add.getCall(0).args[1]);
     assert.deepEqual(sampleFunction, stepRegistry.add.getCall(0).args[2]);
+
+    stepRegistry.add.restore();
+    stepParser.generalise.restore();
     done();
   });
 
   it("should support step aliases", function(done) {
     var sampleFunction = function(stepnum) { console.log(stepnum); };
+    sinon.spy(stepRegistry, "add");
 
     gauge(["Step <stepnum>","Another step <stepnum>"], sampleFunction);
+
+    assert(stepRegistry.add.calledTwice);
+
     var list = stepRegistry.get();
 
     assert(list["Step {}"]);
@@ -59,6 +57,7 @@ describe("Calling global gauge()", function() {
     assert.equal(list["Another step {}"].stepText, "Another step <stepnum>");
     assert.deepEqual(list["Another step {}"].fn, sampleFunction);
 
+    stepRegistry.add.restore();
     done();
   });
 
