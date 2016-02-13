@@ -1,7 +1,14 @@
 /* globals stepRegistry, hookRegistry */
-var factory = require("./response-factory");
-var Q = require("q");
-var Test = require("./test");
+
+var Q = require("q"),
+    os = require("os"),
+    path = require("path"),
+    fs = require("fs"),
+    child_process = require("child_process");
+
+var factory = require("./response-factory"),
+    Test = require("./test");
+
 /* If test_timeout env variable is not available set the default to 1000ms */
 var timeout = process.env.test_timeout || 1000;
 
@@ -29,6 +36,21 @@ var filterHooks = function (hooks, tags) {
   });
 };
 
+var takeScreenshot = function () {
+  var tmpfile = path.join(os.tmpdir(), "screenshot-gauge-js-" + Date.now() + ".png");
+  var proc = child_process.spawnSync("gauge_screenshot", [tmpfile]);
+  if (proc.error) {
+    console.error(proc.error.toString());
+    return "";
+  }
+  try {
+    return new Buffer(fs.readFileSync(tmpfile)).toString("base64");
+  } catch (e) {
+    console.log(e.toString());
+    return "";
+  }
+};
+
 
 var executeStep = function(request) {
   var deferred = Q.defer();
@@ -46,6 +68,7 @@ var executeStep = function(request) {
 
     function(result) {
       var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, result.duration, result.exception);
+      errorResponse.executionStatusResponse.executionResult.screenShot = takeScreenshot();
       deferred.reject(errorResponse);
     }
   );
