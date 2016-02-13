@@ -70,6 +70,16 @@ gauge("Vowels in English language are <vowels>.", function(vowelsGiven) {
 });
 ```
 
+#### Multiple step names
+
+To implement the same function for multiple step names (aka, step aliases), pass an `array` of `strings` as the first argument to `gauge()`. For example:
+
+```js
+gauge(["Create a user <username>", "Create another user <username>"], function (username) {
+  // do cool stuff
+});
+```
+
 ### Execution Hooks
 
 gauge-js supports tagged [execution hooks](http://getgauge.io/documentation/user/current/execution/execution_hooks.html). These methods are available for each type of hook:
