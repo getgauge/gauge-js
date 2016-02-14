@@ -1,4 +1,3 @@
-/* globals dataStore */
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var message = builder.build("gauge.messages.Message");
@@ -7,11 +6,9 @@ var EventEmitter = require("events").EventEmitter;
 var util = require("util");
 var stepRegistry = require("./step-registry");
 var customMessageRegistry = require("./custom-message-registry");
-
-require("./gauge-global");
-
 var executor = require("./executor");
 var refactor = require("./refactor");
+var dataStore = require("./data-store-factory");
 
 var processCustomMessages = function (response) {
   var msgs = customMessageRegistry.get();

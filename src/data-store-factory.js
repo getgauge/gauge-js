@@ -22,4 +22,4 @@ var DataStoreFactory = function () {
 
 };
 
-module.exports = DataStoreFactory;
+module.exports = new DataStoreFactory();
