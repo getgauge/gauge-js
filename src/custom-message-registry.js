@@ -16,4 +16,4 @@ CustomMessageRegistry.prototype.clear = function () {
   return this.messages;
 };
 
-module.exports = CustomMessageRegistry;
+module.exports = new CustomMessageRegistry();

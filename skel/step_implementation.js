@@ -1,4 +1,4 @@
-/* globals gauge, beforeScenario */
+/* globals gauge*/
 
 "use strict";
 
@@ -15,15 +15,15 @@ var numberOfVowels = function (word) {
 // Gauge step implementations
 // --------------------------
 
-gauge("Vowels in English language are <vowels>.", function(vowelsGiven) {
+gauge.step("Vowels in English language are <vowels>.", function(vowelsGiven) {
   assert.equal(vowelsGiven, vowels.join(""));
 });
 
-gauge("The word <word> has <number> vowels.", function(word, number) {
+gauge.step("The word <word> has <number> vowels.", function(word, number) {
   assert.equal(number, numberOfVowels(word));
 });
 
-gauge("Almost all words have vowels <table>", function(table) {
+gauge.step("Almost all words have vowels <table>", function(table) {
   table.rows.forEach(function (row) {
     assert.equal(numberOfVowels(row.cells[0]), parseInt(row.cells[1]));
   });
@@ -33,10 +33,10 @@ gauge("Almost all words have vowels <table>", function(table) {
 // Execution Hooks
 // ---------------
 
-beforeScenario(function () {
+gauge.hooks.beforeScenario(function () {
   assert.equal(vowels.join(""), "aeiou");
 });
 
-beforeScenario(function () {
+gauge.hooks.beforeScenario(function () {
   assert.equal(vowels[0], "a");
 }, { tags: [ "single word" ]});

@@ -1,9 +1,9 @@
-/* globals stepRegistry */
 var assert = require("chai").assert;
 var sinon  = require("sinon");
 var ProtoBuf = require("protobufjs");
 var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var Message = builder.build("gauge.messages.Message");
+var stepRegistry = require("../src/step-registry");
 require("../src/gauge-global");
 var messageProcessor = require("../src/message-processor");
 

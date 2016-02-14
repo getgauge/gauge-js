@@ -43,4 +43,4 @@ StepRegistry.prototype.clear = function () {
   this.registry = {};
 };
 
-exports = module.exports = StepRegistry;
+module.exports = new StepRegistry();

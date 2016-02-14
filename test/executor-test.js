@@ -1,4 +1,3 @@
-/* globals stepRegistry */
 var expect = require("chai").expect;
 var sinon  = require("sinon");
 var ProtoBuf = require("protobufjs");
@@ -6,6 +5,7 @@ var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
 var Message = builder.build("gauge.messages.Message");
 require("../src/gauge-global");
 var executor = require("../src/executor");
+var stepRegistry = require("../src/step-registry");
 
 
 describe("Executing steps", function() {

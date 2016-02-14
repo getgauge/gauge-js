@@ -1,13 +1,12 @@
 var assert = require("chai").assert;
-var StepRegistry = require("../src/step-registry");
+var stepRegistry = require("../src/step-registry");
 
 describe("Store and retrieve steps", function() {
-  var sampleFunction,
-      stepRegistry;
+  var sampleFunction;
 
   beforeEach(function () {
     sampleFunction = function() {};
-    stepRegistry = new StepRegistry();
+    stepRegistry.clear();
   });
 
   it("Should store and retrive steps", function(done) {

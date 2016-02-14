@@ -44,22 +44,22 @@ $ gauge specs/
 
 ### Step implementation
 
-**`gauge (<step-text>, fn)`**
+**`gauge.step (<step-text>, fn)`**
 
-Use the `gauge()` method to implement your steps. For example:
+Use the `gauge.step()` method to implement your steps. For example:
 
 ```js
-gauge("Vowels in English language are <vowels>.", function(vowelsGiven) {
+gauge.step("Vowels in English language are <vowels>.", function(vowelsGiven) {
   assert.equal(vowelsGiven, "aeiou");
 });
 ```
 
 #### Multiple step names
 
-To implement the same function for multiple step names (aka, step aliases), pass an `array` of `strings` as the first argument to `gauge()`. For example:
+To implement the same function for multiple step names (aka, step aliases), pass an `array` of `strings` as the first argument to `gauge.step()`. For example:
 
 ```js
-gauge(["Create a user <username>", "Create another user <username>"], function (username) {
+gauge.step(["Create a user <username>", "Create another user <username>"], function (username) {
   // do cool stuff
 });
 ```
@@ -70,22 +70,22 @@ gauge-js supports tagged [execution hooks](http://getgauge.io/documentation/user
 
 "Before" hooks:
 
-- **`beforeSuite (fn, [opts])`** - Executed before the test suite begins
-- **`beforeSpec  (fn, [opts])`** - Executed before each specification
-- **`beforeScenario (fn, [opts])`** - Executed before each scenario
-- **`beforeStep (fn, [opts])`**- Execute before each step
+- **`gauge.hooks.beforeSuite (fn, [opts])`** - Executed before the test suite begins
+- **`gauge.hooks.beforeSpec  (fn, [opts])`** - Executed before each specification
+- **`gauge.hooks.beforeScenario (fn, [opts])`** - Executed before each scenario
+- **`gauge.hooks.beforeStep (fn, [opts])`**- Execute before each step
 
 "After" hooks:
 
-- **`afterSuite (fn, [opts])`** - Executed after the test suite begins
-- **`afterSpec  (fn, [opts])`** - Executed after each specification
-- **`afterScenario (fn, [opts])`** - Executed after each scenario
-- **`afterStep (fn, [opts])`**- Execute after each step
+- **`gauge.hooks.afterSuite (fn, [opts])`** - Executed after the test suite begins
+- **`gauge.hooks.afterSpec  (fn, [opts])`** - Executed after each specification
+- **`gauge.hooks.afterScenario (fn, [opts])`** - Executed after each scenario
+- **`gauge.hooks.afterStep (fn, [opts])`**- Execute after each step
 
 Here's an example of a hook that is executed before each scenario:
 
 ```js
-beforeScenario (function () {
+gauge.hooks.beforeScenario (function () {
     assert.equal(vowels.join(""), "aeiou");
 });
 ```
@@ -102,20 +102,20 @@ This controls whether the current callback is executed when all of the tags matc
 Example of a tagged execution hook implementation:
 
 ```js
-beforeScenario (function () {
+gauge.hooks.beforeScenario (function () {
   assert.equal(vowels[0], "a");
 }, { tags: [ "single word" ]});
 ```
 
 ### Custom messages
 
-**`gaugeMessage(<string>)`**: Use the `gaugeMessage(<String>)` function to send custom messages to `gauge` in your step implementations. This method takes only one string as an argument. You can call it multiple times to send multiple messages within the same step.
+**`gauge.message(<string>)`**: Use the `gauge.message(<String>)` function to send custom messages to `gauge` in your step implementations. This method takes only one string as an argument. You can call it multiple times to send multiple messages within the same step.
 
 Example:
 
 ```js
-gauge("Vowels in English language are <vowels>.", function(vowelsGiven) {
-  gaugeMessage("Vowels are " + vowelsGiven);
+gauge.step("Vowels in English language are <vowels>.", function(vowelsGiven) {
+  gauge.message("Vowels are " + vowelsGiven);
 });
 ```
 
@@ -132,13 +132,13 @@ This data store keeps values added to it in the lifecycle of the scenario execut
 **Store a value:**
 
 ```js
-dataStore.scenarioStore.put(key, value);
+gauge.dataStore.scenarioStore.put(key, value);
 ```
 
 **Retrieve a value:**
 
 ```js
-dataStore.scenarioStore.get(key);
+gauge.dataStore.scenarioStore.get(key);
 ```
 
 #### Specification store
@@ -148,13 +148,13 @@ This data store keeps values added to it in the lifecycle of the specification e
 **Store a value:**
 
 ```js
-dataStore.specStore.put(key, value);
+gauge.dataStore.specStore.put(key, value);
 ```
 
 **Retrieve a value:**
 
 ```js
-dataStore.specStore.get(key);
+gauge.dataStore.specStore.get(key);
 ```
 
 #### Suite store
@@ -164,13 +164,13 @@ This data store keeps values added to it in the lifecycle of the entire suite's 
 **Store a value:**
 
 ```js
-dataStore.suiteStore.put(key, value);
+gauge.dataStore.suiteStore.put(key, value);
 ```
 
 **Retrieve a value:**
 
 ```js
-dataStore.suiteStore.get(key);
+gauge.dataStore.suiteStore.get(key);
 ```
 
 **Note:** Suite Store is not advised to be used when executing specs in parallel. The values are not retained between parallel streams of execution.

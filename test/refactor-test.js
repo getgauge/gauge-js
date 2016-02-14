@@ -1,7 +1,5 @@
-/* globals  stepRegistry */
-
 var assert = require( "chai" ).assert;
-
+var stepRegistry = require("../src/step-registry");
 require( "../src/gauge-global" );
 
 var refactor = require( "../src/refactor" );

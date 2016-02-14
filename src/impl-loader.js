@@ -1,4 +1,3 @@
-require("./gauge-global");
 var fileUtil = require("./file-util"),
     path = require("path");
 

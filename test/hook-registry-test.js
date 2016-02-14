@@ -1,13 +1,10 @@
 var assert = require("chai").assert;
-var HookRegistry = require("../src/hook-registry");
+var hookRegistry = require("../src/hook-registry");
 var sinon  = require("sinon");
 
 describe("Hook registry", function () {
 
-  var hookRegistry;
-
   before(function () {
-    hookRegistry = new HookRegistry();
     sinon.spy(hookRegistry, "get");
   });
 

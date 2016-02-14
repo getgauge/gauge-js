@@ -1,16 +1,14 @@
-var StepRegistry = require("./step-registry"),
-    HookRegistry = require("./hook-registry"),
-    CustomMessageRegistry = require("./custom-message-registry"),
+var hookRegistry = require("./hook-registry"),
+    customMessageRegistry = require("./custom-message-registry"),
     stepParser = require("./step-parser"),
-    DataStore = require("./data-store-factory");
+    dataStore = require("./data-store-factory"),
+    stepRegistry = require("./step-registry"),
+    stepParser = require("./step-parser");
+global.gauge = {};
+global.gauge.hooks = {};
+global.gauge.dataStore = dataStore;
 
-global.stepParser = stepParser;
-global.stepRegistry = new StepRegistry();
-global.hookRegistry = new HookRegistry();
-global.customMessageRegistry = new CustomMessageRegistry();
-global.dataStore = new DataStore();
-
-global.gauge = function(stepName, stepFunction) {
+global.gauge.step = function(stepName, stepFunction) {
   if (!stepName || !stepName.length) {
     throw new Error("Step text cannot be empty");
   }
@@ -22,22 +20,22 @@ global.gauge = function(stepName, stepFunction) {
       if (!stepName[i].length) {
         throw new Error("Step text cannot be empty");
       }
-      global.stepRegistry.add(global.stepParser.generalise(stepName[i]), stepName[i], stepFunction, filepath);
+      stepRegistry.add(stepParser.generalise(stepName[i]), stepName[i], stepFunction, filepath);
     }
   } else if (typeof stepName === "string") {
-    global.stepRegistry.add(global.stepParser.generalise(stepName), stepName, stepFunction, filepath);
+    stepRegistry.add(stepParser.generalise(stepName), stepName, stepFunction, filepath);
   }
 };
 
-global.hookRegistry.types.forEach(function (type) {
-  global[type] = function (fn, options) {
-    global.hookRegistry.add(type, fn, options);
+hookRegistry.types.forEach(function (type) {
+  global.gauge.hooks[type] = function (fn, options) {
+    hookRegistry.add(type, fn, options);
   };
 });
 
-global.gaugeMessage = function(msg) {
+global.gauge.message = function(msg) {
   if (typeof msg === "string") {
-    global.customMessageRegistry.add(msg);
+    customMessageRegistry.add(msg);
   }
 };
 
