@@ -1,6 +1,7 @@
-/* globals stepRegistry, stepParser */
+/* globals stepParser */
 var assert = require("chai").assert;
 var sinon  = require("sinon");
+var stepRegistry = require("../src/step-registry");
 require("../src/gauge-global");
 
 describe("Calling global gauge()", function() {

@@ -1,10 +1,10 @@
-/* globals stepRegistry, hookRegistry */
-
 var Q = require("q");
 
 var factory = require("./response-factory"),
     Test = require("./test"),
-    screenshot = require("./screenshot");
+    screenshot = require("./screenshot"),
+    stepRegistry = require("./step-registry"),
+    hookRegistry = require("./hook-registry");
 
 /* If test_timeout env variable is not available set the default to 1000ms */
 var timeout = process.env.test_timeout || 1000;

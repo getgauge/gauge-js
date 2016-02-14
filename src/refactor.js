@@ -1,8 +1,8 @@
-/* globals stepRegistry */
 var fs = require("fs"),
     esprima = require("esprima"),
     estraverse = require("estraverse"),
-    escodegen = require("escodegen");
+    escodegen = require("escodegen"),
+    stepRegistry = require("./step-registry");
 
 var processNode = function (node, req) {
   node.arguments[0].value = req.newStepValue.parameterizedStepValue;
