@@ -2,9 +2,9 @@ var hookRegistry = require("./hook-registry"),
     CustomMessageRegistry = require("./custom-message-registry"),
     stepParser = require("./step-parser"),
     DataStore = require("./data-store-factory"),
-    stepRegistry = require("./step-registry");
+    stepRegistry = require("./step-registry"),
+    stepParser = require("./step-parser");
 
-global.stepParser = stepParser;
 global.customMessageRegistry = new CustomMessageRegistry();
 global.dataStore = new DataStore();
 
@@ -20,10 +20,10 @@ global.gauge = function(stepName, stepFunction) {
       if (!stepName[i].length) {
         throw new Error("Step text cannot be empty");
       }
-      stepRegistry.add(global.stepParser.generalise(stepName[i]), stepName[i], stepFunction, filepath);
+      stepRegistry.add(stepParser.generalise(stepName[i]), stepName[i], stepFunction, filepath);
     }
   } else if (typeof stepName === "string") {
-    stepRegistry.add(global.stepParser.generalise(stepName), stepName, stepFunction, filepath);
+    stepRegistry.add(stepParser.generalise(stepName), stepName, stepFunction, filepath);
   }
 };
 
