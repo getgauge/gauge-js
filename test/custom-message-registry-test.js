@@ -1,14 +1,8 @@
 var assert = require("chai").assert;
-var CustomMessageRegistry = require("../src/custom-message-registry");
+var customMessageRegistry = require("../src/custom-message-registry");
 
 describe("Custom Message registry", function () {
-
-  var customMessageRegistry;
-
-  before(function () {
-    customMessageRegistry = new CustomMessageRegistry();
-  });
-
+  
   afterEach(function () {
     customMessageRegistry.clear();
   });

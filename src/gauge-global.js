@@ -1,11 +1,10 @@
 var hookRegistry = require("./hook-registry"),
-    CustomMessageRegistry = require("./custom-message-registry"),
+    customMessageRegistry = require("./custom-message-registry"),
     stepParser = require("./step-parser"),
     DataStore = require("./data-store-factory"),
     stepRegistry = require("./step-registry"),
     stepParser = require("./step-parser");
 
-global.customMessageRegistry = new CustomMessageRegistry();
 global.dataStore = new DataStore();
 
 global.gauge = function(stepName, stepFunction) {
@@ -35,7 +34,7 @@ hookRegistry.types.forEach(function (type) {
 
 global.gaugeMessage = function(msg) {
   if (typeof msg === "string") {
-    global.customMessageRegistry.add(msg);
+    customMessageRegistry.add(msg);
   }
 };
 
