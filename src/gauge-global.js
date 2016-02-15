@@ -2,8 +2,8 @@ var hookRegistry = require("./hook-registry"),
     customMessageRegistry = require("./custom-message-registry"),
     stepParser = require("./step-parser"),
     dataStore = require("./data-store-factory"),
-    stepRegistry = require("./step-registry"),
-    stepParser = require("./step-parser");
+    stepRegistry = require("./step-registry");
+
 global.gauge = {};
 global.gauge.hooks = {};
 global.gauge.dataStore = dataStore;
