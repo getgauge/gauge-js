@@ -2,6 +2,11 @@
   "id" : "js",
   "version" : "0.2.1",
   "description": "Javascript support for gauge",
+  "install": {
+    "windows": [],
+    "linux": [],
+    "darwin": []
+  },
   "run": {
     "windows": ["index.bat", "--start"],
     "linux": ["./index.js", "--start"],
