@@ -4,11 +4,11 @@ var hookRegistry = require("./hook-registry"),
     dataStore = require("./data-store-factory"),
     stepRegistry = require("./step-registry");
 
-global.gauge = {};
-global.gauge.hooks = {};
-global.gauge.dataStore = dataStore;
+var gauge_global = {};
+gauge_global.hooks = {};
+gauge_global.dataStore = dataStore;
 
-global.gauge.step = function(stepName, stepFunction) {
+gauge_global.step = function(stepName, stepFunction) {
   if (!stepName || !stepName.length) {
     throw new Error("Step text cannot be empty");
   }
@@ -28,15 +28,17 @@ global.gauge.step = function(stepName, stepFunction) {
 };
 
 hookRegistry.types.forEach(function (type) {
-  global.gauge.hooks[type] = function (fn, options) {
+  gauge_global.hooks[type] = function (fn, options) {
     hookRegistry.add(type, fn, options);
   };
 });
 
-global.gauge.message = function(msg) {
+gauge_global.message = function(msg) {
   if (typeof msg === "string") {
     customMessageRegistry.add(msg);
   }
 };
 
-module.exports = {};
+gauge_global.screenshotFn = null;
+
+module.exports = gauge_global;

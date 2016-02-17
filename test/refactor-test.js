@@ -1,6 +1,7 @@
 var assert = require( "chai" ).assert;
 var stepRegistry = require("../src/step-registry");
-require( "../src/gauge-global" );
+
+global.gauge = require( "../src/gauge-global" );
 
 var refactor = require( "../src/refactor" );
 var factory = require( "../src/response-factory" );

@@ -1,6 +1,7 @@
+global.gauge = require("./gauge-global");
+
 var Connection = require("./connection");
 var impl_loader = require("./impl-loader");
-require("./gauge-global");
 var MessageProcessor = require("./message-processor");
 
 var GAUGE_INTERNAL_PORT = process.env.GAUGE_INTERNAL_PORT;
