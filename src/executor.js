@@ -50,7 +50,8 @@ var executeStep = function(request) {
 
     function(result) {
       var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, result.duration, result.exception);
-      errorResponse.executionStatusResponse.executionResult.screenShot = screenshot();
+      var screenshotFn = global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function" ? global.gauge.screenshotFn : screenshot;
+      errorResponse.executionStatusResponse.executionResult.screenShot = screenshotFn();
       deferred.reject(errorResponse);
     }
   );
