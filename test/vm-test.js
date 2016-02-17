@@ -35,7 +35,7 @@ describe("VM", function () {
 
   it("should not allow process.exit", function () {
     var vm = new VM();
-    assert.throws(function () { vm.run("process.exit()"); }, "process.exit is not a function");
+    assert.throws(function () { vm.run("process.exit()"); });
   });
 
   it("should expose global.gauge", function () {
