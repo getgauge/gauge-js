@@ -24,7 +24,8 @@ var refactor_content = function (content, info, req) {
   var ast = esprima.parse(content);
   estraverse.replace(ast, {
     enter: function (node) {
-      if (node.type === "CallExpression" && node.callee.name === "gauge" && node.arguments[0].value === info.stepText) {
+      if (node.type === "CallExpression" && node.callee.object && node.callee.object.name === "gauge" &&
+          node.callee.property && node.callee.property.name === "step" && node.arguments[0].value === info.stepText) {
         node = processNode(node, req);
       }
       return node;

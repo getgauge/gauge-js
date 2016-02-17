@@ -42,9 +42,9 @@ describe( "Refactor", function () {
     var output = [];
     output.push( "var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];" );
     output.push( "hakunaMatata('What a wonderful phrase!');" );
-    output.push( "gauge('The word <word> has <number> vowels.', function (word, number) {\n});" );
+    output.push( "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});" );
     output.push( "var myfn = function (number) {\n};" );
-    output.push( "gauge('There are <number> vowels.', myfn);" );
+    output.push( "gauge.step('There are <number> vowels.', myfn);" );
     contentInput = output.join( "\n" );
 
     request = {
@@ -83,7 +83,7 @@ describe( "Refactor", function () {
   });
 
   it( "Should perform refactoring when param names are changed", function () {
-    contentInput = "gauge('The word <word> has <number> vowels.', function (word, number) {\n});";
+    contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
@@ -115,11 +115,11 @@ describe( "Refactor", function () {
 
     response = refactor( request, response );
 
-    assert.strictEqual( contentOutput, "gauge('This English word <word_en> has <numbers> vowels.', function (word_en, numbers) {\n});");
+    assert.strictEqual( contentOutput, "gauge.step('This English word <word_en> has <numbers> vowels.', function (word_en, numbers) {\n});");
   });
 
   it( "Should perform refactoring when params are removed", function () {
-    contentInput = "gauge('The word <word> has <number> vowels.', function (word, number) {\n});";
+    contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
@@ -148,11 +148,11 @@ describe( "Refactor", function () {
 
     response = refactor( request, response );
 
-    assert.strictEqual( contentOutput, "gauge('This English word has <numbers> vowels.', function (numbers) {\n});");
+    assert.strictEqual( contentOutput, "gauge.step('This English word has <numbers> vowels.', function (numbers) {\n});");
   });
 
   it( "Should perform refactoring when params are reordered", function () {
-    contentInput = "gauge('The word <word> has <number> vowels.', function (word, number) {\n});";
+    contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
@@ -184,11 +184,11 @@ describe( "Refactor", function () {
 
     response = refactor( request, response );
 
-    assert.strictEqual( contentOutput, "gauge('There are <number> vowels in the word <word>.', function (number, word) {\n});");
+    assert.strictEqual( contentOutput, "gauge.step('There are <number> vowels in the word <word>.', function (number, word) {\n});");
   });
 
   it( "Should perform refactoring when new params are added", function () {
-    contentInput = "gauge('The word <word> has <number> vowels.', function (word, number) {\n});";
+    contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
@@ -223,11 +223,11 @@ describe( "Refactor", function () {
 
     response = refactor( request, response );
 
-    assert.strictEqual( contentOutput, "gauge('The word <word> has <number> vowels and ends with <end_letter>.', function (word, number, end_letter) {\n});");
+    assert.strictEqual( contentOutput, "gauge.step('The word <word> has <number> vowels and ends with <end_letter>.', function (word, number, end_letter) {\n});");
   });
 
   it( "Should perform refactoring while retaining callbacks for async step implementation calls", function () {
-    contentInput = "gauge('The word <word> has <number> vowels.', function (word, number, done) {\n});";
+    contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number, done) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
@@ -259,6 +259,6 @@ describe( "Refactor", function () {
 
     response = refactor( request, response );
 
-    assert.strictEqual( contentOutput, "gauge('This English word <word> has <numbers> vowels.', function (word, numbers, done) {\n});");
+    assert.strictEqual( contentOutput, "gauge.step('This English word <word> has <numbers> vowels.', function (word, numbers, done) {\n});");
   });
 });
