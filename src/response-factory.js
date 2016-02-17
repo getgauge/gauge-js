@@ -79,7 +79,7 @@ exports.createExecutionStatusResponse = function (messageId, isFailed, execution
         stackTrace: err && err.stack ? err.stack : null,
         errorMessage: err ? err.toString() : null,
         message: msg || [],
-        screenShot: ""
+        screenShot: null
       }
     }
   });
