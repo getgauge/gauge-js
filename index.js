@@ -1,7 +1,8 @@
 #! /usr/bin/env node
 
 var fs = require("fs"),
-    path = require("path");
+    path = require("path"),
+    child_process = require("child_process");
 
 var skeldir = path.join(__dirname, "skel"),
     srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, "tests"),
@@ -32,5 +33,13 @@ if(process.argv[2] === "--init") {
 }
 
 else if(process.argv[2] === "--start") {
-  require("./src/gauge").run();
+  if (process.env.DEBUG === "true") {
+    var debug_process = child_process.spawn("node-debug", ["./src/gauge.js", "--run"],
+                                            { env: process.env, stdio: "inherit" });
+    debug_process.on("error", function (err) {
+      console.log(err.toString());
+    });
+  } else {
+    require("./src/gauge.js").run();
+  }
 }

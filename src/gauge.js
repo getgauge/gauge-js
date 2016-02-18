@@ -22,6 +22,10 @@ function run() {
   });
 }
 
+if (process.argv[2] === "--run") {
+  run();
+}
+
 module.exports= {
   run: run
 };
