@@ -239,11 +239,9 @@ This will pause the debugger when this step's callback is executed by `gauge-js`
 
 JavaScript specific configuration changes can be made in the `env/default/js.properties` file.
 
-Configuration options are the following:
-
-**`test_timeout`**
-
-Specify test timeout in milliseconds. If any async test takes more time than specified by this option, `gauge-js` will fail that test. Default value is `1000ms`.
+| Property                 | Default      |  Description                                                                     |
+|--------------------------|--------------|----------------------------------------------------------------------------------|
+| **`test_timeout`**       | `1000`       | Specify test timeout in milliseconds. If any async test takes more time than specified by this option, `gauge-js` will fail that test. Default value is `1000ms`.|
 
 Example:
 
@@ -251,9 +249,9 @@ Example:
 test_timeout=1500
 ```
 
-**`DEBUG`**
-
-Set this to `true` to start with the debugger. Read [Debugging](#debugging) for more information.
+| Property                 | Default      |  Description                                                                                     |
+|--------------------------|--------------|--------------------------------------------------------------------------------------------------|
+| **`DEBUG`**              | `false`      | Set this to `true` to start with the debugger. Read [Debugging](#debugging) for more information.|
 
 Example:
 
