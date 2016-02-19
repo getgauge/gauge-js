@@ -7,7 +7,7 @@ var VM = function () {
     console: console,
     require: require,
     gauge: global.gauge,
-    process: { env: process.env }
+    process: process
   });
 
   this.options = { filename: "test", displayErrors: true };
