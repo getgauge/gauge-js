@@ -33,11 +33,6 @@ describe("VM", function () {
     done();
   });
 
-  it("should not allow process.exit", function () {
-    var vm = new VM();
-    assert.throws(function () { vm.run("process.exit()"); });
-  });
-
   it("should expose global.gauge", function () {
     var vm = new VM();
     assert.doesNotThrow(function () { vm.run("var ohai = gauge.step"); });
