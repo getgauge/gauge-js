@@ -247,8 +247,18 @@ Specify test timeout in milliseconds. If any async test takes more time than spe
 
 Example:
 
-```
+```js
 test_timeout=1500
+```
+
+**`DEBUG`**
+
+Set this to `true` to start with the debugger. Read [Debugging](#debugging) for more information.
+
+Example:
+
+```js
+DEBUG=true
 ```
 
 ## Contributing
