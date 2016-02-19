@@ -33,14 +33,21 @@ if(process.argv[2] === "--init") {
 }
 
 else if(process.argv[2] === "--start") {
+  var args = ["./src/gauge.js", "--run"];
+  var cmd = "node";
   if (process.env.DEBUG === "true") {
-    var node_debug = process.platform === "win32" ? "debug.bat" : "node-debug";
-    var debug_process = child_process.spawn(node_debug, ["./src/gauge.js", "--run"],
-                                            { env: process.env, stdio: "inherit" });
-    debug_process.on("error", function (err) {
-      console.log(err.toString());
+    cmd = process.platform === "win32" ? "debug.bat" : "node-debug";
+  }
+  if (process.platform === "win32") {
+    child_process.exec([cmd, args.join(" ")].join(" "), { env: process.env, stdio: "inherit" }, function (err) {
+      if (err) {
+        console.log(err);
+      }
     });
   } else {
-    require("./src/gauge.js").run();
+    var runner = child_process.spawn(cmd, args, { env: process.env, stdio: "inherit" });
+    runner.on("error", function (err) {
+      console.log(err);
+    });
   }
 }

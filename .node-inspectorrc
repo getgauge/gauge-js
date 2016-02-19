@@ -4,6 +4,6 @@
   "debug-port": 5678,
   "save-live-edit": true,
   "preload": false,
-  "hidden": [".gauge/", "node_modules/"],
+  "hidden": ["node_modules/"],
   "stack-trace-limit": 10
 }
