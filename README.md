@@ -3,6 +3,23 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
 
 [![Build Status](https://snap-ci.com/getgauge-contrib/gauge-js/branch/master/build_image)](https://snap-ci.com/getgauge-contrib/gauge-js/branch/master)
 
+## Table of Contents
+
+- [Install](#install)
+- [Usage](#usage)
+- [Methods](#methods)
+    - [Step implentation](#step-implementation)
+    - [Execution hooks](#execution-hooks)
+    - [Custom messages](#custom-messages)
+    - [Data stores](#data-stores)
+    - [Custom screenshot hook](#custom-screenshot-hook)
+    - [Refactoring](#refactoring)
+    - [Debugging](#debugging)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [License](#license)
+
+
 ## Install
 - Before installing gauge-js, make sure Gauge `v0.3.0` or above is installed.
 
