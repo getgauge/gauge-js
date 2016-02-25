@@ -10,6 +10,12 @@ $ gauge -v
 
 ## Develop
 
+**Download**
+
+```sh
+$ git clone git://github.com/getgauge-contrib/gauge-js --recursive
+```
+
 **Setup**:
 
  - Preferably use [EditorConfig](http://editorconfig.org/) with your text editor.
