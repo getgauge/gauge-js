@@ -154,7 +154,7 @@ gauge.step("Vowels in English language are <vowels>", function(vowels, done) {
 #### Async opearations in execution hooks
 
 ```sh
-gauge.hooks.beforeStep (function (context, done) {
+gauge.hooks.beforeStep(function (context, done) {
     setTimeout(function() {
         done();
     }, 1000);
