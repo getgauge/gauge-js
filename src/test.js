@@ -60,7 +60,13 @@ var runFnAsync = function() {
   var self = this;
   self.params.push( function() { done.call(self); } );
   resetTimeout.call(self);
-  self.fn.apply({}, self.params);
+  
+  try {
+    self.fn.apply({}, self.params);
+  } catch (e) {
+    var exception = e ? e : new Error("Undefined error thrown");
+    done.apply(self, [exception]);
+  }
 };
 
 Test.prototype.run = function () {
