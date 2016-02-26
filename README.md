@@ -10,6 +10,7 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
 - [Methods](#methods)
     - [Step implentation](#step-implementation)
     - [Execution hooks](#execution-hooks)
+    - [Async Operations](#async-operations)
     - [Custom messages](#custom-messages)
     - [Data stores](#data-stores)
     - [Custom screenshot hook](#custom-screenshot-hook)
@@ -133,6 +134,30 @@ Example:
 ```js
 gauge.step("Vowels in English language are <vowels>.", function(vowelsGiven) {
   gauge.message("Vowels are " + vowelsGiven);
+});
+```
+
+### Async Operations
+
+If test code involves asynchronous operations, invoke the optional callback when the test is done. Including this optional parameter (```done``` in the following example) in step function or execution hook makes runner to wait for the completion of the async operation.
+
+#### Async operations in step implementation
+
+```sh
+gauge.step("Vowels in English language are <vowels>", function(vowels, done) {
+    setTimeout(function() {
+        done();
+    }, 1000);
+});
+```
+
+#### Async opearations in execution hooks
+
+```sh
+gauge.hooks.beforeStep (function (context, done) {
+    setTimeout(function() {
+        done();
+    }, 1000);
 });
 ```
 
