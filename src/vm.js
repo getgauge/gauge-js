@@ -7,7 +7,9 @@ var VM = function () {
     console: console,
     require: require,
     gauge: global.gauge,
-    process: process
+    process: process,
+    setTimeout: setTimeout,
+    setInterval: setInterval
   });
 
   this.options = { filename: "test", displayErrors: true };
