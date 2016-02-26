@@ -38,7 +38,7 @@ else if(process.argv[2] === "--start") {
   if (process.env.DEBUG === "true") {
     cmd = process.platform === "win32" ? "debug.bat" : "node-debug";
   }
-  process.env.NODE_PATH = path.join(process.env.PWD, "node_modules");
+  process.env.NODE_PATH = path.join(process.env.GAUGE_PROJECT_ROOT, "node_modules");
   if (process.platform === "win32") {
     child_process.exec([cmd, args.join(" ")].join(" "), { env: process.env, stdio: "inherit" }, function (err) {
       if (err) {
