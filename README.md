@@ -62,12 +62,12 @@ $ gauge specs/
 
 ### Step implementation
 
-**`gauge.step (<step-text>, fn)`**
+**`gauge.step(<step-text>, fn)`**
 
 Use the `gauge.step()` method to implement your steps. For example:
 
 ```js
-gauge.step("Vowels in English language are <vowels>.", function(vowelsGiven) {
+gauge.step("Vowels in English language are <vowels>.", function (vowelsGiven) {
   assert.equal(vowelsGiven, "aeiou");
 });
 ```
@@ -88,23 +88,23 @@ gauge-js supports tagged [execution hooks](http://getgauge.io/documentation/user
 
 "Before" hooks:
 
-- **`gauge.hooks.beforeSuite (fn, [opts])`** - Executed before the test suite begins
-- **`gauge.hooks.beforeSpec  (fn, [opts])`** - Executed before each specification
-- **`gauge.hooks.beforeScenario (fn, [opts])`** - Executed before each scenario
-- **`gauge.hooks.beforeStep (fn, [opts])`**- Execute before each step
+- **`gauge.hooks.beforeSuite(fn, [opts])`** - Executed before the test suite begins
+- **`gauge.hooks.beforeSpec(fn, [opts])`** - Executed before each specification
+- **`gauge.hooks.beforeScenario(fn, [opts])`** - Executed before each scenario
+- **`gauge.hooks.beforeStep(fn, [opts])`**- Execute before each step
 
 "After" hooks:
 
-- **`gauge.hooks.afterSuite (fn, [opts])`** - Executed after the test suite begins
-- **`gauge.hooks.afterSpec  (fn, [opts])`** - Executed after each specification
-- **`gauge.hooks.afterScenario (fn, [opts])`** - Executed after each scenario
-- **`gauge.hooks.afterStep (fn, [opts])`**- Execute after each step
+- **`gauge.hooks.afterSuite(fn, [opts])`** - Executed after the test suite begins
+- **`gauge.hooks.afterSpec(fn, [opts])`** - Executed after each specification
+- **`gauge.hooks.afterScenario(fn, [opts])`** - Executed after each scenario
+- **`gauge.hooks.afterStep(fn, [opts])`**- Execute after each step
 
 Here's an example of a hook that is executed before each scenario:
 
 ```js
-gauge.hooks.beforeScenario (function () {
-    assert.equal(vowels.join(""), "aeiou");
+gauge.hooks.beforeScenario(function () {
+  assert.equal(vowels.join(""), "aeiou");
 });
 ```
 
@@ -120,7 +120,7 @@ This controls whether the current callback is executed when all of the tags matc
 Example of a tagged execution hook implementation:
 
 ```js
-gauge.hooks.beforeScenario (function () {
+gauge.hooks.beforeScenario(function () {
   assert.equal(vowels[0], "a");
 }, { tags: [ "single word" ]});
 ```
@@ -132,32 +132,32 @@ gauge.hooks.beforeScenario (function () {
 Example:
 
 ```js
-gauge.step("Vowels in English language are <vowels>.", function(vowelsGiven) {
+gauge.step("Vowels in English language are <vowels>.", function (vowelsGiven) {
   gauge.message("Vowels are " + vowelsGiven);
 });
 ```
 
 ### Async Operations
 
-If test code involves asynchronous operations, invoke the optional callback when the test is done. Including this optional parameter (```done``` in the following example) in step function or execution hook makes runner to wait for the completion of the async operation.
+If test code involves asynchronous operations, invoke the optional callback when the test is done. Including this optional parameter (`done` in the following example) in step function or execution hook makes runner to wait for the completion of the async operation.
 
 #### Async operations in step implementation
 
 ```sh
-gauge.step("Vowels in English language are <vowels>", function(vowels, done) {
-    setTimeout(function() {
-        done();
-    }, 1000);
+gauge.step("Vowels in English language are <vowels>", function (vowels, done) {
+  setTimeout(function () {
+    done();
+  }, 1000);
 });
 ```
 
-#### Async opearations in execution hooks
+#### Async operations in execution hooks
 
 ```sh
 gauge.hooks.beforeStep(function (context, done) {
-    setTimeout(function() {
-        done();
-    }, 1000);
+  setTimeout(function() {
+    done();
+  }, 1000);
 });
 ```
 
@@ -225,7 +225,7 @@ This custom function should be set on the `gauge.screenshotFn` property in test 
 
 ```js
 gauge.screenshotFn = function () {
-    return "base64encodedstring";
+  return "base64encodedstring";
 };
 ```
 
