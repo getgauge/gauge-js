@@ -58,7 +58,7 @@ var runFn = function() {
 
 var runFnAsync = function() {
   var self = this;
-  self.params.push( function() { done.call(self); } );
+  self.params.push( function(err) { done.call(self, err); } );
   resetTimeout.call(self);
   
   try {
