@@ -32,7 +32,8 @@ Req.prototype.load = function (modname) {
     try {
       return m.require(modname);
     } catch (e) {
-      console.log(e.stack);
+      console.error("Unable to require module '" + modname + "' in " + self.filepath);
+      console.trace(e.stack);
       return null;
     }
   })(self, mod, modname);

@@ -11,7 +11,8 @@ var VM = function () {
     dirname: ".",
     filepath: "./test.js",
     displayErrors: true,
-    timeout: parseInt(process.env.test_timeout) || 1000
+    timeout: parseInt(process.env.test_timeout) || 1000,
+    root: process.env.GAUGE_PROJECT_ROOT ? process.env.GAUGE_PROJECT_ROOT : process.env.PWD
   };
 };
 
@@ -19,7 +20,7 @@ VM.prototype.contextify = function (filePath, root) {
   var self = this;
 
   filePath = filePath || self.options.filepath;
-  root = !root ? (process.env.GAUGE_PROJECT_ROOT ? process.env.GAUGE_PROJECT_ROOT : process.env.PWD) : root;
+  root = root || self.options.root;
 
   self.setFile(filePath);
   self.require = reqman(filePath, root);
@@ -35,7 +36,7 @@ VM.prototype.contextify = function (filePath, root) {
     setInterval: setInterval,
     clearTimeout: clearTimeout,
     clearInterval: clearInterval,
-    __dirname: process.env.GAUGE_PROJECT_ROOT
+    __dirname: self.options.root
   });
 
 };
@@ -46,7 +47,7 @@ VM.prototype.run = function (code) {
 
 VM.prototype.setFile = function (filePath) {
   this.options.filepath = filePath;
-  this.options.filename = path.basename(filePath);
+  this.options.filename = path.relative(this.options.root, filePath);
   this.options.dirname = path.dirname(filePath);
 };
 

@@ -29,7 +29,8 @@ describe("VM", function () {
 
     assert(nodevm.createContext.calledOnce);
     assert.isDefined(vm.context);
-    assert.deepEqual(vm.options, { dirname: ".", filename: "test.js", filepath: "./test.js", displayErrors: true, timeout: 1000 });
+    assert.deepEqual(vm.options, { dirname: ".", filename: "test.js", filepath: "./test.js", displayErrors: true, timeout: 1000,
+                                   root: process.env.PWD });
 
     nodevm.createContext.restore();
     done();
