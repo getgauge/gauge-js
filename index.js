@@ -1,5 +1,10 @@
 #! /usr/bin/env node
 
+var version = process.versions.node.split(".");
+if (parseInt(version[0]) === 0 && parseInt(version[1]) < 12) {
+  throw new Error("gauge-js requires Node.js version 0.12+. Current version: " + process.versions.node);
+}
+
 var fs = require("fs"),
     path = require("path"),
     child_process = require("child_process");
@@ -38,7 +43,6 @@ else if(process.argv[2] === "--start") {
   if (process.env.DEBUG === "true") {
     cmd = process.platform === "win32" ? "debug.bat" : "node-debug";
   }
-  process.env.NODE_PATH = path.join(process.env.GAUGE_PROJECT_ROOT, "node_modules");
   if (process.platform === "win32") {
     child_process.exec([cmd, args.join(" ")].join(" "), { env: process.env, stdio: "inherit" }, function (err) {
       if (err) {

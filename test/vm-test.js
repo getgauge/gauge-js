@@ -25,9 +25,11 @@ describe("VM", function () {
   it("should instantiate with sane defaults", function (done) {
     sinon.spy(nodevm, "createContext");
     var vm = new VM();
+    vm.contextify();
+
     assert(nodevm.createContext.calledOnce);
     assert.isDefined(vm.context);
-    assert.deepEqual(vm.options, { filename: "test", displayErrors: true });
+    assert.deepEqual(vm.options, { dirname: ".", filename: "test.js", filepath: "./test.js", displayErrors: true, timeout: 1000 });
 
     nodevm.createContext.restore();
     done();
@@ -35,26 +37,31 @@ describe("VM", function () {
 
   it("should expose global.gauge", function () {
     var vm = new VM();
+    vm.contextify();
     assert.doesNotThrow(function () { vm.run("var ohai = gauge.step"); });
   });
 
   it("should expose require", function () {
     var vm = new VM();
+    vm.contextify();
     assert.doesNotThrow(function () { vm.run("var fs = require('fs')"); });
   });
 
   it("should expose console", function () {
     var vm = new VM();
+    vm.contextify();
     assert.doesNotThrow(function () { vm.run("var log = console.log"); });
   });
 
   it("should expose process.env", function () {
     var vm = new VM();
+    vm.contextify();
     assert.doesNotThrow(function () { vm.run("var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT"); });
   });
 
   it("should not read from file and run code", function () {
     var vm = new VM();
+    vm.contextify();
     assert.doesNotThrow(function () { vm.runFile("mytest_implementation.js"); });
     assert.equal(vm.options.filename, "mytest_implementation.js");
   });

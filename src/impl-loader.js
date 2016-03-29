@@ -6,6 +6,7 @@ function loadImpl(projectRoot) {
   var vm = new VM();
   fileUtil.getListOfFilesFromPath(path.join(projectRoot, "tests")).forEach(function(filePath) {
     process.env.GAUGE_STEPFILEPATH = filePath;
+    vm.contextify(filePath);
     vm.runFile(filePath);
   });
 }
