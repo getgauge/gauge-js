@@ -36,13 +36,20 @@ VM.prototype.contextify = function (filePath, root) {
     setInterval: setInterval,
     clearTimeout: clearTimeout,
     clearInterval: clearInterval,
-    __dirname: self.options.root
+    gauge_runner_root: process.cwd(),
+    gauge_project_root: self.options.root
   });
 
 };
 
 VM.prototype.run = function (code) {
-  vm.runInContext(code, this.context, this.options);
+  code = "(function () { process.chdir(gauge_project_root);\n" + code + "})()";
+  try {
+    vm.runInContext(code, this.context, this.options);
+  } catch (e) {
+    console.error("Error executing " + this.options.filename);
+    console.trace(e.stack);
+  }
 };
 
 VM.prototype.setFile = function (filePath) {
