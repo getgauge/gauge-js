@@ -109,9 +109,7 @@ var installPluginFiles = function () {
       log = child_process.execSync("gauge --uninstall " + plugin.id + " --plugin-version \"" + plugin.version + "\"");
       console.log(log.toString());
     } catch (err) {
-      console.error("Failed to uninstall existing plugin: %s", err.message);
-      console.error(err.stack);
-      process.exit(1);
+      console.error("Could not uninstall existing plugin: %s", err.message);
     }
 
     try {
