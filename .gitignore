@@ -46,3 +46,6 @@ node_modules
 
 # Screenshot
 screenshot-test.png
+
+# Docs
+/docs/_book
