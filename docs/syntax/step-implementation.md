@@ -31,3 +31,19 @@ gauge.step("Vowels in English language are <vowels>", function (vowels, done) {
   }, 1000);
 });
 ```
+
+### Handling assertions and errors in async tests
+
+If an asynchronous test code can throw an error, or if you use assertions in an asynchronous test, wrap the assertions in a `try-catch` block and pass the error to `done()`:
+
+```js
+gauge.step("I am run async and I may fail", function (done) {
+    setTimeout(function () {
+        try {
+            assert.equal(true, false);
+        } catch (e) {
+            done(e);
+        }
+    }, 1000);
+});
+```
