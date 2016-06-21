@@ -44,6 +44,7 @@ var reqman = function (filepath, root) {
   var req = new Req(filepath, root);
   return {
     mod: req.Module,
+    exports: req.Module.exports || {},
     fn: (function (req) {
       return function (modname) {
         return req.load(modname);

@@ -30,6 +30,7 @@ VM.prototype.contextify = function (filePath, root) {
     console: console,
     require: self.require.fn,
     module: self.require.mod,
+    exports: self.require.exports,
     process: process,
     gauge: global.gauge,
     setTimeout: setTimeout,
