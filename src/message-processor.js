@@ -90,8 +90,8 @@ function executeAfterStepHook (request) {
 }
 
 function validateStep(request) {
-  var stepImplemented = stepRegistry.exists(request.stepValidateRequest.stepText);
-  var response = factory.createStepValidateResponse(request.messageId, stepImplemented);
+  var validated = stepRegistry.validate(request.stepValidateRequest.stepText);
+  var response = factory.createStepValidateResponse(request.messageId, validated);
   this._emit(response);
 }
 

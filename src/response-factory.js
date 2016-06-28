@@ -45,9 +45,9 @@ exports.createRefactorResponse = function (messageId) {
 
 };
 
-exports.createStepValidateResponse = function (messageId, isValid) {
+exports.createStepValidateResponse = function (messageId, validated) {
 
-  if (isValid) {
+  if (validated.valid) {
     return new Message({
       messageId: messageId,
       messageType: Message.MessageType.StepValidateResponse,
@@ -56,12 +56,27 @@ exports.createStepValidateResponse = function (messageId, isValid) {
       }
     });
   }
+
+  var errortype,
+      errmsg = "Invalid step.";
+
+  switch (validated.reason) {
+  case "duplicate":
+    errortype = errorType.DUPLICATE_STEP_IMPLEMENTATION;
+    errmsg = "Duplicate step implementation found in file: " + validated.file;
+    break;
+  case "notfound":
+    errortype = errorType.STEP_IMPLEMENTATION_NOT_FOUND;
+    break;
+  }
+
   return new Message({
     messageId: messageId,
     messageType: Message.MessageType.StepValidateResponse,
     stepValidateResponse: {
       isValid: false,
-      errorType: errorType.STEP_IMPLEMENTATION_NOT_FOUND
+      errorType: errortype,
+      errorMessage: errmsg
     }
   });
 

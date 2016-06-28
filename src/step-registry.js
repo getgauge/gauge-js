@@ -9,7 +9,10 @@ var StepRegistry = function () {
  * @param stepFunction Function to be executed for this step.
  */
 StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath) {
-  this.registry[generalisedText] = { fn: stepFunction, stepText: stepText, generalisedText: generalisedText, filePath: filePath };
+  if (this.exists(generalisedText)) {
+    return this.registry[generalisedText].count++;
+  }
+  this.registry[generalisedText] = { fn: stepFunction, stepText: stepText, generalisedText: generalisedText, filePath: filePath, count: 1 };
 };
 
 /**
@@ -37,6 +40,20 @@ StepRegistry.prototype.getStepTexts = function () {
  */
 StepRegistry.prototype.exists = function(stepName) {
   return stepName in this.registry;
+};
+
+/**
+ * Checks if a given step is valid
+ */
+StepRegistry.prototype.validate = function(stepName) {
+  var step = this.get(stepName);
+  if (!step) {
+    return { valid: false, reason: "notfound", file: null };
+  }
+  if (step.count > 1) {
+    return { valid: false, reason: "duplicate", file: step.filePath };
+  }
+  return { valid: true, reason: null, file: null };
 };
 
 StepRegistry.prototype.clear = function () {
