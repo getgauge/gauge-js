@@ -33,11 +33,11 @@ describe("Request Processing", function () {
 
   before( function() {
     stepRegistry.add("Say {} to {}", function(){});
-    sinon.spy(stepRegistry, "exists");
+    sinon.spy(stepRegistry, "validate");
   });
 
   after( function() {
-    stepRegistry.exists.restore();
+    stepRegistry.validate.restore();
   });
 
   beforeEach( function() {
@@ -48,8 +48,8 @@ describe("Request Processing", function () {
 
     messageProcessor.getResponseFor(stepValidateRequest[0]);
 
-    assert(stepRegistry.exists.calledOnce);
-    assert.equal("A context step which gets executed before every scenario", stepRegistry.exists.getCall(0).args[0]);
+    assert(stepRegistry.validate.calledOnce);
+    assert.equal("A context step which gets executed before every scenario", stepRegistry.validate.getCall(0).args[0]);
     done();
 
   });
