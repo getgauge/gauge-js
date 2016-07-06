@@ -14,8 +14,7 @@ gauge_global.step = function(stepName, stepFunction) {
   }
 
   var filepath = process.env.GAUGE_STEPFILEPATH || "tests/step_implementations.js";
-
-  if (stepName instanceof Array) {
+  if (typeof stepName === "object" && !!stepName.length) {
     for (var i=0; i<stepName.length; i++) {
       if (!stepName[i].length) {
         throw new Error("Step text cannot be empty");
