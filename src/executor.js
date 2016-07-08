@@ -42,14 +42,15 @@ var executeStep = function(request) {
   var parameters = request.executeStepRequest.parameters.map(function(item) {
     return item.value ? item.value : item.table;
   });
-  new Test(stepRegistry.get(parsedStepText).fn, parameters, timeout).run().then(
+  var step = stepRegistry.get(parsedStepText);
+  new Test(step.fn, parameters, timeout).run().then(
     function(result) {
-      var response = factory.createExecutionStatusResponse(request.messageId, false, result.duration);
+      var response = factory.createExecutionStatusResponse(request.messageId, false, result.duration, false, [], step.options.continueOnFailure);
       deferred.resolve(response);
     },
 
     function(result) {
-      var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, result.duration, result.exception);
+      var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, result.duration, result.exception, [], step.options.continueOnFailure);
       if (process.env.screenshot_on_failure !== "false") {
         var screenshotFn = global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function" ? global.gauge.screenshotFn : screenshot;
         errorResponse.executionStatusResponse.executionResult.screenShot = screenshotFn();

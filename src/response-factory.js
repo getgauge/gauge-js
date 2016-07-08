@@ -82,7 +82,7 @@ exports.createStepValidateResponse = function (messageId, validated) {
 
 };
 
-exports.createExecutionStatusResponse = function (messageId, isFailed, executionTime, err, msg) {
+exports.createExecutionStatusResponse = function (messageId, isFailed, executionTime, err, msg, recoverable) {
 
   return new Message({
     messageId: messageId,
@@ -90,6 +90,7 @@ exports.createExecutionStatusResponse = function (messageId, isFailed, execution
     executionStatusResponse: {
       executionResult: {
         failed: isFailed,
+        recoverableError: recoverable,
         executionTime: executionTime || 0,
         stackTrace: err && err.stack ? err.stack : null,
         errorMessage: err ? err.toString() : null,

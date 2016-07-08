@@ -8,11 +8,14 @@ var StepRegistry = function () {
  * @param stepName Name of the step.
  * @param stepFunction Function to be executed for this step.
  */
-StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath) {
+StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath, options) {
   if (this.exists(generalisedText)) {
-    return this.registry[generalisedText].count++;
+    this.registry[generalisedText].count++;
+    return;
   }
-  this.registry[generalisedText] = { fn: stepFunction, stepText: stepText, generalisedText: generalisedText, filePath: filePath, count: 1 };
+
+  this.registry[generalisedText] = { fn: stepFunction, stepText: stepText, generalisedText: generalisedText,
+                                     filePath: filePath, count: 1, options: options };
 };
 
 /**
@@ -30,6 +33,14 @@ StepRegistry.prototype.getStepTexts = function () {
   return Object.keys(reg).map(function (key) {
     return reg[key].stepText;
   });
+};
+
+StepRegistry.prototype.isRecoverable = function (stepName) {
+  var step = this.registry[stepName];
+  if (!step) {
+    return false;
+  }
+  return step.options.continueOnFailure;
 };
 
 /**

@@ -47,3 +47,13 @@ gauge.step("I am run async and I may fail", function (done) {
     }, 1000);
 });
 ```
+
+### Continue on failure
+
+To have a particular step implementation not break execution, pass an `options` object with a boolean `continueOnFailure` property as the second argument to `gauge.step()`. Like this:
+
+```js
+gauge.step("Vowels in English language are <vowels>.", { continueOnFailure: true}, function (vowelsGiven) {
+  assert.equal(vowelsGiven, "aeio"); // This will cause the step to fail, but it will not break execution
+});
+```

@@ -8,9 +8,13 @@ var gauge_global = {};
 gauge_global.hooks = {};
 gauge_global.dataStore = dataStore;
 
-gauge_global.step = function(stepName, stepFunction) {
+gauge_global.step = function(stepName, options, stepFunction) {
   if (!stepName || !stepName.length) {
     throw new Error("Step text cannot be empty");
+  }
+  if (typeof options === "function" && !!options.call && !!options.apply) {
+    stepFunction = options;
+    options = { continueOnFailure: false };
   }
 
   var filepath = process.env.GAUGE_STEPFILEPATH || "tests/step_implementations.js";
@@ -19,10 +23,10 @@ gauge_global.step = function(stepName, stepFunction) {
       if (!stepName[i].length) {
         throw new Error("Step text cannot be empty");
       }
-      stepRegistry.add(stepParser.generalise(stepName[i]), stepName[i], stepFunction, filepath);
+      stepRegistry.add(stepParser.generalise(stepName[i]), stepName[i], stepFunction, filepath, options);
     }
   } else if (typeof stepName === "string") {
-    stepRegistry.add(stepParser.generalise(stepName), stepName, stepFunction, filepath);
+    stepRegistry.add(stepParser.generalise(stepName), stepName, stepFunction, filepath, options);
   }
 };
 
