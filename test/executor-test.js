@@ -16,7 +16,6 @@ describe("Executing steps", function() {
     executeStepRequest: {
       actualStepText: "Say \"hello\" to \"gauge\"",
       parsedStepText: "Say {} to {}",
-      scenarioFailing: null,
       parameters: [
         { parameterType: 1, value: "hello", name: "", table: null },
         { parameterType: 1, value: "gauge", name: "", table: null }
@@ -30,8 +29,6 @@ describe("Executing steps", function() {
     executeStepRequest: {
       actualStepText: "failing test",
       parsedStepText: "failing test",
-      scenarioFailing: null,
-      parameters: []
     }
   });
 
