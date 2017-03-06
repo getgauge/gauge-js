@@ -92,10 +92,9 @@ exports.createExecutionStatusResponse = function (messageId, isFailed, execution
         failed: isFailed,
         recoverableError: recoverable,
         executionTime: executionTime || 0,
-        stackTrace: err && err.stack ? err.stack : null,
-        errorMessage: err ? err.toString() : null,
-        message: msg || [],
-        screenShot: null
+        stackTrace: err && err.stack ? err.stack : "",
+        errorMessage: err ? err.toString() : "",
+        message: msg || []
       }
     }
   });
