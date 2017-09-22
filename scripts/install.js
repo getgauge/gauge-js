@@ -92,7 +92,7 @@ var createPackage = function (callback) {
 
   package.on("close", function () {
     console.log("Created: %s", path.join("deploy", packageFile));
-    console.log("To install this plugin, run:\n\t$ gauge --install js --file %s", path.join("deploy", packageFile));
+    console.log("To install this plugin, run:\n\t$ gauge install js --file %s", path.join("deploy", packageFile));
     typeof callback == "function" && callback(path.join(deployDir, packageFile));
   });
 
@@ -106,14 +106,14 @@ var installPluginFiles = function () {
     var log;
 
     try {
-      log = child_process.execSync("gauge --uninstall " + plugin.id + " --plugin-version \"" + plugin.version + "\"");
+      log = child_process.execSync("gauge uninstall " + plugin.id + " --version \"" + plugin.version + "\"");
       console.log(log.toString());
     } catch (err) {
       console.error("Could not uninstall existing plugin: %s", err.message);
     }
 
     try {
-      log = child_process.execSync("gauge --install " + plugin.id + " --file \"" + packageFilePath + "\"");
+      log = child_process.execSync("gauge install " + plugin.id + " --file \"" + packageFilePath + "\"");
       console.log(log.toString());
     } catch (err) {
       console.error("Failed to install plugin: %s", err.message);
