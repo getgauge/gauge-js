@@ -2,9 +2,8 @@ var assert = require("chai").assert,
     nodevm = require("vm"),
     sinon = require("sinon"),
     fs = require("fs"),
-    VM = require("../src/vm");
-
-global.gauge = require("../src/gauge-global");
+    VM = require("../src/vm"),
+    hookRegistry = require("../src/hook-registry");
 
 describe("VM", function () {
 
@@ -36,28 +35,44 @@ describe("VM", function () {
     done();
   });
 
-  it("should expose global.gauge", function () {
-    var vm = new VM();
-    vm.contextify();
-    assert.doesNotThrow(function () { vm.run("var ohai = gauge.step"); });
-  });
+  describe("should expose", function() {
+    it("global.gauge", function () {
+      var vm = new VM();
+      vm.contextify();
+      assert.doesNotThrow(function () { vm.run("var ohai = gauge.step"); });
+    });
 
-  it("should expose require", function () {
-    var vm = new VM();
-    vm.contextify();
-    assert.doesNotThrow(function () { vm.run("var fs = require('fs')"); });
-  });
+    it("require", function () {
+      var vm = new VM();
+      vm.contextify();
+      assert.doesNotThrow(function () { vm.run("var fs = require('fs')"); });
+    });
 
-  it("should expose console", function () {
-    var vm = new VM();
-    vm.contextify();
-    assert.doesNotThrow(function () { vm.run("var log = console.log"); });
-  });
+    it("console", function () {
+      var vm = new VM();
+      vm.contextify();
+      assert.doesNotThrow(function () { vm.run("var log = console.log"); });
+    });
 
-  it("should expose process.env", function () {
-    var vm = new VM();
-    vm.contextify();
-    assert.doesNotThrow(function () { vm.run("var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT"); });
+    it("process.env", function () {
+      var vm = new VM();
+      vm.contextify();
+      assert.doesNotThrow(function () { vm.run("var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT"); });
+    });
+
+    it("step", function () {
+      var vm = new VM();
+      vm.contextify();
+      assert.doesNotThrow(function () { vm.run("step('step', function(){})"); });
+    });
+
+    it("hooks", function () {
+      var vm = new VM();
+      vm.contextify();
+      hookRegistry.types.forEach(function (type) {
+        assert.doesNotThrow(function () { vm.run(type + "(function(){})"); });
+      });
+    });
   });
 
   it("should not read from file and run code", function () {

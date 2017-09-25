@@ -1,5 +1,3 @@
-global.gauge = require("./gauge-global");
-
 var Connection = require("./connection");
 var impl_loader = require("./impl-loader");
 var MessageProcessor = require("./message-processor");

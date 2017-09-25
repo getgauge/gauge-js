@@ -1,7 +1,8 @@
 var vm = require("vm"),
     fs = require("fs"),
     path = require("path"),
-    reqman = require("./req-manager");
+    reqman = require("./req-manager"),
+    gaugeGlobal = require("./gauge-global");
 
 var VM = function () {
   var self = this;
@@ -25,22 +26,27 @@ VM.prototype.contextify = function (filePath, root) {
   self.setFile(filePath);
   self.require = reqman(filePath, root);
 
-  self.context = vm.createContext({
+  var ctx = {
     isVM: true,
     console: console,
     require: self.require.fn,
     module: self.require.mod,
     exports: self.require.exports,
     process: process,
-    gauge: global.gauge,
+    gauge: gaugeGlobal.gauge,
+    step: gaugeGlobal.step,
     setTimeout: setTimeout,
     setInterval: setInterval,
     clearTimeout: clearTimeout,
     clearInterval: clearInterval,
     gauge_runner_root: process.cwd(),
     gauge_project_root: self.options.root
-  });
+  };
+  for (var type in gaugeGlobal.hooks){
+    ctx[type] = gaugeGlobal.hooks[type];
+  }
 
+  self.context = vm.createContext(ctx);
 };
 
 VM.prototype.run = function (code) {

@@ -2,7 +2,7 @@ var assert = require("chai").assert;
 var sinon  = require("sinon");
 var stepRegistry = require("../src/step-registry");
 var stepParser = require("../src/step-parser");
-global.gauge = require("../src/gauge-global");
+var step = require("../src/gauge-global").step;
 
 describe("Calling global gauge.step()", function() {
 
@@ -12,10 +12,10 @@ describe("Calling global gauge.step()", function() {
 
   it("should throw error if steptext is empty", function (done) {
     var dumb = function () {};
-    assert.throw(function () { gauge.step(); });
-    assert.throw(function () { gauge.step("", dumb); });
-    assert.throw(function () { gauge.step([], dumb); });
-    assert.throw(function () { gauge.step(["", ""], dumb); });
+    assert.throw(function () { step(); });
+    assert.throw(function () { step("", dumb); });
+    assert.throw(function () { step([], dumb); });
+    assert.throw(function () { step(["", ""], dumb); });
     done();
   });
 
@@ -25,7 +25,7 @@ describe("Calling global gauge.step()", function() {
 
     var sampleFunction = function() {};
 
-    gauge.step("Step <1>", sampleFunction);
+    step("Step <1>", sampleFunction);
 
     assert(stepRegistry.add.calledOnce);
     assert(stepParser.generalise.calledOnce);
@@ -43,7 +43,7 @@ describe("Calling global gauge.step()", function() {
     var sampleFunction = function(stepnum) { console.log(stepnum); };
     sinon.spy(stepRegistry, "add");
 
-    gauge.step(["Step <stepnum>","Another step <stepnum>"], sampleFunction);
+    step(["Step <stepnum>","Another step <stepnum>"], sampleFunction);
 
     assert(stepRegistry.add.calledTwice);
 

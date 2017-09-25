@@ -4,11 +4,9 @@ var hookRegistry = require("./hook-registry"),
     dataStore = require("./data-store-factory"),
     stepRegistry = require("./step-registry");
 
-var gauge_global = {};
-gauge_global.hooks = {};
-gauge_global.dataStore = dataStore;
+var gauge = {hooks: {}, dataStore: dataStore};
 
-gauge_global.step = function(stepName, options, stepFunction) {
+var step = function(stepName, options, stepFunction) {
   if (!stepName || !stepName.length) {
     throw new Error("Step text cannot be empty");
   }
@@ -30,18 +28,35 @@ gauge_global.step = function(stepName, options, stepFunction) {
   }
 };
 
+var hooks = {};
+
 hookRegistry.types.forEach(function (type) {
-  gauge_global.hooks[type] = function (fn, options) {
+  hooks[type] = function (fn, options) {
     hookRegistry.add(type, fn, options);
+  };
+  gauge.hooks[type] = function (fn, options) {
+    console.warn("[DEPRECATED] gauge." + type + "() will be removed soon, use " + type + "() instead.");
+    hooks[type](fn, options);
+    this[type] = hooks[type];
   };
 });
 
-gauge_global.message = function(msg) {
+gauge.message = function(msg) {
   if (typeof msg === "string") {
     customMessageRegistry.add(msg);
   }
 };
 
-gauge_global.screenshotFn = null;
+gauge.screenshotFn = null;
 
-module.exports = gauge_global;
+gauge.step = function(stepName, options, stepFunction) {
+  console.warn("[DEPRECATED] gauge.step() will be removed soon, use step() instead.");
+  step(stepName, options, stepFunction);
+  this.step = step;
+};
+
+module.exports = {
+  gauge: gauge,
+  step: step,
+  hooks: hooks,
+};

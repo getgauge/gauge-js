@@ -34,7 +34,7 @@
     "maxcomplexity": 10,
     "mocha": true,
     "notypeof": false,
-    "predef" : [ "gaugejs", "gauge"],
+    "predef" : [ "gaugejs"],
     "proto": false,
     "scripturl": false,
     "smarttabs": false,
