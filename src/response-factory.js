@@ -1,15 +1,10 @@
-var ProtoBuf = require("protobufjs");
-var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
-var Message = builder.build("gauge.messages.Message");
-var errorType = builder.build("gauge.messages.StepValidateResponse.ErrorType");
-
 exports = module.exports;
 
-exports.createStepNamesResponse = function (messageId) {
+exports.createStepNamesResponse = function (message, messageId) {
 
-  return new Message({
+  return message.create({
     messageId: messageId,
-    messageType: Message.MessageType.StepNamesResponse,
+    messageType: message.MessageType.StepNamesResponse,
     stepNamesResponse: {
       steps: []
     }
@@ -17,11 +12,11 @@ exports.createStepNamesResponse = function (messageId) {
 
 };
 
-exports.createStepNameResponse = function (messageId) {
+exports.createStepNameResponse = function (message, messageId) {
 
-  return new Message({
+  return message.create({
     messageId: messageId,
-    messageType: Message.MessageType.StepNameResponse,
+    messageType: message.MessageType.StepNameResponse,
     stepNameResponse: {
       isStepPresent: false,
       stepName: [],
@@ -31,11 +26,11 @@ exports.createStepNameResponse = function (messageId) {
 
 };
 
-exports.createRefactorResponse = function (messageId) {
+exports.createRefactorResponse = function (message, messageId) {
 
-  return new Message({
+  return message.create({
     messageId: messageId,
-    messageType: Message.MessageType.RefactorResponse,
+    messageType: message.MessageType.RefactorResponse,
     refactorResponse: {
       success: false,
       error: "",
@@ -45,12 +40,12 @@ exports.createRefactorResponse = function (messageId) {
 
 };
 
-exports.createStepValidateResponse = function (messageId, validated) {
+exports.createStepValidateResponse = function (message, messageId, errorType, validated) {
 
   if (validated.valid) {
-    return new Message({
+    return message.create({
       messageId: messageId,
-      messageType: Message.MessageType.StepValidateResponse,
+      messageType: message.MessageType.StepValidateResponse,
       stepValidateResponse: {
         isValid: true
       }
@@ -62,17 +57,17 @@ exports.createStepValidateResponse = function (messageId, validated) {
 
   switch (validated.reason) {
   case "duplicate":
-    errortype = errorType.DUPLICATE_STEP_IMPLEMENTATION;
+    errortype = errorType.values.DUPLICATE_STEP_IMPLEMENTATION;
     errmsg = "Duplicate step implementation found in file: " + validated.file;
     break;
   case "notfound":
-    errortype = errorType.STEP_IMPLEMENTATION_NOT_FOUND;
+    errortype = errorType.values.STEP_IMPLEMENTATION_NOT_FOUND;
     break;
   }
 
-  return new Message({
+  return message.create({
     messageId: messageId,
-    messageType: Message.MessageType.StepValidateResponse,
+    messageType: message.MessageType.StepValidateResponse,
     stepValidateResponse: {
       isValid: false,
       errorType: errortype,
@@ -82,11 +77,11 @@ exports.createStepValidateResponse = function (messageId, validated) {
 
 };
 
-exports.createExecutionStatusResponse = function (messageId, isFailed, executionTime, err, msg, recoverable) {
+exports.createExecutionStatusResponse = function (message, messageId, isFailed, executionTime, err, msg, recoverable) {
 
-  return new Message({
+  return message.create({
     messageId: messageId,
-    messageType: Message.MessageType.ExecutionStatusResponse,
+    messageType: message.MessageType.ExecutionStatusResponse,
     executionStatusResponse: {
       executionResult: {
         failed: isFailed,

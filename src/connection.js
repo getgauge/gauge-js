@@ -1,12 +1,12 @@
 var util = require("util");
 var EventEmitter = require("events").EventEmitter;
-var codec = require("./message-codec");
 
-var ExecutionConnection = function (host, port) {
+var ExecutionConnection = function (host, port, message) {
   EventEmitter.call(this);
   var self = this;
   this.host = host;
   this.port = port;
+  this.message = message;
   this.socket = require("net").Socket();
 
   this.run = function () {
@@ -14,12 +14,11 @@ var ExecutionConnection = function (host, port) {
   };
 
   var messageHandler = function (bytes) {
-    var decodedData = codec.decode(bytes);
-    self.emit("messageReceived", decodedData);
+    self.emit("messageReceived", self.message.decodeDelimited(bytes));
   };
 
   this.writeMessage = function(response) {
-    this.socket.write(codec.encode(response));
+    self.socket.write(self.message.encodeDelimited(self.message.create(response)).finish());
   };
 
   this.socket.on("data", messageHandler);

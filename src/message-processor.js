@@ -1,6 +1,3 @@
-var ProtoBuf = require("protobufjs");
-var builder = ProtoBuf.loadProtoFile("gauge-proto/messages.proto");
-var message = builder.build("gauge.messages.Message");
 var factory = require("./response-factory");
 var EventEmitter = require("events").EventEmitter;
 var util = require("util");
@@ -17,18 +14,18 @@ var processCustomMessages = function (response) {
   return response;
 };
 
-function executionResponse(isFailed, executionTime, messageId) {
-  return factory.createExecutionStatusResponse(messageId, isFailed, executionTime);
+function executionResponse(message, isFailed, executionTime, messageId) {
+  return factory.createExecutionStatusResponse(message, messageId, isFailed, executionTime);
 }
 
 function successExecutionStatus(request) {
-  var response = executionResponse(false, 0, request.messageId);
+  var response = executionResponse(this.options.message, false, 0, request.messageId);
   this._emit(response);
 }
 
 function executeStep (request) {
   var self = this;
-  var promise = executor.step(request);
+  var promise = executor.step(request, this.options.message);
   promise.then(
     function(value) {
       self._emit(value);
@@ -41,7 +38,7 @@ function executeStep (request) {
 
 function executeHook (request, hookName, currentExecutionInfo) {
   var self = this;
-  var promise = executor.hook(request, hookName, currentExecutionInfo);
+  var promise = executor.hook(request, this.options.message, hookName, currentExecutionInfo);
   promise.then(
     function(response) {
       response = processCustomMessages(response);
@@ -91,19 +88,19 @@ function executeAfterStepHook (request) {
 
 function validateStep(request) {
   var validated = stepRegistry.validate(request.stepValidateRequest.stepText);
-  var response = factory.createStepValidateResponse(request.messageId, validated);
+  var response = factory.createStepValidateResponse(this.options.message, request.messageId, this.options.errorType, validated);
   this._emit(response);
 }
 
 var executeStepNamesRequest = function (request) {
-  var response = factory.createStepNamesResponse(request.messageId);
+  var response = factory.createStepNamesResponse(this.options.message, request.messageId);
   response.stepNamesResponse.steps = response.stepNamesResponse.steps.concat(stepRegistry.getStepTexts());
   this._emit(response);
 };
 
 var executeStepNameRequest = function (request) {
   var stepValue = request.stepNameRequest.stepValue;
-  var response = factory.createStepNameResponse(request.messageId);
+  var response = factory.createStepNameResponse(this.options.message, request.messageId);
   if (stepRegistry.exists(stepValue)) {
     response.stepNameResponse.stepName.push(stepRegistry.get(stepValue).stepText);
     response.stepNameResponse.isStepPresent = true;
@@ -112,7 +109,7 @@ var executeStepNameRequest = function (request) {
 };
 
 var executeRefactor = function (request) {
-  var response = factory.createRefactorResponse(request.messageId);
+  var response = factory.createRefactorResponse(this.options.message, request.messageId);
   response = refactor(request, response);
   this._emit(response);
 };
@@ -121,29 +118,29 @@ function killProcess() {
   process.exit();
 }
 
-var MessageProcessor = function() {
+var MessageProcessor = function(protoOptions) {
   EventEmitter.call(this);
+  util.inherits(MessageProcessor, EventEmitter);
   this.processors = {};
-  this.processors[message.MessageType.StepNamesRequest] = executeStepNamesRequest;
-  this.processors[message.MessageType.StepNameRequest] = executeStepNameRequest;
-  this.processors[message.MessageType.RefactorRequest] = executeRefactor;
-  this.processors[message.MessageType.StepValidateRequest] = validateStep;
-  this.processors[message.MessageType.SuiteDataStoreInit] = successExecutionStatus;
-  this.processors[message.MessageType.SpecDataStoreInit] = successExecutionStatus;
-  this.processors[message.MessageType.SpecExecutionStarting] = executeBeforeSpecHook;
-  this.processors[message.MessageType.ScenarioDataStoreInit] = successExecutionStatus;
-  this.processors[message.MessageType.ScenarioExecutionStarting] = executeBeforeScenarioHook;
-  this.processors[message.MessageType.StepExecutionStarting] = executeBeforeStepHook;
-  this.processors[message.MessageType.StepExecutionEnding] = executeAfterStepHook;
-  this.processors[message.MessageType.ScenarioExecutionEnding] = executeAfterScenarioHook;
-  this.processors[message.MessageType.SpecExecutionEnding] = executeAfterSpecHook;
-  this.processors[message.MessageType.ExecutionStarting] = executeBeforeSuiteHook;
-  this.processors[message.MessageType.ExecutionEnding] = executeAfterSuiteHook;
-  this.processors[message.MessageType.ExecuteStep] = executeStep;
-  this.processors[message.MessageType.KillProcessRequest] = killProcess;
+  this.options = protoOptions;
+  this.processors[this.options.message.MessageType.StepNamesRequest] = executeStepNamesRequest;
+  this.processors[this.options.message.MessageType.StepNameRequest] = executeStepNameRequest;
+  this.processors[this.options.message.MessageType.RefactorRequest] = executeRefactor;
+  this.processors[this.options.message.MessageType.StepValidateRequest] = validateStep;
+  this.processors[this.options.message.MessageType.SuiteDataStoreInit] = successExecutionStatus;
+  this.processors[this.options.message.MessageType.SpecDataStoreInit] = successExecutionStatus;
+  this.processors[this.options.message.MessageType.SpecExecutionStarting] = executeBeforeSpecHook;
+  this.processors[this.options.message.MessageType.ScenarioDataStoreInit] = successExecutionStatus;
+  this.processors[this.options.message.MessageType.ScenarioExecutionStarting] = executeBeforeScenarioHook;
+  this.processors[this.options.message.MessageType.StepExecutionStarting] = executeBeforeStepHook;
+  this.processors[this.options.message.MessageType.StepExecutionEnding] = executeAfterStepHook;
+  this.processors[this.options.message.MessageType.ScenarioExecutionEnding] = executeAfterScenarioHook;
+  this.processors[this.options.message.MessageType.SpecExecutionEnding] = executeAfterSpecHook;
+  this.processors[this.options.message.MessageType.ExecutionStarting] = executeBeforeSuiteHook;
+  this.processors[this.options.message.MessageType.ExecutionEnding] = executeAfterSuiteHook;
+  this.processors[this.options.message.MessageType.ExecuteStep] = executeStep;
+  this.processors[this.options.message.MessageType.KillProcessRequest] = killProcess;
 };
-
-util.inherits(MessageProcessor, EventEmitter);
 
 MessageProcessor.prototype.getResponseFor = function(request){
   this.processors[request.messageType].call(this, request);
@@ -153,4 +150,4 @@ MessageProcessor.prototype._emit = function(data) {
   this.emit("messageProcessed", data);
 };
 
-module.exports = new MessageProcessor();
+module.exports = MessageProcessor;

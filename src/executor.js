@@ -34,7 +34,7 @@ var filterHooks = function (hooks, tags) {
 };
 
 
-var executeStep = function(request) {
+var executeStep = function(request, message) {
   var deferred = Q.defer();
 
   var parsedStepText = request.executeStepRequest.parsedStepText;
@@ -45,12 +45,12 @@ var executeStep = function(request) {
   var step = stepRegistry.get(parsedStepText);
   new Test(step.fn, parameters, timeout).run().then(
     function(result) {
-      var response = factory.createExecutionStatusResponse(request.messageId, false, result.duration, false, [], step.options.continueOnFailure);
+      var response = factory.createExecutionStatusResponse(message, request.messageId, false, result.duration, false, [], step.options.continueOnFailure);
       deferred.resolve(response);
     },
 
     function(result) {
-      var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, result.duration, result.exception, [], step.options.continueOnFailure);
+      var errorResponse = factory.createExecutionStatusResponse(message, request.messageId, true, result.duration, result.exception, [], step.options.continueOnFailure);
       if (process.env.screenshot_on_failure !== "false") {
         var screenshotFn = global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function" ? global.gauge.screenshotFn : screenshot;
         errorResponse.executionStatusResponse.executionResult.screenShot = screenshotFn();
@@ -62,7 +62,7 @@ var executeStep = function(request) {
   return deferred.promise;
 };
 
-var executeHook = function(request, hookLevel, currentExecutionInfo) {
+var executeHook = function(request, message, hookLevel, currentExecutionInfo) {
   var deferred = Q.defer(),
       tags = [],
       timestamp = Date.now();
@@ -77,21 +77,21 @@ var executeHook = function(request, hookLevel, currentExecutionInfo) {
   var filteredHooks = hooks.length ? filterHooks(hooks, tags) : [];
 
   if (!filteredHooks.length){
-    deferred.resolve(factory.createExecutionStatusResponse(request.messageId, false, Date.now() - timestamp));
+    deferred.resolve(factory.createExecutionStatusResponse(message, request.messageId, false, Date.now() - timestamp));
     return deferred.promise;
   }
 
   var number = 0;
   var onPass = function (result) {
     if (number === filteredHooks.length - 1) {
-      var response = factory.createExecutionStatusResponse(request.messageId, false, result.duration);
+      var response = factory.createExecutionStatusResponse(message, request.messageId, false, result.duration);
       deferred.resolve(response);
     }
     number++;
   };
 
   var onError = function(result) {
-    var errorResponse = factory.createExecutionStatusResponse(request.messageId, true, result.duration, result.exception);
+    var errorResponse = factory.createExecutionStatusResponse(message, request.messageId, true, result.duration, result.exception);
     deferred.reject(errorResponse);
   };
 

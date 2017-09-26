@@ -1,4 +1,5 @@
 var assert = require( "chai" ).assert;
+var protobuf = require( "protobufjs" );
 var stepRegistry = require("../src/step-registry");
 
 var refactor = require( "../src/refactor" );
@@ -10,8 +11,8 @@ var sandbox, request, response;
 var contentInput, contentOutput, outputFile, info;
 
 describe( "Refactor", function () {
-
-  before( function () {
+  var message = null;
+  before( function (done) {
     sandbox = sinon.sandbox.create();
 
     sandbox.stub( fs, "readFileSync", function () {
@@ -26,10 +27,14 @@ describe( "Refactor", function () {
     sandbox.stub( stepRegistry, "get", function () {
       return info;
     });
+    protobuf.load("gauge-proto/messages.proto").then(function(root){
+      message = root.lookupType("gauge.messages.Message");
+      done();
+    });
   });
 
   beforeEach( function () {
-    response = factory.createRefactorResponse( 123 );
+    response = factory.createRefactorResponse(message, 123);
   });
 
   after( function () {

@@ -25,8 +25,7 @@ VM.prototype.contextify = function (filePath, root) {
 
   self.setFile(filePath);
   self.require = reqman(filePath, root);
-
-  var ctx = {
+  var sandbox = {
     isVM: true,
     console: console,
     require: self.require.fn,
@@ -43,10 +42,10 @@ VM.prototype.contextify = function (filePath, root) {
     gauge_project_root: self.options.root
   };
   for (var type in gaugeGlobal.hooks){
-    ctx[type] = gaugeGlobal.hooks[type];
+    sandbox[type] = gaugeGlobal.hooks[type];
   }
 
-  self.context = vm.createContext(ctx);
+  self.context = vm.createContext(sandbox);
 };
 
 VM.prototype.run = function (code) {
