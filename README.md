@@ -1,7 +1,7 @@
 # Gauge-JS
 JavaScript Runner for [Gauge](http://www.getgauge.io).
 
-[![Build Status - Snap CI](https://snap-ci.com/getgauge-contrib/gauge-js/branch/master/build_image)](https://snap-ci.com/getgauge-contrib/gauge-js/branch/master) [![Build Status - Travis CI](https://travis-ci.org/getgauge-contrib/gauge-js.svg?branch=master)](https://travis-ci.org/getgauge-contrib/gauge-js)
+[![Build Status - Travis CI](https://travis-ci.org/getgauge-contrib/gauge-js.svg?branch=master)](https://travis-ci.org/getgauge-contrib/gauge-js)
 
 - [**Documentation**](https://getgauge-contrib.github.io/gauge-js)
 - [**Contributing to Gauge-JS**](CONTRIBUTING.md)
