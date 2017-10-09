@@ -6,6 +6,9 @@ var customMessageRegistry = require("./custom-message-registry");
 var executor = require("./executor");
 var refactor = require("./refactor");
 var dataStore = require("./data-store-factory");
+var esprima = require("esprima");
+var estraverse = require("estraverse");
+var fs = require("fs");
 
 var processCustomMessages = function (response) {
   var msgs = customMessageRegistry.get();
@@ -102,8 +105,20 @@ var executeStepNameRequest = function (request) {
   var stepValue = request.stepNameRequest.stepValue;
   var response = factory.createStepNameResponse(this.options.message, request.messageId);
   if (stepRegistry.exists(stepValue)) {
-    response.stepNameResponse.stepName.push(stepRegistry.get(stepValue).stepText);
+    var step = stepRegistry.get(stepValue);
+    response.stepNameResponse.stepName.push(step.stepText);
     response.stepNameResponse.isStepPresent = true;
+    response.stepNameResponse.fileName = step.filePath;
+    var content = fs.readFileSync(step.filePath).toString("utf-8");
+    var ast = esprima.parse(content, { loc: true });
+    estraverse.traverse(ast, {
+      enter: function (node) {
+        if (node.type === "CallExpression" && ((node.callee.object && node.callee.object.name === "gauge" && node.callee.property && node.callee.property.name === "step" ) || (node.callee && node.callee.name === "step")) && node.arguments[0].value === step.stepText) {
+          response.stepNameResponse.lineNumber = node.loc.start.line;
+          this.break();
+        }
+      }
+    });
   }
   this._emit(response);
 };
