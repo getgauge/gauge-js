@@ -4,6 +4,22 @@ os:
 language: node_js
 node_js:
   - "node"
-  - "8"
-  - "7"
   - "6"
+install:
+  - npm install
+script:
+  - npm test
+  - cd ..
+  - git clone --depth=1 https://github.com/getgauge/gauge-tests
+  - cd gauge-tests
+  - GAUGE_PREFIX=/tmp ./install_latest_gauge_nightly.sh
+  - export PATH=/tmp/bin:$PATH
+  - gauge -v
+  - cd $TRAVIS_BUILD_DIR
+  - npm run installPlugin
+  - cd ..
+  - cd gauge-tests
+  - echo "gauge_repository_url = https://raw.githubusercontent.com/getgauge/gauge-nightly-repository/master/" >> ~/.gauge/config/gauge.properties
+  - gauge install
+  - gauge -v
+  - TAGS="js" ./starttests.sh js
