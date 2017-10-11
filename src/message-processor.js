@@ -101,6 +101,16 @@ var executeStepNamesRequest = function (request) {
   this._emit(response);
 };
 
+var isStepNode = function(node) {
+  var isGaugeStepFunction = function(node) {
+    return node.callee.object && node.callee.object.name === "gauge" && node.callee.property && node.callee.property.name === "step";
+  };
+  var isGlobalStepFunction = function(node) {
+    return node.callee && node.callee.name === "step";
+  };
+  return (node.type === "CallExpression" && (isGaugeStepFunction(node) || isGlobalStepFunction(node)));
+};
+
 var executeStepNameRequest = function (request) {
   var stepValue = request.stepNameRequest.stepValue;
   var response = factory.createStepNameResponse(this.options.message, request.messageId);
@@ -113,7 +123,7 @@ var executeStepNameRequest = function (request) {
     var ast = esprima.parse(content, { loc: true });
     estraverse.traverse(ast, {
       enter: function (node) {
-        if (node.type === "CallExpression" && ((node.callee.object && node.callee.object.name === "gauge" && node.callee.property && node.callee.property.name === "step" ) || (node.callee && node.callee.name === "step")) && node.arguments[0].value === step.stepText) {
+        if (isStepNode(node) && node.arguments[0].value === step.stepText) {
           response.stepNameResponse.lineNumber = node.loc.start.line;
           this.break();
         }
