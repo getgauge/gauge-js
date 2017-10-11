@@ -25,19 +25,19 @@
   },
   "homepage": "https://github.com/getgauge-contrib/gauge-js",
   "dependencies": {
-    "escodegen": "^1.8.0",
-    "esprima": "^2.7.2",
-    "estraverse": "^4.1.1",
+    "escodegen": "^1.9.0",
+    "esprima": "^4.0.0",
+    "estraverse": "^4.2.0",
     "protobufjs": "~6.8.0",
-    "q": "^1.4.1"
+    "q": "^1.5.0"
   },
   "devDependencies": {
-    "archiver": "^0.21.0",
-    "chai": "^3.4.0",
-    "fs-extra": "^0.26.4",
-    "jscs": "^2.8.0",
-    "jshint": "^2.8.0",
-    "mocha": "^2.3.3",
-    "sinon": "^1.17.2"
+    "archiver": "^2.0.3",
+    "chai": "^4.1.2",
+    "fs-extra": "^4.0.2",
+    "jscs": "^3.0.7",
+    "jshint": "^2.9.5",
+    "mocha": "^4.0.1",
+    "sinon": "^4.0.1"
   }
 }
