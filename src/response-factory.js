@@ -20,7 +20,9 @@ exports.createStepNameResponse = function (message, messageId) {
     stepNameResponse: {
       isStepPresent: false,
       stepName: [],
-      hasAlias: false
+      hasAlias: false,
+      fileName: "",
+      lineNumber: -1
     }
   });
 
