@@ -12,7 +12,7 @@ describe("VM", function () {
   before( function () {
     sandbox = sinon.sandbox.create();
 
-    sandbox.stub( fs, "readFileSync", function () {
+    sandbox.stub( fs, "readFileSync").callsFake(function () {
       return "var x = 'oh, my!';";
     });
   });
@@ -28,8 +28,14 @@ describe("VM", function () {
 
     assert(nodevm.createContext.calledOnce);
     assert.isDefined(vm.context);
-    assert.deepEqual(vm.options, { dirname: ".", filename: "test.js", filepath: "./test.js", displayErrors: true, timeout: 1000,
-                                   root: process.env.PWD });
+    assert.deepEqual(vm.options, {
+      dirname: ".",
+      filename: "test.js",
+      filepath: "./test.js",
+      displayErrors: true,
+      timeout: 1000,
+      root: process.env.PWD 
+    });
 
     nodevm.createContext.restore();
     done();

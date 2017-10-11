@@ -14,8 +14,14 @@ StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, 
     return;
   }
 
-  this.registry[generalisedText] = { fn: stepFunction, stepText: stepText, generalisedText: generalisedText,
-                                     filePath: filePath, count: 1, options: options };
+  this.registry[generalisedText] = {
+    fn: stepFunction,
+    stepText: stepText,
+    generalisedText: generalisedText,
+    filePath: filePath,
+    count: 1,
+    options: options
+  };
 };
 
 /**

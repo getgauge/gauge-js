@@ -58,13 +58,13 @@ exports.createStepValidateResponse = function (message, messageId, errorType, va
       errmsg = "Invalid step.";
 
   switch (validated.reason) {
-  case "duplicate":
-    errortype = errorType.values.DUPLICATE_STEP_IMPLEMENTATION;
-    errmsg = "Duplicate step implementation found in file: " + validated.file;
-    break;
-  case "notfound":
-    errortype = errorType.values.STEP_IMPLEMENTATION_NOT_FOUND;
-    break;
+    case "duplicate":
+      errortype = errorType.values.DUPLICATE_STEP_IMPLEMENTATION;
+      errmsg = "Duplicate step implementation found in file: " + validated.file;
+      break;
+    case "notfound":
+      errortype = errorType.values.STEP_IMPLEMENTATION_NOT_FOUND;
+      break;
   }
 
   return message.create({

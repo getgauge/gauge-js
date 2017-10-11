@@ -24,10 +24,10 @@ var filterHooks = function (hooks, tags) {
     }
     var matched = hasIntersection(tags, hookTags);
     switch(hookOperator){
-    case "AND":
-      return matched === hookTags.length;
-    case "OR":
-      return matched > 0;
+      case "AND":
+        return matched === hookTags.length;
+      case "OR":
+        return matched > 0;
     }
     return false;
   });

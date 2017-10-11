@@ -15,16 +15,16 @@ describe( "Refactor", function () {
   before( function (done) {
     sandbox = sinon.sandbox.create();
 
-    sandbox.stub( fs, "readFileSync", function () {
+    sandbox.stub( fs, "readFileSync").callsFake(function () {
       return contentInput;
     });
 
-    sandbox.stub( fs, "writeFileSync", function ( file, data ) {
+    sandbox.stub( fs, "writeFileSync").callsFake(function ( file, data ) {
       outputFile = file;
       contentOutput = data;
     });
 
-    sandbox.stub( stepRegistry, "get", function () {
+    sandbox.stub( stepRegistry, "get").callsFake(function () {
       return info;
     });
     protobuf.load("gauge-proto/messages.proto").then(function(root){
