@@ -3,6 +3,7 @@ var assert = require("chai").assert,
     sinon = require("sinon"),
     fs = require("fs"),
     VM = require("../src/vm"),
+    path = require("path"),
     hookRegistry = require("../src/hook-registry");
 
 describe("VM", function () {
@@ -31,10 +32,10 @@ describe("VM", function () {
     assert.deepEqual(vm.options, {
       dirname: ".",
       filename: "test.js",
-      filepath: "./test.js",
+      filepath: path.join(".", "test.js"),
       displayErrors: true,
       timeout: 1000,
-      root: process.env.PWD 
+      root: process.cwd()
     });
 
     nodevm.createContext.restore();

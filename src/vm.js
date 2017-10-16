@@ -10,10 +10,10 @@ var VM = function () {
   self.options = {
     filename: "test",
     dirname: ".",
-    filepath: "./test.js",
+    filepath: path.join(".", "test.js"),
     displayErrors: true,
     timeout: parseInt(process.env.test_timeout) || 1000,
-    root: process.env.GAUGE_PROJECT_ROOT ? process.env.GAUGE_PROJECT_ROOT : process.env.PWD
+    root: process.env.GAUGE_PROJECT_ROOT ? process.env.GAUGE_PROJECT_ROOT : process.cwd()
   };
 };
 
