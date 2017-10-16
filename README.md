@@ -9,8 +9,7 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
 ## Demos and examples
 
 - [Gauge-JS example](examples)
-- [Gauge JS Swagger API demo](https://github.com/getgauge/gauge-js-swagger-demo)
-- [Gauge JS Angular-JS WebDriver demo](https://github.com/philipbeadle/gauge-js-angular-webdriver-demo)
+- [Gauge-puppeteer example](https://github.com/getgauge/gauge-repository/tree/master/templates/js_puppeteer)
 
 ---
 
