@@ -9,6 +9,7 @@ describe("Executing steps", function() {
   var executeStepMessage = null;
   var executeStepMessageFailing = null;
   var message = null;
+  this.timeout(10000);
 
   before( function(done) {
     var opts = { continueOnFailure: false };

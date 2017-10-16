@@ -9,6 +9,7 @@ describe("Step Validate Request Processing", function () {
 
   var stepValidateRequest = [];
   var message = null;
+  this.timeout(10000);
 
   before(function (done) {
     stepRegistry.add("Say {} to {}", function () {
@@ -80,6 +81,7 @@ describe("StepNameRequest Processing", function () {
   var stepNameRequest= [];
   var message = null;
   var sandbox;
+  this.timeout(10000);
   before(function (done) {
     stepRegistry.add("A context step which gets executed before every scenario", function () {
     });
