@@ -7,6 +7,8 @@ node_js:
   - "6"
 install:
   - npm install
+env:
+  - GAUGE_TELEMETRY_ENABLED=false
 script:
   - npm test
   - cd ..
