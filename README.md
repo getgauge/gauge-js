@@ -9,9 +9,28 @@ JavaScript Runner for [Gauge](http://www.getgauge.io).
 
 ## Demos and examples
 
-- [Gauge JS](examples)
-- [Gauge Puppeteer](https://github.com/getgauge/gauge-repository/tree/master/templates/js_puppeteer) Run `gauge init js_puppeteer` to use this template
-- [Gauge WebDriver](https://github.com/getgauge/gauge-repository/tree/master/templates/js_webdriver) Run `gauge init js_webdriver` to use this template
+### Plain Javascript
+
+Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js) gauge template
+
+```
+$ gauge init js
+```
+
+### Puppeteer
+
+Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_puppeteer) [Puppeteer](https://github.com/GoogleChrome/puppeteer) template 
+
+```
+$ gauge init js_puppeteer
+```
+
+### WebDriver
+
+Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_webdriver) [WebDriver](https://webdriver.io) template 
+```
+$ gauge init js_webdriver
+```
 
 ---
 
