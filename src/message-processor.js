@@ -2,6 +2,7 @@ var factory = require("./response-factory");
 var EventEmitter = require("events").EventEmitter;
 var util = require("util");
 var stepRegistry = require("./step-registry");
+var cacheRegistry = require("./cache-registry");
 var customMessageRegistry = require("./custom-message-registry");
 var executor = require("./executor");
 var refactor = require("./refactor");
@@ -139,6 +140,14 @@ var executeRefactor = function (request) {
   this._emit(response);
 };
 
+var cacheFile = function(request) {
+  if(request.isClosed) {
+    cacheRegistry.delete(request.filePath)
+  } else {
+    cacheRegistry.add(request.filePath, request.content)
+  }
+};
+
 function killProcess() {
   process.exit();
 }
@@ -164,6 +173,7 @@ var MessageProcessor = function(protoOptions) {
   this.processors[this.options.message.MessageType.ExecutionStarting] = executeBeforeSuiteHook;
   this.processors[this.options.message.MessageType.ExecutionEnding] = executeAfterSuiteHook;
   this.processors[this.options.message.MessageType.ExecuteStep] = executeStep;
+  this.processors[this.options.message.MessageType.CacheFileRequest] = cacheFile;
   this.processors[this.options.message.MessageType.KillProcessRequest] = killProcess;
 };
 
