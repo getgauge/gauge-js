@@ -1,7 +1,9 @@
 var assert = require("chai").assert;
+var should = require("chai").should();
 var sinon = require("sinon");
 var protobuf = require("protobufjs");
 var stepRegistry = require("../src/step-registry");
+var cacheRegistry = require("../src/cache-registry");
 var MessageProcessor = require("../src/message-processor");
 var fs = require("fs");
 
@@ -118,4 +120,52 @@ describe("StepNameRequest Processing", function () {
     processor.getResponseFor(stepNameRequest);
   });
 
+});
+
+describe("StepPositionsRequest Processing", function () {
+  var stepPositionsRequest= [];
+  var message = null;
+  this.timeout(10000);
+  before(function (done) {
+    var filePath = "example.js";
+    cacheRegistry.add(filePath, "\"use strict\";\n" +
+"var assert = require(\"assert\");\n"+
+"var vowels = require(\"./vowels\");\n" +
+"step(\"Vowels in English language are <vowels>.\", function(vowelsGiven) {\n"+
+"  assert.equal(vowelsGiven, vowels.vowelList.join(\"\"));\n"+
+"});\n"+
+"step(\"The word <word> has <number> vowels.\", function(word, number) {\n"+
+"  assert.equal(number, vowels.numVowels(word));\n"+
+"});");
+    protobuf.load("gauge-proto/messages.proto").then(function (root) {
+      message = root.lookupType("gauge.messages.Message");
+      stepPositionsRequest =
+        message.create({
+          messageId: 1,
+          messageType: message.MessageType.StepPositionsRequest,
+          stepPositionsRequest: {
+            filePath: filePath
+          }
+        });
+      done();
+    });
+  });
+
+  it("StepPositionsRequest should get back StepPositionsResponse with stepValue and lineNumber", function (done) {
+    var processor = new MessageProcessor({message: message, errorType: {values: {}}});
+    processor.on("messageProcessed", function (response) {
+      assert.deepEqual(stepPositionsRequest.messageId, response.messageId);
+      assert.equal(message.MessageType.StepPositionsResponse, response.messageType);
+      should.not.exist(response.stepPositionsResponse.error);
+      assert.equal(2, response.stepPositionsResponse.stepPositions.length);
+      assert.equal(1, response.stepPositionsResponse.stepPositions.filter(function (stepPosition) {
+        return stepPosition.stepValue === "Vowels in English language are <vowels>." && stepPosition.lineNumber === 4;
+      }).length);
+      assert.equal(1, response.stepPositionsResponse.stepPositions.filter(function (stepPosition) {
+        return stepPosition.stepValue === "The word <word> has <number> vowels." && stepPosition.lineNumber === 7;
+      }).length);
+      done();
+    });
+    processor.getResponseFor(stepPositionsRequest);
+  });
 });

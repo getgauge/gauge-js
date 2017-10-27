@@ -97,3 +97,16 @@ exports.createExecutionStatusResponse = function (message, messageId, isFailed, 
   });
 
 };
+
+exports.createStepPositionsResponse = function (message, messageId) {
+
+  return message.create({
+    messageId: messageId,
+    messageType: message.MessageType.StepPositionsResponse,
+    stepPositionsResponse: {
+      stepPositions: [],
+      error: ""
+    }
+  });
+
+};

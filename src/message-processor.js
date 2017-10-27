@@ -134,17 +134,39 @@ var executeStepNameRequest = function (request) {
   this._emit(response);
 };
 
+var executeStepPositionsRequest = function (request) {
+  var response = factory.createStepPositionsResponse(this.options.message, request.messageId);
+  var filepath = request.stepPositionsRequest.filePath;
+  var content = cacheRegistry.get(filepath);
+  try {
+    var ast = esprima.parse(content, {loc: true});
+    estraverse.traverse(ast, {
+      enter: function (node) {
+        if (isStepNode(node)) {
+          var stepPosition = {};
+          stepPosition.lineNumber = node.loc.start.line;
+          stepPosition.stepValue = node.arguments[0].value;
+          response.stepPositionsResponse.stepPositions.push(stepPosition);
+        }
+      }
+    });
+  } catch (e) {
+    response.stepPositionsResponse.error = e.toString();
+  }
+  this._emit(response);
+};
+
 var executeRefactor = function (request) {
   var response = factory.createRefactorResponse(this.options.message, request.messageId);
   response = refactor(request, response);
   this._emit(response);
 };
 
-var cacheFile = function(request) {
-  if(request.isClosed) {
-    cacheRegistry.delete(request.filePath)
+var executeCacheFileRequest = function(request) {
+  if(request.cacheFileRequest.isClosed) {
+    cacheRegistry.delete(request.cacheFileRequest.filePath);
   } else {
-    cacheRegistry.add(request.filePath, request.content)
+    cacheRegistry.add(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
   }
 };
 
@@ -173,7 +195,8 @@ var MessageProcessor = function(protoOptions) {
   this.processors[this.options.message.MessageType.ExecutionStarting] = executeBeforeSuiteHook;
   this.processors[this.options.message.MessageType.ExecutionEnding] = executeAfterSuiteHook;
   this.processors[this.options.message.MessageType.ExecuteStep] = executeStep;
-  this.processors[this.options.message.MessageType.CacheFileRequest] = cacheFile;
+  this.processors[this.options.message.MessageType.CacheFileRequest] = executeCacheFileRequest;
+  this.processors[this.options.message.MessageType.StepPositionsRequest] = executeStepPositionsRequest;
   this.processors[this.options.message.MessageType.KillProcessRequest] = killProcess;
 };
 
