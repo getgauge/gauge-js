@@ -1,16 +1,32 @@
 var fileUtil = require("./file-util"),
-    path = require("path"),
-    VM = require("./vm");
+  vm = require("./vm"),
+  stepRegistry = require("./step-registry"),
+  hookRegistry = require("./hook-registry");
 
-function loadImpl(projectRoot) {
-  var vm = new VM();
-  fileUtil.getListOfFilesFromPath(path.join(projectRoot, "tests")).forEach(function(filePath) {
-    process.env.GAUGE_STEPFILEPATH = filePath;
-    vm.contextify(filePath, process.env.GAUGE_PROJECT_ROOT);
-    vm.runFile(filePath);
+function loadFile(filePath) {
+  process.env.GAUGE_STEPFILEPATH = filePath;
+  vm.contextify(filePath, process.env.GAUGE_PROJECT_ROOT);
+  vm.runFile(filePath);
+}
+
+function loadImpl(sourceRoot) {
+  fileUtil.getListOfFilesFromPath(sourceRoot).forEach(function (filePath) {
+    loadFile(filePath);
   });
 }
 
-module.exports= {
-  load: loadImpl
+function unloadFile(filePath) {
+  stepRegistry.clearFile(filePath);
+  hookRegistry.clearFile(filePath);
+}
+
+function reloadFile(filePath) {
+  unloadFile(filePath);
+  loadFile(filePath);
+}
+
+module.exports = {
+  load: loadImpl,
+  reloadFile: reloadFile,
+  unloadFile: unloadFile
 };

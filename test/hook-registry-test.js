@@ -2,6 +2,8 @@ var assert = require("chai").assert;
 var hookRegistry = require("../src/hook-registry");
 var sinon  = require("sinon");
 
+var implFile = "implementation.js";
+
 describe("Hook registry", function () {
 
   before(function () {
@@ -31,19 +33,29 @@ describe("Hook registry", function () {
   });
 
   describe("Clear", function () {
-
+    var secondImplFile = "new_impl.js";
+    var hookFn = function () {};
     beforeEach(function () {
-      hookRegistry.add("beforeSpec", function () {}, {});
-      hookRegistry.add("beforeSpec", function () {}, {});
-      hookRegistry.clear();
+      hookRegistry.add("beforeSpec", hookFn, {}, implFile);
+      hookRegistry.add("beforeSpec", hookFn, {},  secondImplFile);
+      hookRegistry.add("afterSpec", hookFn, {}, implFile);
+      hookRegistry.add("afterSpec", hookFn, {},  secondImplFile);
     });
 
     it("Should return empty object after HookRegistry.clear", function () {
+      hookRegistry.clear();
       assert.deepEqual(hookRegistry.get(), {});
     });
 
     it("Should return empty array when no hooks have set for a hook name", function () {
+      hookRegistry.clear();
       assert.deepEqual(hookRegistry.get("beforeSuite"), []);
+    });
+
+    it("Should clear all hooks for given file after HookRegistry.clearFile", function () {
+      hookRegistry.clearFile(implFile);
+      assert.deepEqual(hookRegistry.get("beforeSpec"), [{"fn": hookFn, "options": {}, "filePath": secondImplFile}]);
+      assert.deepEqual(hookRegistry.get("afterSpec"), [{"fn": hookFn, "options": {}, "filePath": secondImplFile}]);
     });
 
   });
@@ -56,7 +68,7 @@ describe("Hook registry", function () {
       var got;
 
       hookRegistry.types.forEach(function (hook) {
-        hookRegistry.add(hook, hookfn, hookopts);
+        hookRegistry.add(hook, hookfn, hookopts,implFile);
         got = hookRegistry.get(hook);
 
         assert.equal(hookfn, got[0].fn);
@@ -71,8 +83,8 @@ describe("Hook registry", function () {
 
       hookRegistry.types.forEach(function (hook) {
         list[hook] = list[hook] || [];
-        list[hook].push({fn: hookfn, options: hookopts});
-        hookRegistry.add(hook, hookfn, hookopts);
+        list[hook].push({fn: hookfn, options: hookopts, filePath: implFile});
+        hookRegistry.add(hook, hookfn, hookopts, implFile);
       });
 
       assert.deepEqual(hookRegistry.get(), list);
@@ -81,7 +93,7 @@ describe("Hook registry", function () {
     });
 
     it("Should throw error when trying to add hook for invalid hook type", function () {
-      var add = function () { hookRegistry.add("blah", hookfn, hookopts); };
+      var add = function () { hookRegistry.add("blah", hookfn, hookopts, implFile); };
       assert.throw(add);
     });
 

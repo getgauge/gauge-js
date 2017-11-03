@@ -35,4 +35,14 @@ describe("Store and retrieve steps", function() {
     done();
   });
 
+  it("Should clear registry for given file after StepRegistry.clearFile", function () {
+    var filePath = "foo.js";
+    var secondFilePath = "bar.js";
+    stepRegistry.add("Say {} to {}", "Say <hi> to <moto>", function(){}, filePath, {});
+    stepRegistry.add("Hello {}", "Hello <moto>", function(){}, secondFilePath, {});
+    stepRegistry.clearFile(filePath);
+    assert.notOk(stepRegistry.exists("Say {} to {}"));
+    assert.ok(stepRegistry.exists("Hello {}"));
+  });
+
 });

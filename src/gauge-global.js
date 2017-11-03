@@ -15,7 +15,7 @@ var step = function(stepName, options, stepFunction) {
     options = { continueOnFailure: false };
   }
 
-  var filepath = process.env.GAUGE_STEPFILEPATH || "tests/step_implementations.js";
+  var filepath = process.env.GAUGE_STEPFILEPATH;
   if (typeof stepName === "object" && !!stepName.length) {
     for (var i=0; i<stepName.length; i++) {
       if (!stepName[i].length) {
@@ -32,7 +32,7 @@ var hooks = {};
 
 hookRegistry.types.forEach(function (type) {
   hooks[type] = function (fn, options) {
-    hookRegistry.add(type, fn, options);
+    hookRegistry.add(type, fn, options, process.env.GAUGE_STEPFILEPATH);
   };
   gauge.hooks[type] = function (fn, options) {
     console.warn("[DEPRECATED] gauge." + type + "() will be removed soon, use " + type + "() instead.");

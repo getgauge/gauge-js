@@ -69,4 +69,16 @@ VM.prototype.runFile = function (filePath) {
   this.run(fs.readFileSync(filePath).toString("utf-8"));
 };
 
-module.exports = VM;
+VM.prototype.reinit = function () {
+  this.options = {
+      filename: "test",
+      dirname: ".",
+      filepath: path.join(".", "test.js"),
+      displayErrors: true,
+      timeout: parseInt(process.env.test_timeout) || 1000,
+      root: process.env.GAUGE_PROJECT_ROOT ? process.env.GAUGE_PROJECT_ROOT : process.cwd()
+    };
+};
+
+
+module.exports = new VM();
