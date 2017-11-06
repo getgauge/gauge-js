@@ -2,14 +2,11 @@ var factory = require("./response-factory");
 var EventEmitter = require("events").EventEmitter;
 var util = require("util");
 var stepRegistry = require("./step-registry");
-var cacheRegistry = require("./cache-registry");
+var stepCache = require("./step-cache");
 var customMessageRegistry = require("./custom-message-registry");
 var executor = require("./executor");
 var refactor = require("./refactor");
 var dataStore = require("./data-store-factory");
-var esprima = require("esprima");
-var estraverse = require("estraverse");
-var fs = require("fs");
 
 var processCustomMessages = function (response) {
   var msgs = customMessageRegistry.get();
@@ -102,34 +99,15 @@ var executeStepNamesRequest = function (request) {
   this._emit(response);
 };
 
-var isStepNode = function(node) {
-  var isGaugeStepFunction = function(node) {
-    return node.callee.object && node.callee.object.name === "gauge" && node.callee.property && node.callee.property.name === "step";
-  };
-  var isGlobalStepFunction = function(node) {
-    return node.callee && node.callee.name === "step";
-  };
-  return (node.type === "CallExpression" && (isGaugeStepFunction(node) || isGlobalStepFunction(node)));
-};
-
 var executeStepNameRequest = function (request) {
   var stepValue = request.stepNameRequest.stepValue;
   var response = factory.createStepNameResponse(this.options.message, request.messageId);
-  if (stepRegistry.exists(stepValue)) {
-    var step = stepRegistry.get(stepValue);
+  var step = stepCache.getStep(stepValue);
+  if (step) {
     response.stepNameResponse.stepName.push(step.stepText);
     response.stepNameResponse.isStepPresent = true;
     response.stepNameResponse.fileName = step.filePath;
-    var content = fs.readFileSync(step.filePath).toString("utf-8");
-    var ast = esprima.parse(content, { loc: true });
-    estraverse.traverse(ast, {
-      enter: function (node) {
-        if (isStepNode(node) && node.arguments[0].value === step.stepText) {
-          response.stepNameResponse.lineNumber = node.loc.start.line;
-          this.break();
-        }
-      }
-    });
+    response.stepNameResponse.lineNumber = step.line;
   }
   this._emit(response);
 };
@@ -137,22 +115,7 @@ var executeStepNameRequest = function (request) {
 var executeStepPositionsRequest = function (request) {
   var response = factory.createStepPositionsResponse(this.options.message, request.messageId);
   var filepath = request.stepPositionsRequest.filePath;
-  var content = cacheRegistry.get(filepath);
-  try {
-    var ast = esprima.parse(content, {loc: true});
-    estraverse.traverse(ast, {
-      enter: function (node) {
-        if (isStepNode(node)) {
-          var stepPosition = {};
-          stepPosition.lineNumber = node.loc.start.line;
-          stepPosition.stepValue = node.arguments[0].value;
-          response.stepPositionsResponse.stepPositions.push(stepPosition);
-        }
-      }
-    });
-  } catch (e) {
-    response.stepPositionsResponse.error = e.toString();
-  }
+  response.stepPositionsResponse.stepPositions = stepCache.getStepPositions(filepath);
   this._emit(response);
 };
 
@@ -163,11 +126,7 @@ var executeRefactor = function (request) {
 };
 
 var executeCacheFileRequest = function(request) {
-  if(request.cacheFileRequest.isClosed) {
-    cacheRegistry.delete(request.cacheFileRequest.filePath);
-  } else {
-    cacheRegistry.add(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
-  }
+  stepCache.add(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
 };
 
 function killProcess() {

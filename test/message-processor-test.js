@@ -2,9 +2,8 @@ var assert = require("chai").assert;
 var sinon = require("sinon");
 var protobuf = require("protobufjs");
 var stepRegistry = require("../src/step-registry");
-var cacheRegistry = require("../src/cache-registry");
+var stepCache = require("../src/step-cache");
 var MessageProcessor = require("../src/message-processor");
-var fs = require("fs");
 
 describe("Step Validate Request Processing", function () {
 
@@ -81,15 +80,16 @@ describe("Step Validate Request Processing", function () {
 describe("StepNameRequest Processing", function () {
   var stepNameRequest = [];
   var message = null;
-  var sandbox;
   this.timeout(10000);
   before(function (done) {
-    stepRegistry.add("A context step which gets executed before every scenario", function () {
-    });
-
-    sandbox = sinon.sandbox.create();
-    sandbox.stub(fs, "readFileSync").returns("'use strict';\nstep('A context step which gets executed before every scenario', function () {\n" +
+    var filePath = "example.js";
+    stepCache.add(filePath, "\"use strict\";\n" +
+      "var assert = require(\"assert\");\n" +
+      "var vowels = require(\"./vowels\");\n" +
+      "step(\"A context step which gets executed before every scenario\", function() {\n" +
+      "  console.log('in context step');\n" +
       "});\n");
+
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
       message = root.lookupType("gauge.messages.Message");
       stepNameRequest =
@@ -102,10 +102,6 @@ describe("StepNameRequest Processing", function () {
         });
       done();
     });
-  });
-
-  after(function () {
-    sandbox.restore();
   });
 
   it("StepNameRequest should get back StepNameResponse with fileName and lineNumber", function (done) {
@@ -127,7 +123,7 @@ describe("StepPositionsRequest Processing", function () {
   this.timeout(10000);
   before(function (done) {
     var filePath = "example.js";
-    cacheRegistry.add(filePath, "\"use strict\";\n" +
+    stepCache.add(filePath, "\"use strict\";\n" +
       "var assert = require(\"assert\");\n" +
       "var vowels = require(\"./vowels\");\n" +
       "step(\"Vowels in English language are <vowels>.\", function(vowelsGiven) {\n" +
@@ -158,10 +154,10 @@ describe("StepPositionsRequest Processing", function () {
       assert.equal("", response.stepPositionsResponse.error);
       assert.equal(2, response.stepPositionsResponse.stepPositions.length);
       assert.equal(1, response.stepPositionsResponse.stepPositions.filter(function (stepPosition) {
-        return stepPosition.stepValue === "Vowels in English language are <vowels>." && stepPosition.lineNumber === 4;
+        return stepPosition.stepValue === "Vowels in English language are {}." && stepPosition.lineNumber === 4;
       }).length);
       assert.equal(1, response.stepPositionsResponse.stepPositions.filter(function (stepPosition) {
-        return stepPosition.stepValue === "The word <word> has <number> vowels." && stepPosition.lineNumber === 7;
+        return stepPosition.stepValue === "The word {} has {} vowels." && stepPosition.lineNumber === 7;
       }).length);
       done();
     });

@@ -18,7 +18,7 @@ HookRegistry.prototype.types = [
   "afterStep"
 ];
 
-HookRegistry.prototype.add = function (hookName, hookFn, options, filePath) {
+HookRegistry.prototype.add = function (hookName, hookFn, options) {
   if (!hookName) {
     throw new InvalidHookException("Need a hook name");
   }
@@ -28,7 +28,7 @@ HookRegistry.prototype.add = function (hookName, hookFn, options, filePath) {
   }
 
   this.registry[hookName] = this.registry[hookName] || [];
-  this.registry[hookName].push({ "fn": hookFn, "options": options, "filePath": filePath });
+  this.registry[hookName].push({"fn": hookFn, "options": options});
 };
 
 HookRegistry.prototype.get = function (hookName) {
@@ -37,15 +37,6 @@ HookRegistry.prototype.get = function (hookName) {
 
 HookRegistry.prototype.clear = function () {
   this.registry = {};
-};
-
-HookRegistry.prototype.clearFile = function (filePath) {
-  var isNotDefinedInFile = function (h) {
-    return h.filePath !== filePath;
-  };
-  for (var hook in this.registry) {
-    this.registry[hook] = this.registry[hook].filter(isNotDefinedInFile);
-  }
 };
 
 module.exports = new HookRegistry();

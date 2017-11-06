@@ -55,14 +55,14 @@ StepRegistry.prototype.isRecoverable = function (stepName) {
  * @param stepName Name of the step.
  * @return boolean true if the step exists. false if it is not.
  */
-StepRegistry.prototype.exists = function (stepName) {
+StepRegistry.prototype.exists = function(stepName) {
   return stepName in this.registry;
 };
 
 /**
  * Checks if a given step is valid
  */
-StepRegistry.prototype.validate = function (stepName) {
+StepRegistry.prototype.validate = function(stepName) {
   var step = this.get(stepName);
   if (!step) {
     return { valid: false, reason: "notfound", file: null };
@@ -75,14 +75,6 @@ StepRegistry.prototype.validate = function (stepName) {
 
 StepRegistry.prototype.clear = function () {
   this.registry = {};
-};
-
-StepRegistry.prototype.clearFile = function (filePath) {
-  for (var step in this.registry) {
-    if (this.registry[step].filePath == filePath) {
-      delete this.registry[step];
-    }
-  }
 };
 
 module.exports = new StepRegistry();
