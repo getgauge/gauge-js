@@ -89,9 +89,22 @@ function executeAfterStepHook (request) {
   executeHook.apply(this, [request, "afterStep", request.stepExecutionEndingRequest.currentExecutionInfo]);
 }
 
+var getParamsList = function (params) {
+  return params.map(function (p, i) {
+    return "arg" + i.toString();
+  }).join(", ");
+};
+
+var getSuggestionFor = function (request) {
+  return "step(\"" + request.stepValue.parameterizedStepValue + "\", function(" + getParamsList(request.stepValue.parameters) + ") {\n\t"+
+      "throw new Error(\"Provide custom implementation\");\n"+
+    "});";
+};
+
 function validateStep(request) {
   var validated = stepRegistry.validate(request.stepValidateRequest.stepText);
-  var response = factory.createStepValidateResponse(this.options.message, request.messageId, this.options.errorType, validated);
+  var suggestion = getSuggestionFor(request.stepValidateRequest);
+  var response = factory.createStepValidateResponse(this.options.message, request.messageId, this.options.errorType, validated, suggestion);
   this._emit(response);
 }
 
