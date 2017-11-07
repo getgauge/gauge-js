@@ -93,7 +93,10 @@ var getParamsList = function (params) {
   }).join(", ");
 };
 
-var getSuggestionFor = function (request) {
+var getSuggestionFor = function (request, validated) {
+  if (validated.reason !== "notfound") {
+    return "";
+  }
   return "step(\"" + request.stepValue.parameterizedStepValue + "\", function(" + getParamsList(request.stepValue.parameters) + ") {\n\t"+
       "throw new Error(\"Provide custom implementation\");\n"+
     "});";
@@ -101,7 +104,7 @@ var getSuggestionFor = function (request) {
 
 function validateStep(request) {
   var validated = stepRegistry.validate(request.stepValidateRequest.stepText);
-  var suggestion = getSuggestionFor(request.stepValidateRequest);
+  var suggestion = getSuggestionFor(request.stepValidateRequest, validated);
   var response = factory.createStepValidateResponse(this.options.message, request.messageId, this.options.errorType, validated, suggestion);
   this._emit(response);
 }
