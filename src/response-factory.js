@@ -42,7 +42,7 @@ exports.createRefactorResponse = function (message, messageId) {
 
 };
 
-exports.createStepValidateResponse = function (message, messageId, errorType, validated) {
+exports.createStepValidateResponse = function (message, messageId, errorType, validated, suggestion) {
 
   if (validated.valid) {
     return message.create({
@@ -73,7 +73,8 @@ exports.createStepValidateResponse = function (message, messageId, errorType, va
     stepValidateResponse: {
       isValid: false,
       errorType: errortype,
-      errorMessage: errmsg
+      errorMessage: errmsg,
+      suggestion: suggestion
     }
   });
 

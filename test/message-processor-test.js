@@ -23,7 +23,11 @@ describe("Step Validate Request Processing", function () {
           messageType: message.MessageType.StepValidateRequest,
           stepValidateRequest: {
             stepText: "A context step which gets executed before every scenario",
-            numberOfParameters: 0
+            numberOfParameters: 0,
+            stepValue : {
+              parameterizedStepValue: "A context step which gets executed before every scenario",
+              parameters: []
+            }
           }
         }),
         message.create({
@@ -31,7 +35,11 @@ describe("Step Validate Request Processing", function () {
           messageType: message.MessageType.StepValidateRequest,
           stepValidateRequest: {
             stepText: "Say {} to {}",
-            numberOfParameters: 0
+            numberOfParameters: 0,
+            stepValue : {
+              parameterizedStepValue: "Say \"hi\" to \"gauge\"",
+              parameters: ["hi", "gauge"]
+            }
           }
         })
       ];
@@ -67,9 +75,13 @@ describe("Step Validate Request Processing", function () {
   it("StepValidateRequest should get back StepValidateResponse with isValid set to false if the step does not exist", function (done) {
     var processor = new MessageProcessor({ message: message, errorType: { values: {} } });
     processor.on("messageProcessed", function (response) {
+      var stub = "step(\"A context step which gets executed before every scenario\", function() {\n\t"+
+        "throw new Error(\"Provide custom implementation\");\n});";
+
       assert.deepEqual(stepValidateRequest[0].messageId, response.messageId);
       assert.equal(message.MessageType.StepValidateResponse, response.messageType);
       assert.equal(false, response.stepValidateResponse.isValid);
+      assert.equal(stub, response.stepValidateResponse.suggestion);
       done();
     });
     processor.getResponseFor(stepValidateRequest[0]);
