@@ -20,12 +20,21 @@ var processNode = function (node, req) {
   return node;
 };
 
+var isStepNode = function(node) {
+  var isGaugeStepFunction = function (node) {
+    return node.callee.object && node.callee.object.name === "gauge" && node.callee.property && node.callee.property.name === "step";
+  };
+  var isGlobalStepFunction = function (node) {
+    return node.callee && node.callee.name === "step";
+  };
+  return (node.type === "CallExpression" && (isGaugeStepFunction(node) || isGlobalStepFunction(node)));
+};
+
 var refactor_content = function (content, info, req) {
   var ast = esprima.parse(content);
   estraverse.replace(ast, {
     enter: function (node) {
-      if (node.type === "CallExpression" && node.callee.object && node.callee.object.name === "gauge" &&
-          node.callee.property && node.callee.property.name === "step" && node.arguments[0].value === info.stepText) {
+      if (isStepNode(node)) {
         node = processNode(node, req);
       }
       return node;
