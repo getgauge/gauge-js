@@ -13,8 +13,9 @@ describe("Executing steps", function() {
 
   before( function(done) {
     var opts = { continueOnFailure: false };
-    stepRegistry.add("Say {} to {}", "Say <hi> to <me>", function() {}, "executor-test.js", opts);
-    stepRegistry.add("failing test", "failing test", function() {throw "Error";}, "executor-test.js", opts);
+    stepRegistry.clear();
+    stepRegistry.add("Say {} to {}", "Say <hi> to <me>", function() {}, "executor-test.js",3, opts);
+    stepRegistry.add("failing test", "failing test", function() {throw "Error";}, "executor-test.js",6, opts);
     sinon.spy(stepRegistry, "get");
     protobuf.load("gauge-proto/messages.proto").then(function(root){
       message = root.lookupType("gauge.messages.Message");

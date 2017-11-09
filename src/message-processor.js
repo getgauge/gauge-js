@@ -2,11 +2,14 @@ var factory = require("./response-factory");
 var EventEmitter = require("events").EventEmitter;
 var util = require("util");
 var stepRegistry = require("./step-registry");
-var stepCache = require("./step-cache");
 var customMessageRegistry = require("./custom-message-registry");
 var executor = require("./executor");
 var refactor = require("./refactor");
 var dataStore = require("./data-store-factory");
+var impl_loader = require("./impl-loader");
+var loader = require("./static-loader");
+
+var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
 var processCustomMessages = function (response) {
   var msgs = customMessageRegistry.get();
@@ -52,6 +55,8 @@ function executeHook (request, hookName, currentExecutionInfo) {
 }
 
 function executeBeforeSuiteHook (request) {
+  stepRegistry.clear();
+  impl_loader.load(GAUGE_PROJECT_ROOT);
   executeHook.apply(this, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]);
 }
 
@@ -118,7 +123,7 @@ var executeStepNamesRequest = function (request) {
 var executeStepNameRequest = function (request) {
   var stepValue = request.stepNameRequest.stepValue;
   var response = factory.createStepNameResponse(this.options.message, request.messageId);
-  var step = stepCache.getStep(stepValue);
+  var step = stepRegistry.get(stepValue);
   if (step) {
     response.stepNameResponse.stepName.push(step.stepText);
     response.stepNameResponse.isStepPresent = true;
@@ -131,7 +136,7 @@ var executeStepNameRequest = function (request) {
 var executeStepPositionsRequest = function (request) {
   var response = factory.createStepPositionsResponse(this.options.message, request.messageId);
   var filepath = request.stepPositionsRequest.filePath;
-  response.stepPositionsResponse.stepPositions = stepCache.getStepPositions(filepath);
+  response.stepPositionsResponse.stepPositions = stepRegistry.getStepPositions(filepath);
   this._emit(response);
 };
 
@@ -142,7 +147,7 @@ var executeRefactor = function (request) {
 };
 
 var executeCacheFileRequest = function(request) {
-  stepCache.add(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
+  loader.reloadFile(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
 };
 
 function killProcess() {

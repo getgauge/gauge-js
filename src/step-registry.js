@@ -8,7 +8,7 @@ var StepRegistry = function () {
  * @param stepName Name of the step.
  * @param stepFunction Function to be executed for this step.
  */
-StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath, options) {
+StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath, line, options) {
   if (this.exists(generalisedText)) {
     this.registry[generalisedText].count++;
     return;
@@ -19,6 +19,7 @@ StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, 
     stepText: stepText,
     generalisedText: generalisedText,
     filePath: filePath,
+    line: line,
     count: 1,
     options: options
   };
@@ -41,6 +42,16 @@ StepRegistry.prototype.getStepTexts = function () {
   });
 };
 
+StepRegistry.prototype.getStepPositions = function(filePath) {
+  var stepPositions = [];
+  for (var step in this.registry) {
+    if (this.registry[step].filePath === filePath){
+      stepPositions.push({stepValue : step, lineNumber: this.registry[step].line});
+    }
+  }
+  return stepPositions;
+};
+
 StepRegistry.prototype.isRecoverable = function (stepName) {
   var step = this.registry[stepName];
   if (!step) {
@@ -55,14 +66,14 @@ StepRegistry.prototype.isRecoverable = function (stepName) {
  * @param stepName Name of the step.
  * @return boolean true if the step exists. false if it is not.
  */
-StepRegistry.prototype.exists = function(stepName) {
+StepRegistry.prototype.exists = function (stepName) {
   return stepName in this.registry;
 };
 
 /**
  * Checks if a given step is valid
  */
-StepRegistry.prototype.validate = function(stepName) {
+StepRegistry.prototype.validate = function (stepName) {
   var step = this.get(stepName);
   if (!step) {
     return { valid: false, reason: "notfound", file: null };

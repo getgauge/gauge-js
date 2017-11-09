@@ -2,7 +2,7 @@ var assert = require("chai").assert;
 var sinon = require("sinon");
 var protobuf = require("protobufjs");
 var stepRegistry = require("../src/step-registry");
-var stepCache = require("../src/step-cache");
+var loader = require("../src/static-loader");
 var MessageProcessor = require("../src/message-processor");
 
 describe("Step Validate Request Processing", function () {
@@ -10,8 +10,8 @@ describe("Step Validate Request Processing", function () {
   var stepValidateRequest = [];
   var message = null;
   this.timeout(10000);
-
   before(function (done) {
+    stepRegistry.clear();
     stepRegistry.add("Say {} to {}", function () {
     });
     sinon.spy(stepRegistry, "validate");
@@ -95,7 +95,8 @@ describe("StepNameRequest Processing", function () {
   this.timeout(10000);
   before(function (done) {
     var filePath = "example.js";
-    stepCache.add(filePath, "\"use strict\";\n" +
+    stepRegistry.clear();
+    loader.loadFile(filePath, "\"use strict\";\n" +
       "var assert = require(\"assert\");\n" +
       "var vowels = require(\"./vowels\");\n" +
       "step(\"A context step which gets executed before every scenario\", function() {\n" +
@@ -133,9 +134,11 @@ describe("StepPositionsRequest Processing", function () {
   var stepPositionsRequest = [];
   var message = null;
   this.timeout(10000);
+
   before(function (done) {
     var filePath = "example.js";
-    stepCache.add(filePath, "\"use strict\";\n" +
+    stepRegistry.clear();
+    loader.loadFile(filePath, "\"use strict\";\n" +
       "var assert = require(\"assert\");\n" +
       "var vowels = require(\"./vowels\");\n" +
       "step(\"Vowels in English language are <vowels>.\", function(vowelsGiven) {\n" +
