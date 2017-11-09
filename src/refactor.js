@@ -2,7 +2,8 @@ var fs = require("fs"),
     esprima = require("esprima"),
     estraverse = require("estraverse"),
     escodegen = require("escodegen"),
-    stepRegistry = require("./step-registry");
+    stepRegistry = require("./step-registry"),
+    stepParser = require("./step-parser");
 
 var processNode = function (node, req) {
   node.arguments[0].value = req.newStepValue.parameterizedStepValue;
@@ -20,21 +21,11 @@ var processNode = function (node, req) {
   return node;
 };
 
-var isStepNode = function(node) {
-  var isGaugeStepFunction = function (node) {
-    return node.callee.object && node.callee.object.name === "gauge" && node.callee.property && node.callee.property.name === "step";
-  };
-  var isGlobalStepFunction = function (node) {
-    return node.callee && node.callee.name === "step";
-  };
-  return (node.type === "CallExpression" && (isGaugeStepFunction(node) || isGlobalStepFunction(node)));
-};
-
 var refactor_content = function (content, info, req) {
   var ast = esprima.parse(content);
   estraverse.replace(ast, {
     enter: function (node) {
-      if (isStepNode(node)) {
+      if (stepParser.isStepNode(node)) {
         node = processNode(node, req);
       }
       return node;

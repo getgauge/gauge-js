@@ -16,3 +16,13 @@ exports.getParams = function(step) {
   var matches = step.match(/(<.*?>)/g);
   return (matches === null) ? [] : matches.map(function(item) { return item.substring(1, item.length-1); });
 };
+
+exports.isStepNode = function(node) {
+  var isGaugeStepFunction = function (node) {
+    return node.callee.object && node.callee.object.name === "gauge" && node.callee.property && node.callee.property.name === "step";
+  };
+  var isGlobalStepFunction = function (node) {
+    return node.callee && node.callee.name === "step";
+  };
+  return (node.type === "CallExpression" && (isGaugeStepFunction(node) || isGlobalStepFunction(node)));
+};
