@@ -25,7 +25,7 @@ var refactor_content = function (content, info, req) {
   var ast = esprima.parse(content);
   estraverse.replace(ast, {
     enter: function (node) {
-      if (stepParser.isStepNode(node)) {
+      if (stepParser.isStepNode(node) && node.arguments[0].value === info.stepText) {
         node = processNode(node, req);
       }
       return node;
