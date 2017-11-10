@@ -1,6 +1,8 @@
-var factory = require("./response-factory");
+var fs = require("fs");
 var EventEmitter = require("events").EventEmitter;
 var util = require("util");
+
+var factory = require("./response-factory");
 var stepRegistry = require("./step-registry");
 var customMessageRegistry = require("./custom-message-registry");
 var executor = require("./executor");
@@ -27,68 +29,68 @@ function successExecutionStatus(request) {
   this._emit(response);
 }
 
-function executeStep (request) {
+function executeStep(request) {
   var self = this;
   var promise = executor.step(request, this.options.message);
   promise.then(
-    function(value) {
+    function (value) {
       self._emit(value);
     },
-    function(reason) {
+    function (reason) {
       self._emit(reason);
     }
   );
 }
 
-function executeHook (request, hookName, currentExecutionInfo) {
+function executeHook(request, hookName, currentExecutionInfo) {
   var self = this;
   var promise = executor.hook(request, this.options.message, hookName, currentExecutionInfo);
   promise.then(
-    function(response) {
+    function (response) {
       response = processCustomMessages(response);
       self._emit(response);
     },
-    function(reason) {
+    function (reason) {
       self._emit(reason);
     }
   );
 }
 
-function executeBeforeSuiteHook (request) {
+function executeBeforeSuiteHook(request) {
   stepRegistry.clear();
   impl_loader.load(GAUGE_PROJECT_ROOT);
   executeHook.apply(this, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]);
 }
 
-function executeBeforeSpecHook (request) {
+function executeBeforeSpecHook(request) {
   executeHook.apply(this, [request, "beforeSpec", request.specExecutionStartingRequest.currentExecutionInfo]);
 }
 
-function executeBeforeScenarioHook (request) {
+function executeBeforeScenarioHook(request) {
   executeHook.apply(this, [request, "beforeScenario", request.scenarioExecutionStartingRequest.currentExecutionInfo]);
 }
 
-function executeBeforeStepHook (request) {
+function executeBeforeStepHook(request) {
   customMessageRegistry.clear();
   executeHook.apply(this, [request, "beforeStep", request.stepExecutionStartingRequest.currentExecutionInfo]);
 }
 
-function executeAfterSuiteHook (request) {
+function executeAfterSuiteHook(request) {
   dataStore.suiteStore.clear();
   executeHook.apply(this, [request, "afterSuite", request.executionEndingRequest.currentExecutionInfo]);
 }
 
-function executeAfterSpecHook (request) {
+function executeAfterSpecHook(request) {
   dataStore.specStore.clear();
   executeHook.apply(this, [request, "afterSpec", request.specExecutionEndingRequest.currentExecutionInfo]);
 }
 
-function executeAfterScenarioHook (request) {
+function executeAfterScenarioHook(request) {
   dataStore.scenarioStore.clear();
   executeHook.apply(this, [request, "afterScenario", request.scenarioExecutionEndingRequest.currentExecutionInfo]);
 }
 
-function executeAfterStepHook (request) {
+function executeAfterStepHook(request) {
   executeHook.apply(this, [request, "afterStep", request.stepExecutionEndingRequest.currentExecutionInfo]);
 }
 
@@ -102,8 +104,8 @@ var getSuggestionFor = function (request, validated) {
   if (validated.reason !== "notfound") {
     return "";
   }
-  return "step(\"" + request.stepValue.parameterizedStepValue + "\", function(" + getParamsList(request.stepValue.parameters) + ") {\n\t"+
-      "throw new Error(\"Provide custom implementation\");\n"+
+  return "step(\"" + request.stepValue.parameterizedStepValue + "\", function(" + getParamsList(request.stepValue.parameters) + ") {\n\t" +
+    "throw new Error(\"Provide custom implementation\");\n" +
     "});";
 };
 
@@ -146,15 +148,19 @@ var executeRefactor = function (request) {
   this._emit(response);
 };
 
-var executeCacheFileRequest = function(request) {
-  loader.reloadFile(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
+var executeCacheFileRequest = function (request) {
+  if (!request.cacheFileRequest.isClosed) {
+    loader.reloadFile(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
+  } else {
+    loader.reloadFile(request.cacheFileRequest.filePath, fs.readFileSync(request.cacheFileRequest.content, "UTF-8"));
+  }
 };
 
 function killProcess() {
   process.exit();
 }
 
-var MessageProcessor = function(protoOptions) {
+var MessageProcessor = function (protoOptions) {
   EventEmitter.call(this);
   util.inherits(MessageProcessor, EventEmitter);
   this.processors = {};
@@ -180,11 +186,11 @@ var MessageProcessor = function(protoOptions) {
   this.processors[this.options.message.MessageType.KillProcessRequest] = killProcess;
 };
 
-MessageProcessor.prototype.getResponseFor = function(request){
+MessageProcessor.prototype.getResponseFor = function (request) {
   this.processors[request.messageType].call(this, request);
 };
 
-MessageProcessor.prototype._emit = function(data) {
+MessageProcessor.prototype._emit = function (data) {
   this.emit("messageProcessed", data);
 };
 
