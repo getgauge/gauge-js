@@ -37,16 +37,16 @@ var refactor_content = function (content, info, req) {
 var refactor = function (request, response) {
   var info = stepRegistry.get(request.refactorRequest.oldStepValue.stepValue);
   try {
-    var content = fs.readFileSync(info.filePath).toString("utf-8");
+    var content = fs.readFileSync(info.fileLocations[0].filePath).toString("utf-8");
     content = refactor_content(content, info, request.refactorRequest);
-    fs.writeFileSync(info.filePath, content, "utf-8");
+    fs.writeFileSync(info.fileLocations[0].filePath, content, "utf-8");
   } catch (e) {
     response.refactorResponse.success = false;
     response.refactorResponse.error = e.toString();
     return response;
   }
   response.refactorResponse.success = true;
-  response.refactorResponse.filesChanged.push(info.filePath);
+  response.refactorResponse.filesChanged.push(info.fileLocations[0].filePath);
   return response;
 };
 

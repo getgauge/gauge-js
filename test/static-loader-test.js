@@ -2,7 +2,7 @@ var assert = require("chai").assert;
 var loader = require("../src/static-loader");
 var stepRegistry = require("../src/step-registry");
 
-describe("Load and Reload the steps", function() {
+describe("Static loader", function() {
   beforeEach(function () {
     stepRegistry.clear();
   });
@@ -18,10 +18,9 @@ describe("Load and Reload the steps", function() {
     var expected = {
       fn: null,
       count:1,
-      filePath: filepath,
+      fileLocations: [{filePath: filepath,line:1}],
       stepText: "vsdvsv",
       generalisedText:"vsdvsv",
-      line:1,
       options: null,
     };
     assert.isDefined(step);
@@ -67,10 +66,9 @@ describe("Load and Reload the steps", function() {
     var expected = {
       fn: null,
       count:1,
-      filePath: filepath,
+      fileLocations: [{ filePath: filepath, line: 1 }],
       stepText: "black magic",
       generalisedText:"black magic",
-      line:1,
       options: null,
     };
 

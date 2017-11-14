@@ -55,11 +55,7 @@ function loadFiles(projectRoot) {
 }
 
 function unloadFile(filePath) {
-  for (var step in stepRegistry.get()){
-    if (stepRegistry.get(step).filePath === filePath){
-      delete stepRegistry.registry[step];
-    }
-  }
+  stepRegistry.deleteSteps(filePath);
 }
 
 function reloadFile(filePath, content) {

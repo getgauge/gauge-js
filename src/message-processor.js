@@ -129,8 +129,8 @@ var executeStepNameRequest = function (request) {
   if (step) {
     response.stepNameResponse.stepName.push(step.stepText);
     response.stepNameResponse.isStepPresent = true;
-    response.stepNameResponse.fileName = step.filePath;
-    response.stepNameResponse.lineNumber = step.line;
+    response.stepNameResponse.fileName = step.fileLocations[0].filePath;
+    response.stepNameResponse.lineNumber = step.fileLocations[0].line;
   }
   this._emit(response);
 };
