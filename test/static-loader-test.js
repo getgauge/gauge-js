@@ -2,7 +2,7 @@ var assert = require("chai").assert;
 var loader = require("../src/static-loader");
 var stepRegistry = require("../src/step-registry");
 
-describe("Load and Reload the steps", function() {
+describe("Static loader", function() {
   beforeEach(function () {
     stepRegistry.clear();
   });
@@ -15,17 +15,12 @@ describe("Load and Reload the steps", function() {
 
     loader.loadFile(filepath,source);
     var step = stepRegistry.get("vsdvsv");
-    var expected = {
-      fn: null,
-      count:1,
-      filePath: filepath,
-      stepText: "vsdvsv",
-      generalisedText:"vsdvsv",
-      line:1,
-      options: null,
-    };
     assert.isDefined(step);
-    assert.deepEqual(step, expected);
+    assert.isNull(step.fn);
+    assert.deepEqual(step.fileLocations, [{filePath: filepath,line:1}]);
+    assert.equal(step.stepText, "vsdvsv");
+    assert.equal(step.generalisedText, "vsdvsv");
+    assert.isNull(step.options);
     done();
   });
 
@@ -64,18 +59,13 @@ describe("Load and Reload the steps", function() {
     assert.isUndefined(oldStep);
 
     var newStep = stepRegistry.get("black magic");
-    var expected = {
-      fn: null,
-      count:1,
-      filePath: filepath,
-      stepText: "black magic",
-      generalisedText:"black magic",
-      line:1,
-      options: null,
-    };
-
     assert.isDefined(newStep);
-    assert.deepEqual(newStep, expected);
+    assert.isNull(newStep.fn);
+    assert.deepEqual(newStep.fileLocations, [{ filePath: filepath, line: 1 }]);
+    assert.equal(newStep.stepText, "black magic");
+    assert.equal(newStep.generalisedText, "black magic");
+    assert.isNull(newStep.options);
+
     done();
   });
 });

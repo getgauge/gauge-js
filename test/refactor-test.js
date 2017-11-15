@@ -77,7 +77,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response, fs );
@@ -121,7 +121,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response, fs );
@@ -158,7 +158,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
@@ -194,7 +194,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
@@ -227,7 +227,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
@@ -260,7 +260,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
@@ -296,7 +296,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
@@ -332,7 +332,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
@@ -371,7 +371,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
@@ -410,7 +410,7 @@ describe( "Refactor", function () {
       fn: function ( word, number ) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
@@ -446,7 +446,7 @@ describe( "Refactor", function () {
       fn: function ( word, number, done ) { word = "such"; number = "wow"; done = "phew."; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
@@ -482,7 +482,7 @@ describe( "Refactor", function () {
       fn: function ( word, number, done ) { word = "such"; number = "wow"; done = "phew."; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      filePath: "test/data/refactor-output.js"
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
     };
 
     response = refactor( request, response );
