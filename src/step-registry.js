@@ -86,7 +86,7 @@ StepRegistry.prototype.validate = function (stepName) {
   if (!step) {
     return { valid: false, reason: "notfound", file: null };
   }
-  if (step.count() > 1) {
+  if (step.fileLocations.length > 1) {
     return { valid: false, reason: "duplicate", file: step.fileLocations[0].filePath };
   }
   return { valid: true, reason: null, file: null };
