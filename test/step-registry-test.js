@@ -48,19 +48,12 @@ describe("Store and retrieve steps", function () {
     var anotherFilePath = "impl2.js";
     stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction, filepath, 2, {});
     stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction, anotherFilePath, 2, {});
-    assert.equal(2, stepRegistry.get("Sample Step {}").count);
+    assert.equal(2, stepRegistry.get("Sample Step {}").count());
 
     stepRegistry.deleteSteps(filepath);
     var step = stepRegistry.get("Sample Step {}");
-    var expectedStep = {
-      stepText: "Sample Step <1>",
-      generalisedText: "Sample Step {}",
-      fileLocations: [{ filePath: anotherFilePath, line: 2 }],
-      count: 1,
-      fn: sampleFunction,
-      options: {}
-    };
-    assert.deepEqual(expectedStep, step);
+    assert.equal(1, step.count());
+    assert.deepEqual({ filePath: anotherFilePath, line: 2 }, step.fileLocations[0]);
     done();
   });
 });

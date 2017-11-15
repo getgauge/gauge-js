@@ -10,7 +10,6 @@ var StepRegistry = function () {
  */
 StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath, line, options) {
   if (this.exists(generalisedText)) {
-    this.registry[generalisedText].count++;
     this.registry[generalisedText].fileLocations.push({ filePath: filePath, line: line });
     return;
   }
@@ -25,7 +24,9 @@ StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, 
         line: line
       }
     ],
-    count: 1,
+    count: function() {
+      return this.fileLocations.length;
+    },
     options: options
   };
 };
@@ -85,7 +86,7 @@ StepRegistry.prototype.validate = function (stepName) {
   if (!step) {
     return { valid: false, reason: "notfound", file: null };
   }
-  if (step.count > 1) {
+  if (step.count() > 1) {
     return { valid: false, reason: "duplicate", file: step.fileLocations[0].filePath };
   }
   return { valid: true, reason: null, file: null };
@@ -100,10 +101,9 @@ StepRegistry.prototype.deleteSteps = function (filePath) {
     return location.filePath !== filePath;
   };
   for (var stepText in this.registry) {
-    if (this.registry[stepText].count > 1) {
+    if (this.registry[stepText].count() > 1) {
       this.registry[stepText].fileLocations = this.registry[stepText].fileLocations.filter(filterFunc);
-      this.registry[stepText].count = this.registry[stepText].fileLocations.length;
-      if (this.registry[stepText].count === 0) {
+      if (this.registry[stepText].count() === 0) {
         delete this.registry[stepText];
       }
     } else {
