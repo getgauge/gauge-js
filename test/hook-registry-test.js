@@ -39,7 +39,7 @@ describe("Hook registry", function () {
     });
 
     it("Should return empty object after HookRegistry.clear", function () {
-      assert.deepEqual(hookRegistry.get(), {});
+      assert.deepEqual(hookRegistry.registry, {});
     });
 
     it("Should return empty array when no hooks have set for a hook name", function () {
@@ -75,7 +75,7 @@ describe("Hook registry", function () {
         hookRegistry.add(hook, hookfn, hookopts);
       });
 
-      assert.deepEqual(hookRegistry.get(), list);
+      assert.deepEqual(hookRegistry.registry, list);
       done();
 
     });

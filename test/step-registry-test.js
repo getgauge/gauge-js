@@ -31,7 +31,7 @@ describe("Store and retrieve steps", function () {
   it("Should clear registry", function (done) {
     stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction);
     stepRegistry.clear();
-    assert.deepEqual({}, stepRegistry.get());
+    assert.deepEqual({}, stepRegistry.registry);
     done();
   });
 
@@ -39,7 +39,7 @@ describe("Store and retrieve steps", function () {
     var filepath = "impl.js";
     stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction, filepath, 2);
     stepRegistry.deleteSteps(filepath);
-    assert.deepEqual({}, stepRegistry.get());
+    assert.deepEqual({}, stepRegistry.registry);
     done();
   });
 

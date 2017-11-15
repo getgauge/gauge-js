@@ -32,7 +32,7 @@ HookRegistry.prototype.add = function (hookName, hookFn, options) {
 };
 
 HookRegistry.prototype.get = function (hookName) {
-  return hookName ? (this.registry[hookName] ? this.registry[hookName] : []) : this.registry;
+  return this.registry[hookName] ? this.registry[hookName] : [];
 };
 
 HookRegistry.prototype.clear = function () {

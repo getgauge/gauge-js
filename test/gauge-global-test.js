@@ -47,7 +47,7 @@ describe("Calling global gauge.step()", function() {
 
     assert(stepRegistry.add.calledTwice);
 
-    var list = stepRegistry.get();
+    var list = stepRegistry.registry;
 
     assert(list["Step {}"]);
     assert(list["Another step {}"]);

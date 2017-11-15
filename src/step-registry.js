@@ -38,7 +38,7 @@ StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, 
  * @returns Function The function to be executed for this step.
  */
 StepRegistry.prototype.get = function (stepName) {
-  return stepName ? this.registry[stepName] : this.registry;
+  return this.registry[stepName];
 };
 
 StepRegistry.prototype.getStepTexts = function () {
