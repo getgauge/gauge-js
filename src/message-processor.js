@@ -104,8 +104,8 @@ var getSuggestionFor = function (request, validated) {
   if (validated.reason !== "notfound") {
     return "";
   }
-  return "step(\"" + request.stepValue.parameterizedStepValue + "\", function(" + getParamsList(request.stepValue.parameters) + ") {\n\t" +
-    "throw new Error(\"Provide custom implementation\");\n" +
+  return "step(\"" + request.stepValue.parameterizedStepValue + "\", async function(" + getParamsList(request.stepValue.parameters) + ") {\n\t" +
+    "throw 'Unimplemented Step';\n" +
     "});";
 };
 

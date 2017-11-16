@@ -75,8 +75,8 @@ describe("Step Validate Request Processing", function () {
   it("StepValidateRequest should get back StepValidateResponse with isValid set to false if the step does not exist", function (done) {
     var processor = new MessageProcessor({ message: message, errorType: { values: {} } });
     processor.on("messageProcessed", function (response) {
-      var stub = "step(\"A context step which gets executed before every scenario\", function() {\n\t"+
-        "throw new Error(\"Provide custom implementation\");\n});";
+      var stub = "step(\"A context step which gets executed before every scenario\", async function() {\n\t"+
+        "throw 'Unimplemented Step';\n});";
 
       assert.deepEqual(stepValidateRequest[0].messageId, response.messageId);
       assert.equal(message.MessageType.StepValidateResponse, response.messageType);
