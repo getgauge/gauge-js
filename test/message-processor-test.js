@@ -169,10 +169,10 @@ describe("StepPositionsRequest Processing", function () {
       assert.equal("", response.stepPositionsResponse.error);
       assert.equal(2, response.stepPositionsResponse.stepPositions.length);
       assert.equal(1, response.stepPositionsResponse.stepPositions.filter(function (stepPosition) {
-        return stepPosition.stepValue === "Vowels in English language are {}." && stepPosition.lineNumber === 4;
+        return stepPosition.stepValue === "Vowels in English language are {}." && stepPosition.span.start === 4;
       }).length);
       assert.equal(1, response.stepPositionsResponse.stepPositions.filter(function (stepPosition) {
-        return stepPosition.stepValue === "The word {} has {} vowels." && stepPosition.lineNumber === 7;
+        return stepPosition.stepValue === "The word {} has {} vowels." && stepPosition.span.start === 7;
       }).length);
       done();
     });
