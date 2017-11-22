@@ -101,12 +101,8 @@ StepRegistry.prototype.deleteSteps = function (filePath) {
     return location.filePath !== filePath;
   };
   for (var stepText in this.registry) {
-    if (this.registry[stepText].count() > 1) {
-      this.registry[stepText].fileLocations = this.registry[stepText].fileLocations.filter(filterFunc);
-      if (this.registry[stepText].count() === 0) {
-        delete this.registry[stepText];
-      }
-    } else {
+    this.registry[stepText].fileLocations = this.registry[stepText].fileLocations.filter(filterFunc);
+    if (this.registry[stepText].count() === 0) {
       delete this.registry[stepText];
     }
   }
