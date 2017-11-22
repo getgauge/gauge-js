@@ -152,7 +152,11 @@ var executeCacheFileRequest = function (request) {
   if (!request.cacheFileRequest.isClosed) {
     loader.reloadFile(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
   } else {
-    loader.reloadFile(request.cacheFileRequest.filePath, fs.readFileSync(request.cacheFileRequest.filePath, "UTF-8"));
+    if (fs.existsSync(request.cacheFileRequest.filePath)) {
+      loader.reloadFile(request.cacheFileRequest.filePath, fs.readFileSync(request.cacheFileRequest.filePath, "UTF-8"));
+    } else {
+      loader.unloadFile(request.cacheFileRequest.filePath);
+    }
   }
 };
 

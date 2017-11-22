@@ -66,5 +66,6 @@ function reloadFile(filePath, content) {
 module.exports = {
   load: loadFiles,
   loadFile: loadFile,
-  reloadFile: reloadFile
+  reloadFile: reloadFile,
+  unloadFile: unloadFile
 };
