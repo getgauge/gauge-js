@@ -21,10 +21,10 @@ var step = function (stepName, options, stepFunction) {
       if (!stepName[i].length) {
         throw new Error("Step text cannot be empty");
       }
-      stepRegistry.add(stepParser.generalise(stepName[i]), stepName[i], stepFunction, filepath, null, options);
+      stepRegistry.add(stepParser.generalise(stepName[i]), stepName[i], stepFunction, filepath, {}, options);
     }
   } else if (typeof stepName === "string") {
-    stepRegistry.add(stepParser.generalise(stepName), stepName, stepFunction, filepath, null, options);
+    stepRegistry.add(stepParser.generalise(stepName), stepName, stepFunction, filepath, {}, options);
   }
 };
 

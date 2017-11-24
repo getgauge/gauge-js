@@ -46,14 +46,14 @@ describe("Store and retrieve steps", function () {
   it("Should delete only fileLocation steps for duplicate steps", function (done) {
     var filepath = "impl.js";
     var anotherFilePath = "impl2.js";
-    stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction, filepath, 2, {});
-    stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction, anotherFilePath, 2, {});
+    stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction, filepath, {start:2,end:4}, {});
+    stepRegistry.add("Sample Step {}", "Sample Step <1>", sampleFunction, anotherFilePath, {start:2,end:4}, {});
     assert.equal(2, stepRegistry.get("Sample Step {}").count());
 
     stepRegistry.deleteSteps(filepath);
     var step = stepRegistry.get("Sample Step {}");
     assert.equal(1, step.count());
-    assert.deepEqual({ filePath: anotherFilePath, line: 2 }, step.fileLocations[0]);
+    assert.deepEqual({ filePath: anotherFilePath, span: {start:2, end:4} }, step.fileLocations[0]);
     done();
   });
 });

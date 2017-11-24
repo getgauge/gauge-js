@@ -8,9 +8,9 @@ var StepRegistry = function () {
  * @param stepName Name of the step.
  * @param stepFunction Function to be executed for this step.
  */
-StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath, line, options) {
+StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath, span, options) {
   if (this.exists(generalisedText)) {
-    this.registry[generalisedText].fileLocations.push({ filePath: filePath, line: line });
+    this.registry[generalisedText].fileLocations.push({ filePath: filePath, span: span });
     return;
   }
 
@@ -21,10 +21,10 @@ StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, 
     fileLocations: [
       {
         filePath: filePath,
-        line: line
+        span: span
       }
     ],
-    count: function() {
+    count: function () {
       return this.fileLocations.length;
     },
     options: options
@@ -53,7 +53,7 @@ StepRegistry.prototype.getStepPositions = function (filePath) {
   for (var step in this.registry) {
     for (var i = 0; i < this.registry[step].fileLocations.length; i++) {
       if (this.registry[step].fileLocations[i].filePath === filePath) {
-        stepPositions.push({ stepValue: step, lineNumber: this.registry[step].fileLocations[i].line });
+        stepPositions.push({ stepValue: step, span: this.registry[step].fileLocations[i].span });
       }
     }
   }
