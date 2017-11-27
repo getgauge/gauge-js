@@ -123,6 +123,7 @@ describe("StepNameRequest Processing", function () {
       assert.deepEqual(stepNameRequest.messageId, response.messageId);
       assert.equal(message.MessageType.StepNameResponse, response.messageType);
       assert.equal(true, response.stepNameResponse.isStepPresent);
+      assert.equal(response.stepNameResponse.lineNumber, 4);
       done();
     });
     processor.getResponseFor(stepNameRequest);

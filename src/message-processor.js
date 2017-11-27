@@ -130,7 +130,7 @@ var executeStepNameRequest = function (request) {
     response.stepNameResponse.stepName.push(step.stepText);
     response.stepNameResponse.isStepPresent = true;
     response.stepNameResponse.fileName = step.fileLocations[0].filePath;
-    response.stepNameResponse.lineNumber = step.fileLocations[0].line;
+    response.stepNameResponse.lineNumber = step.fileLocations[0].span.start;
   }
   this._emit(response);
 };
