@@ -2,7 +2,6 @@ var path = require("path");
 var fs = require("fs");
 var esprima = require("esprima");
 var estraverse = require("estraverse");
-var escodegen = require("escodegen");
 
 var fileUtil = require("./file-util");
 var stepRegistry = require("./step-registry");
@@ -39,19 +38,25 @@ function traverser(filePath) {
   };
 }
 
-var loadFile = function (filePath, content) {
-  try {
-    var ast = esprima.parse(content, { loc: true });
-    estraverse.traverse(ast, { enter: traverser(filePath) });
-    return escodegen.generate(ast);
-  } catch (e) {
-    console.log(e);
-  }
+var loadFile = function (filePath, ast) {
+  estraverse.traverse(ast, { enter: traverser(filePath) });
 };
+
+function createAst(content) {
+  try {
+    return esprima.parse(content, { loc: true });
+  } catch (e) {
+    console.error(e.message);
+    return "";
+  }
+}
 
 function loadFiles(projectRoot) {
   fileUtil.getListOfFilesFromPath(path.join(projectRoot, "tests")).forEach(function (filePath) {
-    loadFile(filePath, fs.readFileSync(filePath).toString("utf-8"));
+    var ast = createAst(fs.readFileSync(filePath, "UTF-8"));
+    if (ast) {
+      loadFile(filePath, ast);
+    }
   });
 }
 
@@ -60,8 +65,11 @@ function unloadFile(filePath) {
 }
 
 function reloadFile(filePath, content) {
-  unloadFile(filePath);
-  loadFile(filePath, content);
+  var ast = createAst(content);
+  if (ast) {
+    unloadFile(filePath);
+    loadFile(filePath, ast);
+  }
 }
 
 module.exports = {
