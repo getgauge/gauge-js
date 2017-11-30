@@ -5,6 +5,8 @@ exports = module.exports;
 
 exports.getListOfFilesFromPath = function(basePath) {
   var result = [];
+  if(!fs.existsSync(basePath))
+    return result;
 
   fs.readdirSync(basePath).forEach(function(fileName) {
     var filePath = path.join(basePath, fileName);
