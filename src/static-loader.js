@@ -2,7 +2,6 @@ var path = require("path");
 var fs = require("fs");
 var esprima = require("esprima");
 var estraverse = require("estraverse");
-var escodegen = require("escodegen");
 
 var fileUtil = require("./file-util");
 var stepRegistry = require("./step-registry");
@@ -17,40 +16,47 @@ function addAliases(aliases, info) {
     if (!aliases[i].value.length) {
       throw new Error("Step text cannot be empty");
     }
-    stepRegistry.add(stepParser.generalise(aliases[i].value), aliases[i].value, null, info.filePath, info.line, null);
+    stepRegistry.add(stepParser.generalise(aliases[i].value), aliases[i].value, null, info.filePath, info.span, null);
   }
 }
 
 function processNode(node, filePath) {
   var stepNode = node.arguments[0];
+  var span = { start: node.loc.start.line, end: node.loc.end.line };
   if (hasAliases(stepNode)) {
-    addAliases(stepNode.elements, {filePath: filePath, line: node.loc.start.line});
+    addAliases(stepNode.elements, { filePath: filePath, span: span });
   } else if (stepNode.type === "Literal") {
-    stepRegistry.add(stepParser.generalise(stepNode.value), stepNode.value, null, filePath, node.loc.start.line, null);
+    stepRegistry.add(stepParser.generalise(stepNode.value), stepNode.value, null, filePath, span, null);
   }
 }
 
 function traverser(filePath) {
-  return function(node) {
+  return function (node) {
     if (stepParser.isStepNode(node)) {
       processNode(node, filePath);
     }
   };
 }
 
-var loadFile = function (filePath, content) {
-  try{
-    var ast = esprima.parse(content, { loc: true });
-    estraverse.traverse(ast, {enter : traverser(filePath)});
-    return escodegen.generate(ast);
-  }catch(e){
-    console.log(e);
-  }
+var loadFile = function (filePath, ast) {
+  estraverse.traverse(ast, { enter: traverser(filePath) });
 };
+
+function createAst(content) {
+  try {
+    return esprima.parse(content, { loc: true });
+  } catch (e) {
+    console.error(e.message);
+    return "";
+  }
+}
 
 function loadFiles(projectRoot) {
   fileUtil.getListOfFilesFromPath(path.join(projectRoot, "tests")).forEach(function (filePath) {
-    loadFile(filePath, fs.readFileSync(filePath).toString("utf-8"));
+    var ast = createAst(fs.readFileSync(filePath, "UTF-8"));
+    if (ast) {
+      loadFile(filePath, ast);
+    }
   });
 }
 
@@ -59,12 +65,16 @@ function unloadFile(filePath) {
 }
 
 function reloadFile(filePath, content) {
-  unloadFile(filePath);
-  loadFile(filePath,content);
+  var ast = createAst(content);
+  if (ast) {
+    unloadFile(filePath);
+    loadFile(filePath, ast);
+  }
 }
 
 module.exports = {
   load: loadFiles,
   loadFile: loadFile,
-  reloadFile: reloadFile
+  reloadFile: reloadFile,
+  unloadFile: unloadFile
 };

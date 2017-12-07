@@ -1,6 +1,6 @@
 var Q = require("q");
 
-var Test = function(fn, params, ms) {
+var Test = function (fn, params, ms) {
   this.fn = fn;
   this.params = params;
   this.async = fn.length > params.length;
@@ -10,22 +10,22 @@ var Test = function(fn, params, ms) {
   this.ms = ms || 1000;
 };
 
-var done = function(err) {
+var done = function (err) {
   var self = this;
-  if(self.finished || self.timedOut) {
+  if (self.finished || self.timedOut) {
     return;
   }
   self.duration = new Date() - self.start;
   self.finished = true;
   clearTimeout(self.timer);
 
-  if(err) {
+  if (err) {
     self.deferred.reject({
       exception: err,
       duration: self.duration
     });
     return;
-  } else{
+  } else {
     self.deferred.resolve({
       duration: self.duration
     });
@@ -33,50 +33,60 @@ var done = function(err) {
   }
 };
 
-var resetTimeout = function() {
+var resetTimeout = function () {
   var self = this;
-  if(self.timer) {
+  if (self.timer) {
     clearTimeout(self.timer);
   }
-  self.timer = setTimeout( function() {
+  self.timer = setTimeout(function () {
     done.apply(self, [new Error("Timed out")]);
     self.timedOut = true;
   }, self.ms);
 };
 
-var runFn = function() {
+var chopStackTrace = function (stack, pattern) {
+  var limit = stack.findIndex(function (frame) {
+    return frame.match(pattern);
+  });
+  return stack.slice(0, limit).join("\n");
+};
+
+var runFn = function () {
   var self = this;
   try {
     resetTimeout.call(self);
     var res = self.fn.apply({}, self.params);
     if (Object.prototype.toString.call(res) === "[object Promise]") {
-      res.then(function() {
+      res.then(function () {
         done.call(self);
-      }).catch(function(e) {
+      }).catch(function (e) {
+        e.stack = e.stack && chopStackTrace(e.stack.split("\n"), /at Test.runFn/);
         done.apply(self, [e ? e : new Error("Undefined error thrown")]);
       });
       return;
     }
     done.call(self);
   } catch (e) {
+    e.stack = e.stack && chopStackTrace(e.stack.split("\n"), /at Test.runFn/);
     done.apply(self, [e ? e : new Error("Undefined error thrown")]);
   }
 };
 
-var runFnAsync = function() {
+var runFnAsync = function () {
   var self = this;
-  self.params.push( function(err) { done.call(self, err); } );
+  self.params.push(function (err) { done.call(self, err); });
   resetTimeout.call(self);
   try {
     self.fn.apply({}, self.params);
   } catch (e) {
+    e.stack = e.stack && chopStackTrace(e.stack.split("\n"), /at Test.runFnAsync/);
     done.apply(self, [e ? e : new Error("Undefined error thrown")]);
   }
 };
 
 Test.prototype.run = function () {
   this.deferred = Q.defer();
-  if(this.async) {
+  if (this.async) {
     runFnAsync.call(this);
   }
   else {

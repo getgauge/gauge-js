@@ -1,6 +1,7 @@
 var assert = require("chai").assert;
 var sinon = require("sinon");
 var protobuf = require("protobufjs");
+var esprima = require("esprima");
 var stepRegistry = require("../src/step-registry");
 var loader = require("../src/static-loader");
 var MessageProcessor = require("../src/message-processor");
@@ -24,7 +25,7 @@ describe("Step Validate Request Processing", function () {
           stepValidateRequest: {
             stepText: "A context step which gets executed before every scenario",
             numberOfParameters: 0,
-            stepValue : {
+            stepValue: {
               parameterizedStepValue: "A context step which gets executed before every scenario",
               parameters: []
             }
@@ -36,7 +37,7 @@ describe("Step Validate Request Processing", function () {
           stepValidateRequest: {
             stepText: "Say {} to {}",
             numberOfParameters: 0,
-            stepValue : {
+            stepValue: {
               parameterizedStepValue: "Say \"hi\" to \"gauge\"",
               parameters: ["hi", "gauge"]
             }
@@ -75,7 +76,7 @@ describe("Step Validate Request Processing", function () {
   it("StepValidateRequest should get back StepValidateResponse with isValid set to false if the step does not exist", function (done) {
     var processor = new MessageProcessor({ message: message, errorType: { values: {} } });
     processor.on("messageProcessed", function (response) {
-      var stub = "step(\"A context step which gets executed before every scenario\", async function() {\n\t"+
+      var stub = "step(\"A context step which gets executed before every scenario\", async function() {\n\t" +
         "throw 'Unimplemented Step';\n});";
 
       assert.deepEqual(stepValidateRequest[0].messageId, response.messageId);
@@ -96,12 +97,14 @@ describe("StepNameRequest Processing", function () {
   before(function (done) {
     var filePath = "example.js";
     stepRegistry.clear();
-    loader.loadFile(filePath, "\"use strict\";\n" +
+    var content = "\"use strict\";\n" +
       "var assert = require(\"assert\");\n" +
       "var vowels = require(\"./vowels\");\n" +
       "step(\"A context step which gets executed before every scenario\", function() {\n" +
       "  console.log('in context step');\n" +
-      "});\n");
+      "});\n";
+
+    loader.loadFile(filePath, esprima.parse(content, { loc: true }));
 
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
       message = root.lookupType("gauge.messages.Message");
@@ -123,6 +126,7 @@ describe("StepNameRequest Processing", function () {
       assert.deepEqual(stepNameRequest.messageId, response.messageId);
       assert.equal(message.MessageType.StepNameResponse, response.messageType);
       assert.equal(true, response.stepNameResponse.isStepPresent);
+      assert.equal(response.stepNameResponse.lineNumber, 4);
       done();
     });
     processor.getResponseFor(stepNameRequest);
@@ -138,7 +142,7 @@ describe("StepPositionsRequest Processing", function () {
   before(function (done) {
     var filePath = "example.js";
     stepRegistry.clear();
-    loader.loadFile(filePath, "\"use strict\";\n" +
+    var content = "\"use strict\";\n" +
       "var assert = require(\"assert\");\n" +
       "var vowels = require(\"./vowels\");\n" +
       "step(\"Vowels in English language are <vowels>.\", function(vowelsGiven) {\n" +
@@ -146,7 +150,9 @@ describe("StepPositionsRequest Processing", function () {
       "});\n" +
       "step(\"The word <word> has <number> vowels.\", function(word, number) {\n" +
       "  assert.equal(number, vowels.numVowels(word));\n" +
-      "});");
+      "});";
+
+    loader.loadFile(filePath, esprima.parse(content, { loc: true }));
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
       message = root.lookupType("gauge.messages.Message");
       stepPositionsRequest =
@@ -169,10 +175,10 @@ describe("StepPositionsRequest Processing", function () {
       assert.equal("", response.stepPositionsResponse.error);
       assert.equal(2, response.stepPositionsResponse.stepPositions.length);
       assert.equal(1, response.stepPositionsResponse.stepPositions.filter(function (stepPosition) {
-        return stepPosition.stepValue === "Vowels in English language are {}." && stepPosition.lineNumber === 4;
+        return stepPosition.stepValue === "Vowels in English language are {}." && stepPosition.span.start === 4;
       }).length);
       assert.equal(1, response.stepPositionsResponse.stepPositions.filter(function (stepPosition) {
-        return stepPosition.stepValue === "The word {} has {} vowels." && stepPosition.lineNumber === 7;
+        return stepPosition.stepValue === "The word {} has {} vowels." && stepPosition.span.start === 7;
       }).length);
       done();
     });

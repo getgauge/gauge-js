@@ -1,12 +1,16 @@
 var fs = require("fs");
+var path = require("path");
 
 exports = module.exports;
 
-exports.getListOfFilesFromPath = function(path) {
+exports.getListOfFilesFromPath = function(basePath) {
   var result = [];
+  if(!fs.existsSync(basePath)) {
+    return result;
+  }
 
-  fs.readdirSync(path).forEach(function(fileName) {
-    var filePath = path + "/" + fileName;
+  fs.readdirSync(basePath).forEach(function(fileName) {
+    var filePath = path.join(basePath, fileName);
     var stat = fs.statSync(filePath);
     if (stat && !stat.isDirectory()) {
       result.push(filePath);

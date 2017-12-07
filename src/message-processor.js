@@ -130,7 +130,7 @@ var executeStepNameRequest = function (request) {
     response.stepNameResponse.stepName.push(step.stepText);
     response.stepNameResponse.isStepPresent = true;
     response.stepNameResponse.fileName = step.fileLocations[0].filePath;
-    response.stepNameResponse.lineNumber = step.fileLocations[0].line;
+    response.stepNameResponse.lineNumber = step.fileLocations[0].span.start;
   }
   this._emit(response);
 };
@@ -152,7 +152,11 @@ var executeCacheFileRequest = function (request) {
   if (!request.cacheFileRequest.isClosed) {
     loader.reloadFile(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
   } else {
-    loader.reloadFile(request.cacheFileRequest.filePath, fs.readFileSync(request.cacheFileRequest.filePath, "UTF-8"));
+    if (fs.existsSync(request.cacheFileRequest.filePath)) {
+      loader.reloadFile(request.cacheFileRequest.filePath, fs.readFileSync(request.cacheFileRequest.filePath, "UTF-8"));
+    } else {
+      loader.unloadFile(request.cacheFileRequest.filePath);
+    }
   }
 };
 
