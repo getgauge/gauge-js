@@ -1,10 +1,11 @@
 var fileUtil = require("./file-util"),
-    path = require("path"),
-    VM = require("./vm");
+    VM = require("./vm"),
+    config = require("./config");
 
 function loadImpl(projectRoot) {
   var vm = new VM();
-  fileUtil.getListOfFilesFromPath(path.join(projectRoot, "tests")).forEach(function(filePath) {
+  var configObject = config.readConfig(projectRoot);
+  fileUtil.getListOfFilesFromPath(projectRoot, configObject).forEach(function(filePath) {
     process.env.GAUGE_STEPFILEPATH = filePath;
     vm.contextify(filePath, process.env.GAUGE_PROJECT_ROOT);
     vm.runFile(filePath);
