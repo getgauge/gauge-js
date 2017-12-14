@@ -51,6 +51,7 @@ function executeHook(request, hookName, currentExecutionInfo) {
       self._emit(response);
     },
     function (reason) {
+      processCustomMessages(reason);
       self._emit(reason);
     }
   );
