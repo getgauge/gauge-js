@@ -24,5 +24,5 @@ exports.isStepNode = function(node) {
   var isGlobalStepFunction = function (node) {
     return node.callee && node.callee.name === "step";
   };
-  return (node.type === "CallExpression" && (isGaugeStepFunction(node) || isGlobalStepFunction(node)));
+  return (node && node.type === "CallExpression" && (isGaugeStepFunction(node) || isGlobalStepFunction(node)));
 };
