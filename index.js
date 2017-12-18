@@ -1,5 +1,3 @@
-#! /usr/bin/env node
-
 var version = process.versions.node.split(".");
 if (parseInt(version[0]) === 0 && parseInt(version[1]) < 12) {
   throw new Error("gauge-js requires Node.js version 0.12+. Current version: " + process.versions.node);
