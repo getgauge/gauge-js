@@ -8,14 +8,14 @@
     "darwin": []
   },
   "run": {
-    "windows": ["index.bat", "--start"],
-    "linux": ["./index.js", "--start"],
-    "darwin": ["./index.js", "--start"]
+    "windows": ["node index.js", "--start"],
+    "linux": ["node index.js", "--start"],
+    "darwin": ["node index.js", "--start"]
   },
   "init": {
-    "windows": ["index.bat", "--init"],
-    "linux": ["./index.js", "--init"],
-    "darwin": ["./index.js", "--init"]
+    "windows": ["node index.js", "--init"],
+    "linux": ["node index.js", "--init"],
+    "darwin": ["node index.js", "--init"]
   },
   "lib": "libs",
   "gaugeVersionSupport": {
