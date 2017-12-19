@@ -46,25 +46,25 @@ var resetTimeout = function () {
 };
 
 var addFullPathToStackTrace = function (stack) {
-  var filePathLineIdentifier = "at"
-  var splitAtFilePathIdentifier = "\("
-  var stackWithFullFilePath = []
+  var filePathLineIdentifier = "at";
+  var splitAtFilePathIdentifier = "\(";
+  var stackWithFullFilePath = [];
   for (var i = 0; i < stack.length; i++) {
-    var line = stack[i]
+    var line = stack[i];
     if (line.indexOf(filePathLineIdentifier) >= 0) {
-      var splitStackTrace = line.split(splitAtFilePathIdentifier)
+      var splitStackTrace = line.split(splitAtFilePathIdentifier);
       var lineWithFullPath = splitStackTrace[0] + splitAtFilePathIdentifier +
-        process.env.GAUGE_PROJECT_ROOT + path.sep + splitStackTrace[1]
-      stackWithFullFilePath.push(lineWithFullPath)
+        process.env.GAUGE_PROJECT_ROOT + path.sep + splitStackTrace[1];
+      stackWithFullFilePath.push(lineWithFullPath);
     } else {
-      stackWithFullFilePath.push(line)
+      stackWithFullFilePath.push(line);
     }
   }
   return stackWithFullFilePath;
 };
 
 var chopStackTrace = function (stack, pattern) {
-  stack = addFullPathToStackTrace(stack)
+  stack = addFullPathToStackTrace(stack);
   var limit = stack.findIndex(function (frame) {
     return frame.match(pattern);
   });
