@@ -27,7 +27,12 @@ function addAliases(aliases, info) {
 
 function processNode(node, filePath) {
   var stepNode = node.arguments[0];
-  var span = { start: node.loc.start.line, end: node.loc.end.line };
+  var span = {
+    start: node.loc.start.line,
+    end: node.loc.end.line,
+    startChar: node.loc.start.column,
+    endChar: node.loc.end.column
+  };
   if (hasAliases(stepNode)) {
     addAliases(stepNode.elements, { filePath: filePath, span: span });
   } else if (stepNode.type === "Literal") {

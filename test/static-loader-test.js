@@ -18,7 +18,7 @@ describe("Static loader", function () {
     var step = stepRegistry.get("vsdvsv");
     assert.isDefined(step);
     assert.isNull(step.fn);
-    assert.deepEqual(step.fileLocations, [{ filePath: filepath, span: { start: 1, end: 3 } }]);
+    assert.deepEqual(step.fileLocations, [{ filePath: filepath, span: { start: 1, end: 3, startChar: 0, endChar: 2 } }]);
     assert.equal(step.stepText, "vsdvsv");
     assert.equal(step.generalisedText, "vsdvsv");
     assert.isNull(step.options);
@@ -62,7 +62,7 @@ describe("Static loader", function () {
     var newStep = stepRegistry.get("black magic");
     assert.isDefined(newStep);
     assert.isNull(newStep.fn);
-    assert.deepEqual(newStep.fileLocations, [{ filePath: filepath, span: { start: 1, end: 3 } }]);
+    assert.deepEqual(newStep.fileLocations, [{ filePath: filepath, span: { start: 1, end: 3, startChar : 0, endChar: 2} }]);
     assert.equal(newStep.stepText, "black magic");
     assert.equal(newStep.generalisedText, "black magic");
     assert.isNull(newStep.options);

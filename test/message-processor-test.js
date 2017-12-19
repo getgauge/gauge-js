@@ -120,13 +120,14 @@ describe("StepNameRequest Processing", function () {
     });
   });
 
-  it("StepNameRequest should get back StepNameResponse with fileName and lineNumber", function (done) {
+  it("StepNameRequest should get back StepNameResponse with fileName and span", function (done) {
     var processor = new MessageProcessor({ message: message, errorType: { values: {} } });
     processor.on("messageProcessed", function (response) {
       assert.deepEqual(stepNameRequest.messageId, response.messageId);
       assert.equal(message.MessageType.StepNameResponse, response.messageType);
       assert.equal(true, response.stepNameResponse.isStepPresent);
-      assert.equal(response.stepNameResponse.lineNumber, 4);
+      assert.equal(response.stepNameResponse.fileName, "example.js");
+      assert.deepEqual(response.stepNameResponse.span, {start: 4, end: 6, startChar : 0, endChar: 2});
       done();
     });
     processor.getResponseFor(stepNameRequest);

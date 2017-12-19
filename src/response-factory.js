@@ -22,7 +22,7 @@ exports.createStepNameResponse = function (message, messageId) {
       stepName: [],
       hasAlias: false,
       fileName: "",
-      lineNumber: -1
+      span: null
     }
   });
 
