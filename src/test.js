@@ -45,7 +45,7 @@ var resetTimeout = function () {
   }, self.ms);
 };
 
-var addFullPathToStackTrac = function (stack) {
+var addFullPathToStackTrace = function (stack) {
   var filePathLineIdentifier = "at"
   var splitAtFilePathIdentifier = "\("
   var stackWithFullFilePath = []
@@ -64,7 +64,7 @@ var addFullPathToStackTrac = function (stack) {
 };
 
 var chopStackTrace = function (stack, pattern) {
-  stack = addFullPathToStackTrac(stack)
+  stack = addFullPathToStackTrace(stack)
   var limit = stack.findIndex(function (frame) {
     return frame.match(pattern);
   });
