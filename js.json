@@ -7,20 +7,15 @@
     "linux": [],
     "darwin": []
   },
-  "PostInstall": {
-		"windows": [],
-		"linux": ["chmod", "+x", "index.sh"],
-		"darwin": ["chmod", "+x", "index.sh"]
-	},
   "run": {
     "windows": ["index.bat", "--start"],
-    "linux": ["./index.sh", "--start"],
-    "darwin": ["./index.sh", "--start"]
+    "linux": ["./index.js", "--start"],
+    "darwin": ["./index.js", "--start"]
   },
   "init": {
     "windows": ["index.bat", "--init"],
-    "linux": ["./index.sh", "--init"],
-    "darwin": ["./index.sh", "--init"]
+    "linux": ["./index.js", "--init"],
+    "darwin": ["./index.js", "--init"]
   },
   "lib": "libs",
   "gaugeVersionSupport": {
