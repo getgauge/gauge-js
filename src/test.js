@@ -1,4 +1,5 @@
 var Q = require("q");
+var path = require("path");
 
 var Test = function (fn, params, ms) {
   this.fn = fn;
@@ -44,7 +45,26 @@ var resetTimeout = function () {
   }, self.ms);
 };
 
+var addFullPathToStackTrace = function (stack) {
+  var filePathLineIdentifier = "at";
+  var splitAtFilePathIdentifier = "\(";
+  var stackWithFullFilePath = [];
+  for (var i = 0; i < stack.length; i++) {
+    var line = stack[i];
+    if (line.indexOf(filePathLineIdentifier) >= 0) {
+      var splitStackTrace = line.split(splitAtFilePathIdentifier);
+      var lineWithFullPath = splitStackTrace[0] + splitAtFilePathIdentifier +
+        process.env.GAUGE_PROJECT_ROOT + path.sep + splitStackTrace[1];
+      stackWithFullFilePath.push(lineWithFullPath);
+    } else {
+      stackWithFullFilePath.push(line);
+    }
+  }
+  return stackWithFullFilePath;
+};
+
 var chopStackTrace = function (stack, pattern) {
+  stack = addFullPathToStackTrace(stack);
   var limit = stack.findIndex(function (frame) {
     return frame.match(pattern);
   });
