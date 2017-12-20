@@ -12,7 +12,7 @@ function getInstance() {
       testMatch: process.env.test_match.split(",").map(function(item) {
         return item.replace(/^[\s\'\"]+|[\s\'\"]+$/g, "");
       })
-    }
+    };
   }
   else{
     configObject = defaultConfig;
@@ -24,4 +24,4 @@ function getInstance() {
 module.exports = {
   
   getInstance: getInstance
-}
+};
