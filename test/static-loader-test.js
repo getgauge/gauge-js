@@ -96,4 +96,32 @@ describe("Static loader", function () {
     assert.isUndefined(newStep);
     done();
   });
+
+  it("Should not add the steps with no value", function (done) {
+    var filepath = "step_implementation.js";
+
+    var source = "step('', function () {\n" +
+      "\tconsole.log('it does not do anything')\n" +
+      "});";
+
+    loader.loadFile(filepath, esprima.parse(source, {loc: true}));
+
+    var steps = Object.keys(stepRegistry.registry);
+    assert.isOk(steps.length == 0);
+    done();
+  });
+
+  it("Should not add the step aliases with no value in", function (done) {
+    var filepath = "step_implementation.js";
+
+    var source = "step(['hello', ''], function () {\n" +
+      "\tconsole.log('it does not do anything')\n" +
+      "});";
+
+    loader.loadFile(filepath, esprima.parse(source, {loc: true}));
+
+    var steps = Object.keys(stepRegistry.registry);
+    assert.isOk(steps.length == 1);
+    done();
+  });
 });
