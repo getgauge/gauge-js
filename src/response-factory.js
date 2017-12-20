@@ -22,7 +22,7 @@ exports.createStepNameResponse = function (message, messageId) {
       stepName: [],
       hasAlias: false,
       fileName: "",
-      span: null
+      span: {}
     }
   });
 
@@ -55,7 +55,7 @@ exports.createStepValidateResponse = function (message, messageId, errorType, va
   }
 
   var errortype,
-      errmsg = "Invalid step.";
+    errmsg = "Invalid step.";
 
   switch (validated.reason) {
     case "duplicate":

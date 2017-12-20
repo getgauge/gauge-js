@@ -10,7 +10,7 @@ var StepRegistry = function () {
  */
 StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath, span, options) {
   if (this.exists(generalisedText)) {
-    this.registry[generalisedText].fileLocations.push({ filePath: filePath, span: span });
+    this.registry[generalisedText].fileLocations.push({filePath: filePath, span: span});
     return;
   }
 
@@ -53,7 +53,7 @@ StepRegistry.prototype.getStepPositions = function (filePath) {
   for (var step in this.registry) {
     for (var i = 0; i < this.registry[step].fileLocations.length; i++) {
       if (this.registry[step].fileLocations[i].filePath === filePath) {
-        stepPositions.push({ stepValue: step, span: this.registry[step].fileLocations[i].span });
+        stepPositions.push({stepValue: step, span: this.registry[step].fileLocations[i].span});
       }
     }
   }
@@ -84,12 +84,12 @@ StepRegistry.prototype.exists = function (stepName) {
 StepRegistry.prototype.validate = function (stepName) {
   var step = this.get(stepName);
   if (!step) {
-    return { valid: false, reason: "notfound", file: null };
+    return {valid: false, reason: "notfound", file: null};
   }
   if (step.fileLocations.length > 1) {
-    return { valid: false, reason: "duplicate", file: step.fileLocations[0].filePath };
+    return {valid: false, reason: "duplicate", file: step.fileLocations[0].filePath};
   }
-  return { valid: true, reason: null, file: null };
+  return {valid: true, reason: null, file: null};
 };
 
 StepRegistry.prototype.clear = function () {
