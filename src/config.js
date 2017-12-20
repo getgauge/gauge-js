@@ -4,8 +4,7 @@ var defaultConfig = {
 
 function getInstance() {
   var configObject;
-  console.log(process.env.test_match);
-
+  
   if(process.env.test_match !== undefined){
 
     configObject = {
@@ -17,7 +16,6 @@ function getInstance() {
   else{
     configObject = defaultConfig;
   }
-  console.log(configObject);
   return configObject;
 }
 
