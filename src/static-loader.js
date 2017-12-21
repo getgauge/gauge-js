@@ -28,11 +28,16 @@ function addAliases(aliases, info) {
 
 function processNode(node, filePath) {
   var stepNode = node.arguments[0];
-  var span = { start: node.loc.start.line, end: node.loc.end.line };
+  var span = {
+    start: node.loc.start.line,
+    end: node.loc.end.line,
+    startChar: node.loc.start.column,
+    endChar: node.loc.end.column
+  };
   if (hasAliases(stepNode)) {
-    addAliases(stepNode.elements, { filePath: filePath, span: span });
+    addAliases(stepNode.elements, {filePath: filePath, span: span});
   } else if (stepNode.type === "Literal") {
-    addStep(stepNode, { filePath: filePath, span: span });
+    addStep(stepNode, {filePath: filePath, span: span});
   }
 }
 
@@ -45,12 +50,12 @@ function traverser(filePath) {
 }
 
 var loadFile = function (filePath, ast) {
-  estraverse.traverse(ast, { enter: traverser(filePath) });
+  estraverse.traverse(ast, {enter: traverser(filePath)});
 };
 
 function createAst(content) {
   try {
-    return esprima.parse(content, { loc: true });
+    return esprima.parse(content, {loc: true});
   } catch (e) {
     console.error(e.message);
     return "";
