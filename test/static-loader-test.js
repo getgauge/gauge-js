@@ -18,7 +18,7 @@ describe("Static loader", function () {
     var step = stepRegistry.get("vsdvsv");
     assert.isDefined(step);
     assert.isNull(step.fn);
-    assert.deepEqual(step.fileLocations, [{ filePath: filepath, span: { start: 1, end: 3 } }]);
+    assert.deepEqual(step.fileLocations, [{filePath: filepath, span: {start: 1, end: 3, startChar: 0, endChar: 2}}]);
     assert.equal(step.stepText, "vsdvsv");
     assert.equal(step.generalisedText, "vsdvsv");
     assert.isNull(step.options);
@@ -62,7 +62,7 @@ describe("Static loader", function () {
     var newStep = stepRegistry.get("black magic");
     assert.isDefined(newStep);
     assert.isNull(newStep.fn);
-    assert.deepEqual(newStep.fileLocations, [{ filePath: filepath, span: { start: 1, end: 3 } }]);
+    assert.deepEqual(newStep.fileLocations, [{filePath: filepath, span: {start: 1, end: 3, startChar: 0, endChar: 2}}]);
     assert.equal(newStep.stepText, "black magic");
     assert.equal(newStep.generalisedText, "black magic");
     assert.isNull(newStep.options);
@@ -79,7 +79,7 @@ describe("Static loader", function () {
 
     var sourceV2 = "step('black magic', function () {\n" +
       "\tconsole.log('lets start the magic!');\n" +
-      "\\ // syntax error\n"+
+      "\\ // syntax error\n" +
       "});";
 
     loader.loadFile(filepath, esprima.parse(sourceV1, {loc: true}));
@@ -94,6 +94,34 @@ describe("Static loader", function () {
 
     var newStep = stepRegistry.get("black magic");
     assert.isUndefined(newStep);
+    done();
+  });
+
+  it("Should not add the steps with no value", function (done) {
+    var filepath = "step_implementation.js";
+
+    var source = "step('', function () {\n" +
+      "\tconsole.log('it does not do anything')\n" +
+      "});";
+
+    loader.loadFile(filepath, esprima.parse(source, {loc: true}));
+
+    var steps = Object.keys(stepRegistry.registry);
+    assert.isOk(steps.length == 0);
+    done();
+  });
+
+  it("Should not add the step aliases with no value in", function (done) {
+    var filepath = "step_implementation.js";
+
+    var source = "step(['hello', ''], function () {\n" +
+      "\tconsole.log('it does not do anything')\n" +
+      "});";
+
+    loader.loadFile(filepath, esprima.parse(source, {loc: true}));
+
+    var steps = Object.keys(stepRegistry.registry);
+    assert.isOk(steps.length == 1);
     done();
   });
 });
