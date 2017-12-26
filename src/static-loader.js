@@ -1,4 +1,3 @@
-var path = require("path");
 var fs = require("fs");
 var esprima = require("esprima");
 var estraverse = require("estraverse");
@@ -6,6 +5,8 @@ var estraverse = require("estraverse");
 var fileUtil = require("./file-util");
 var stepRegistry = require("./step-registry");
 var stepParser = require("./step-parser");
+
+var config = require("./config");
 
 function hasAliases(node) {
   return node.type === "ArrayExpression" && !!node.elements.length;
@@ -62,7 +63,8 @@ function createAst(content) {
 }
 
 function loadFiles(projectRoot) {
-  fileUtil.getListOfFilesFromPath(path.join(projectRoot, "tests")).forEach(function (filePath) {
+  var configObject = config.getInstance();
+  fileUtil.getListOfFilesFromPath(projectRoot, configObject).forEach(function (filePath) {
     var ast = createAst(fs.readFileSync(filePath, "UTF-8"));
     if (ast) {
       loadFile(filePath, ast);

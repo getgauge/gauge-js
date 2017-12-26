@@ -12,6 +12,16 @@ Example:
 test_timeout=1500
 ```
 
+| Property         | Default            |  Description                                     |
+|------------------|--------------------|--------------------------------------------------|
+| **`test_match`** | `**/tests/**/*.js` | Specify test step implemetation location pattern.|
+
+Example:
+
+```js
+test_match='**/some_folder/**/*.test.js, **/some_other_folder/**/*.steps.ts'
+```
+
 | Property                 | Default      |  Description                                                                                     |
 |--------------------------|--------------|--------------------------------------------------------------------------------------------------|
 | **`DEBUG`**              | `false`      | Set this to `true` to start with the debugger. Read [Debugging](#debugging) for more information.|
