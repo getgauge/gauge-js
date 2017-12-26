@@ -23,11 +23,12 @@ describe("Step Validate Request Processing", function () {
           messageId: 1,
           messageType: message.MessageType.StepValidateRequest,
           stepValidateRequest: {
-            stepText: "A context step which gets executed before every scenario",
-            numberOfParameters: 0,
+            stepText: "A context step which takes two params {} and {}",
+            numberOfParameters: 2,
             stepValue: {
-              parameterizedStepValue: "A context step which gets executed before every scenario",
-              parameters: []
+              stepValue: "A context step which takes two params {} and {}",
+              parameterizedStepValue: "A context step which takes two params <hello> and <blah>",
+              parameters: ["hello", "blah"]
             }
           }
         }),
@@ -36,7 +37,7 @@ describe("Step Validate Request Processing", function () {
           messageType: message.MessageType.StepValidateRequest,
           stepValidateRequest: {
             stepText: "Say {} to {}",
-            numberOfParameters: 0,
+            numberOfParameters: 2,
             stepValue: {
               parameterizedStepValue: "Say \"hi\" to \"gauge\"",
               parameters: ["hi", "gauge"]
@@ -57,7 +58,7 @@ describe("Step Validate Request Processing", function () {
     new MessageProcessor({message: message, errorType: {values: {}}}).getResponseFor(stepValidateRequest[0]);
 
     assert(stepRegistry.validate.calledOnce);
-    assert.equal("A context step which gets executed before every scenario", stepRegistry.validate.getCall(0).args[0]);
+    assert.equal("A context step which takes two params {} and {}", stepRegistry.validate.getCall(0).args[0]);
     done();
 
   });
@@ -76,7 +77,7 @@ describe("Step Validate Request Processing", function () {
   it("StepValidateRequest should get back StepValidateResponse with isValid set to false if the step does not exist", function (done) {
     var processor = new MessageProcessor({message: message, errorType: {values: {}}});
     processor.on("messageProcessed", function (response) {
-      var stub = "step(\"A context step which gets executed before every scenario\", async function() {\n\t" +
+      var stub = "step(\"A context step which takes two params <arg0> and <arg1>\", async function(arg0, arg1) {\n\t" +
         "throw 'Unimplemented Step';\n});";
 
       assert.deepEqual(stepValidateRequest[0].messageId, response.messageId);
