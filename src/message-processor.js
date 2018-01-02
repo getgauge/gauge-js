@@ -106,7 +106,6 @@ var getSuggestionFor = function (request, validated) {
     return "";
   }
   var argCount = 0;
-  console.log(request.stepValue);
   var stepText = request.stepValue.stepValue.replace(/{}/g, function () { return "<arg" + argCount++ + ">"; });
   return "step(\"" + stepText + "\", async function(" + getParamsList(request.stepValue.parameters) + ") {\n\t" +
     "throw 'Unimplemented Step';\n" +
