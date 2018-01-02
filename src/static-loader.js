@@ -63,7 +63,7 @@ function createAst(content) {
 }
 
 function loadFiles(projectRoot) {
-  var configObject = config.getInstance();
+  var configObject = config.getInstance(projectRoot);
   fileUtil.getListOfFilesFromPath(projectRoot, configObject).forEach(function (filePath) {
     var ast = createAst(fs.readFileSync(filePath, "UTF-8"));
     if (ast) {

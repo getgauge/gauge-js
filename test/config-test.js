@@ -4,16 +4,16 @@ var config = require("../src/config");
 describe("testMatch configuration load", function(){
 
   it("Should load default testMatch configuration when environment var is not present.", function() {
-    var instance  = config.getInstance();
+    var instance  = config.getInstance("projectRoot");
 
-    assert.deepEqual(instance.testMatch, ["**/tests/**/*.js"]);
+    assert.deepEqual(instance.testMatch, ["projectRoot/tests/**/*.js"]);
   });
 
   it("Should take testMatch config from test_match environment variable.", function() {
     var someValue = "some/value/*.js";
     process.env.test_match = someValue;
 
-    var instance  = config.getInstance();
+    var instance  = config.getInstance("projectRoot");
 
     assert.deepEqual(instance.testMatch, [someValue]);
   });
@@ -27,7 +27,7 @@ describe("testMatch configuration load", function(){
 
     process.env.test_match = valueArray.join(",");
 
-    var instance  = config.getInstance();
+    var instance  = config.getInstance("projectRoot");
 
     assert.deepEqual(instance.testMatch, valueArray);
   });
@@ -41,7 +41,7 @@ describe("testMatch configuration load", function(){
 
     process.env.test_match = "\""+ valueArray.join(",") + "\"";
 
-    var instance  = config.getInstance();
+    var instance  = config.getInstance("projectRoot");
 
     assert.deepEqual(instance.testMatch, valueArray);
   });
@@ -55,7 +55,7 @@ describe("testMatch configuration load", function(){
 
     process.env.test_match = "'"+ valueArray.join(",") + "'";
 
-    var instance  = config.getInstance();
+    var instance  = config.getInstance("projectRoot");
 
     assert.deepEqual(instance.testMatch, valueArray);
   });
@@ -69,7 +69,7 @@ describe("testMatch configuration load", function(){
 
     process.env.test_match = "\" "+ valueArray.join(" , ") + " \"";
 
-    var instance  = config.getInstance();
+    var instance  = config.getInstance("projectRoot");
 
     assert.deepEqual(instance.testMatch, valueArray);
   });
