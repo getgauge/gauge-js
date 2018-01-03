@@ -1,12 +1,13 @@
 var assert = require("chai").assert;
 var config = require("../src/config");
+var path = require("path");
 
 describe("testMatch configuration load", function(){
 
   it("Should load default testMatch configuration when environment var is not present.", function() {
     var instance  = config.getInstance("projectRoot");
 
-    assert.deepEqual(instance.testMatch, ["projectRoot/tests/**/*.js"]);
+    assert.deepEqual(instance.testMatch, [path.join("projectRoot","tests","**","*.js")]);
   });
 
   it("Should take testMatch config from test_match environment variable.", function() {

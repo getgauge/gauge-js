@@ -1,4 +1,5 @@
 var path = require("path");
+
 function getInstance(projectRoot) {
   var configObject;
   if(process.env.test_match !== undefined){
@@ -10,7 +11,7 @@ function getInstance(projectRoot) {
   }
   else{
     configObject = {
-      testMatch: [path.join(projectRoot, "tests/**/*.js")]
+      testMatch: [path.join(projectRoot, "tests", "**","*.js")]
     };
   }
   return configObject;
