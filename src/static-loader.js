@@ -69,7 +69,7 @@ function loadFiles(projectRoot) {
     if (ast) {
       loadFile(filePath, ast);
     }
-  });
+  }); 
 }
 
 function unloadFile(filePath) {
