@@ -27,3 +27,7 @@ exports.getListOfFilesFromPath = function(basePath, conf) {
   result = micromatch(result, conf.testMatch);
   return result;
 };
+
+exports.isSameFilePath = function(filePath1, filePath2) {
+  return path.relative(filePath1, filePath2) === "";
+};

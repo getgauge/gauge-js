@@ -1,3 +1,5 @@
+var fileUtil = require("./file-util");
+
 var StepRegistry = function () {
   this.registry = {};
 };
@@ -52,7 +54,7 @@ StepRegistry.prototype.getStepPositions = function (filePath) {
   var stepPositions = [];
   for (var step in this.registry) {
     for (var i = 0; i < this.registry[step].fileLocations.length; i++) {
-      if (this.registry[step].fileLocations[i].filePath === filePath) {
+      if (fileUtil.isSameFilePath(this.registry[step].fileLocations[i].filePath, filePath)) {
         stepPositions.push({stepValue: step, span: this.registry[step].fileLocations[i].span});
       }
     }
@@ -98,7 +100,7 @@ StepRegistry.prototype.clear = function () {
 
 StepRegistry.prototype.deleteSteps = function (filePath) {
   var filterFunc = function (location) {
-    return location.filePath !== filePath;
+    return !fileUtil.isSameFilePath(location.filePath, filePath);
   };
   for (var stepText in this.registry) {
     this.registry[stepText].fileLocations = this.registry[stepText].fileLocations.filter(filterFunc);
