@@ -36,7 +36,8 @@ exports.createRefactorResponse = function (message, messageId) {
     refactorResponse: {
       success: false,
       error: "",
-      filesChanged: []
+      filesChanged: [],
+      fileChanges: []
     }
   });
 

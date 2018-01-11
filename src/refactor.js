@@ -1,9 +1,9 @@
 var fs = require("fs"),
-    esprima = require("esprima"),
-    estraverse = require("estraverse"),
-    escodegen = require("escodegen"),
-    stepRegistry = require("./step-registry"),
-    stepParser = require("./step-parser");
+  esprima = require("esprima"),
+  estraverse = require("estraverse"),
+  escodegen = require("escodegen"),
+  stepRegistry = require("./step-registry"),
+  stepParser = require("./step-parser");
 
 var processNode = function (node, req) {
   node.arguments[0].value = req.newStepValue.parameterizedStepValue;
@@ -39,7 +39,10 @@ var refactor = function (request, response) {
   try {
     var content = fs.readFileSync(info.fileLocations[0].filePath).toString("utf-8");
     content = refactor_content(content, info, request.refactorRequest);
-    fs.writeFileSync(info.fileLocations[0].filePath, content, "utf-8");
+    if (request.refactorRequest.saveChanges) {
+      fs.writeFileSync(info.fileLocations[0].filePath, content, "utf-8");
+    }
+    response.refactorResponse.fileChanges.push({ "fileName": info.fileLocations[0].filePath, "fileContent": content });
   } catch (e) {
     response.refactorResponse.success = false;
     response.refactorResponse.error = e.toString();
