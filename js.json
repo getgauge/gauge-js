@@ -1,6 +1,6 @@
 {
   "id" : "js",
-  "version" : "2.1.0",
+  "version" : "2.1.1",
   "description": "Javascript support for gauge",
   "install": {
     "windows": [],
@@ -19,7 +19,7 @@
   },
   "lib": "libs",
   "gaugeVersionSupport": {
-    "minimum": "0.9.6",
+    "minimum": "0.9.7",
     "maximum": ""
   }
 }

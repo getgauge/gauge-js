@@ -30,7 +30,7 @@ Req.prototype.load = function (modname) {
       path.join(self.root, "node_modules")
     ].concat(module.paths.filter(function (p) { return p.indexOf(".gauge") < 0; }));
     try {
-      return m.require(modname);
+      return modname === path.basename(modname) ?  m.require(modname) : m.require(path.join(path.dirname(self.filepath), modname));
     } catch (e) {
       console.error("Unable to require module '" + modname + "' in " + self.filepath);
       console.trace(e.stack);
