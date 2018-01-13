@@ -122,5 +122,16 @@ describe("Test function execution", function () {
         done();
       }).done();
     });
+
+    it("should contain relative path", function (done) {
+      var testFunction = function () {
+        throw new Error("failed");
+      };
+      var result = new Test(testFunction, []).run();
+      result.then(function () { }).catch(function (reason) {
+        expect(reason.exception.stack).to.not.contains(process.env.GAUGE_PROJECT_ROOT);
+        done();
+      }).done();
+    });
   });
 });
