@@ -35,6 +35,7 @@ describe( "Refactor", function () {
   });
 
   beforeEach( function () {
+    contentOutput = contentInput = outputFile = info = request = response = null;
     response = factory.createRefactorResponse(message, 123);
   });
 
@@ -69,7 +70,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: 1,
           newPosition: 1
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
@@ -84,6 +86,61 @@ describe( "Refactor", function () {
     assert.strictEqual( response.refactorResponse.error, "" );
     assert.strictEqual( response.refactorResponse.success, true );
     assert.strictEqual( response.refactorResponse.filesChanged.length, 1 );
+    assert.strictEqual( response.refactorResponse.filesChanged[0], "test/data/refactor-output.js");
+    assert.strictEqual( response.refactorResponse.fileChanges.length, 1);
+    assert.strictEqual( response.refactorResponse.fileChanges[0].fileName, "test/data/refactor-output.js");
+    assert.strictEqual( contentOutput, "var vowels = [\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];\nhakunaMatata('What a wonderful phrase!');\ngauge.step('This English word <word> has <number> vowels.', function (word, number) {\n});\nvar myfn = function (number) {\n};\ngauge.step('There are <number> vowels.', myfn);");
+    assert.strictEqual( response.refactorResponse.fileChanges[0].fileContent, contentOutput);
+  });
+
+  it( "Should not save changes when request save changes is false", function () {
+    var output = [];
+    output.push( "var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];" );
+    output.push( "hakunaMatata('What a wonderful phrase!');" );
+    output.push( "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});" );
+    output.push( "var myfn = function (number) {\n};" );
+    output.push( "gauge.step('There are <number> vowels.', myfn);" );
+    contentInput = output.join( "\n" );
+
+    request = {
+      refactorRequest: {
+        oldStepValue: {
+          stepValue: "The word {} has {} vowels.",
+          parameterizedStepValue: "The word <word> has <number> vowels.",
+          parameters: [ "word", "number" ]
+        },
+        newStepValue: {
+          stepValue: "This English word {} has {} vowels.",
+          parameterizedStepValue: "This English word <word> has <number> vowels.",
+          parameters: [ "word", "number" ]
+        },
+        paramPositions: [ {
+          oldPosition: 0,
+          newPosition: 0
+        }, {
+          oldPosition: 1,
+          newPosition: 1
+        } ],
+        saveChanges: false
+      }
+    };
+
+    info = {
+      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      stepText: "The word <word> has <number> vowels.",
+      generalisedText: "The word {} has {} vowels.",
+      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+    };
+
+    response = refactor( request, response, fs );
+    assert.strictEqual( response.refactorResponse.error, "" );
+    assert.strictEqual( response.refactorResponse.success, true );
+    assert.strictEqual( response.refactorResponse.filesChanged.length, 1 );
+    assert.strictEqual( response.refactorResponse.filesChanged[0], "test/data/refactor-output.js");
+    assert.strictEqual( response.refactorResponse.fileChanges.length, 1);
+    assert.strictEqual( response.refactorResponse.fileChanges[0].fileName, "test/data/refactor-output.js");
+    assert.strictEqual( response.refactorResponse.fileChanges[0].fileContent, "var vowels = [\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];\nhakunaMatata('What a wonderful phrase!');\ngauge.step('This English word <word> has <number> vowels.', function (word, number) {\n});\nvar myfn = function (number) {\n};\ngauge.step('There are <number> vowels.', myfn);");
+    assert.notExists( contentOutput );
   });
 
   it( "Should refactor global step text without changing function ref", function () {
@@ -113,7 +170,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: 1,
           newPosition: 1
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
@@ -150,7 +208,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: -1,
           newPosition: 1
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
@@ -186,7 +245,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: -1,
           newPosition: 1
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
@@ -219,7 +279,8 @@ describe( "Refactor", function () {
         paramPositions: [ {
           oldPosition: -1,
           newPosition: 0
-        }]
+        }],
+        saveChanges: true
       }
     };
 
@@ -252,7 +313,8 @@ describe( "Refactor", function () {
         paramPositions: [ {
           oldPosition: -1,
           newPosition: 0
-        }]
+        }],
+        saveChanges: true
       }
     };
 
@@ -288,7 +350,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: 1,
           newPosition: 0
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
@@ -324,7 +387,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: 1,
           newPosition: 0
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
@@ -363,7 +427,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: 0,
           newPosition: 1
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
@@ -402,7 +467,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: 0,
           newPosition: 1
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
@@ -438,7 +504,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: 0,
           newPosition: 0
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
@@ -474,7 +541,8 @@ describe( "Refactor", function () {
         }, {
           oldPosition: 0,
           newPosition: 0
-        } ]
+        } ],
+        saveChanges: true
       }
     };
 
