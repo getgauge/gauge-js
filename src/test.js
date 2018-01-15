@@ -1,4 +1,5 @@
 var Q = require("q");
+var path = require("path");
 
 var Test = function (fn, params, ms) {
   this.fn = fn;
@@ -44,11 +45,18 @@ var resetTimeout = function () {
   }, self.ms);
 };
 
+var absoluteToRelativePath = function(stack) {
+  for (var i = 0; i< stack.length; i++) {
+    stack[i] = stack[i].replace(process.env.GAUGE_PROJECT_ROOT + path.sep, "");
+  }
+  return stack;
+};
+
 var chopStackTrace = function (stack, pattern) {
   var limit = stack.findIndex(function (frame) {
     return frame.match(pattern);
   });
-  return stack.slice(0, limit).join("\n");
+  return absoluteToRelativePath(stack.slice(0, limit)).join("\n");
 };
 
 var runFn = function () {
