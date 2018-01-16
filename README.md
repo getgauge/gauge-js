@@ -33,10 +33,3 @@ Run the following command to create a [sample](https://github.com/getgauge/gauge
 ```
 $ gauge init js_webdriver
 ```
-
----
-
-## License
-
-![GNU Public License version 3.0](http://www.gnu.org/graphics/gplv3-127x51.png)
-Gauge-JS is released under [GNU Public License version 3.0](http://www.gnu.org/licenses/gpl-3.0.txt)
