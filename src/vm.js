@@ -49,7 +49,7 @@ VM.prototype.contextify = function (filePath, root) {
 };
 
 VM.prototype.run = function (code) {
-  code = "(function () { process.chdir(gauge_project_root);" + code + "})()";
+  code = "(function () { process.chdir(gauge_project_root);" + code + "})()" + "\n//# sourceURL="+ this.options.filepath;
   try {
     vm.runInContext(code, this.context, this.options);
   } catch (e) {
