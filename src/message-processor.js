@@ -10,6 +10,7 @@ var refactor = require("./refactor");
 var dataStore = require("./data-store-factory");
 var impl_loader = require("./impl-loader");
 var loader = require("./static-loader");
+var inspector = require("inspector");
 
 var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
@@ -57,10 +58,22 @@ function executeHook(request, hookName, currentExecutionInfo) {
   );
 }
 
+function startExecution(self, request) {
+  impl_loader.load(GAUGE_PROJECT_ROOT);
+  executeHook.apply(self, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]);
+}
+
 function executeBeforeSuiteHook(request) {
   stepRegistry.clear();
-  impl_loader.load(GAUGE_PROJECT_ROOT);
-  executeHook.apply(this, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]);
+  var self = this;
+  if (process.env.DEBUGGING) {
+    var port = parseInt(process.env.DEBUG_PORT);
+    console.log("Trying to connect to debugger.", port);
+    inspector.open(port, "127.0.0.1", true);
+    setTimeout(function () { startExecution(self,request); }, 1000);
+  } else {
+    startExecution(self, request);
+  }
 }
 
 function executeBeforeSpecHook(request) {
@@ -79,6 +92,9 @@ function executeBeforeStepHook(request) {
 function executeAfterSuiteHook(request) {
   dataStore.suiteStore.clear();
   executeHook.apply(this, [request, "afterSuite", request.executionEndingRequest.currentExecutionInfo]);
+  if (process.env.DEBUGGING) {
+    inspector.close();
+  }
 }
 
 function executeAfterSpecHook(request) {

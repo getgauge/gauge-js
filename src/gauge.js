@@ -3,22 +3,11 @@ var MessageProcessor = require("./message-processor");
 var protobuf = require("protobufjs");
 var path = require("path");
 var loader = require("./static-loader");
-var inspector = require("inspector");
 
 var GAUGE_INTERNAL_PORT = process.env.GAUGE_INTERNAL_PORT;
 var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
 function run() {
-  if (process.env.DEBUG) {
-    console.log("Trying to connect to debugger.");
-    inspector.open(9230, "127.0.0.1", true);
-    setTimeout(load, 1000);
-  } else {
-    load();
-  }
-}
-
-function load() {
   protobuf.load(path.resolve("gauge-proto/messages.proto")).then(function (root) {
     var message = root.lookupType("gauge.messages.Message");
     var errorType = root.lookupEnum("gauge.messages.StepValidateResponse.ErrorType");
