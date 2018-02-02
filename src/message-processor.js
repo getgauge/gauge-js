@@ -70,7 +70,8 @@ function executeBeforeSuiteHook(request) {
     var port = parseInt(process.env.DEBUG_PORT);
     console.log("Trying to connect to debugger.", port);
     inspector.open(port, "127.0.0.1", true);
-    setTimeout(function () { startExecution(self,request); }, 1000);
+    var inspectorWaitTime = 1000;
+    setTimeout(function () { startExecution(self,request); }, inspectorWaitTime);
   } else {
     startExecution(self, request);
   }
