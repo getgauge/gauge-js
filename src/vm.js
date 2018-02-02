@@ -1,8 +1,8 @@
 var vm = require("vm"),
-    fs = require("fs"),
-    path = require("path"),
-    reqman = require("./req-manager"),
-    gaugeGlobal = require("./gauge-global");
+  fs = require("fs"),
+  path = require("path"),
+  reqman = require("./req-manager"),
+  gaugeGlobal = require("./gauge-global");
 
 var VM = function () {
   var self = this;
@@ -41,7 +41,7 @@ VM.prototype.contextify = function (filePath, root) {
     gauge_runner_root: process.cwd(),
     gauge_project_root: self.options.root
   };
-  for (var type in gaugeGlobal.hooks){
+  for (var type in gaugeGlobal.hooks) {
     sandbox[type] = gaugeGlobal.hooks[type];
   }
 
@@ -49,9 +49,9 @@ VM.prototype.contextify = function (filePath, root) {
 };
 
 VM.prototype.run = function (code) {
-  code = "(function () { process.chdir(gauge_project_root);" + code + "})()";
   try {
-    vm.runInContext(code, this.context, this.options);
+    vm.runInContext("(function () { process.chdir(gauge_project_root); })()", this.context, this.options);
+    vm.runInContext(code +  "\n//# sourceURL="+ this.options.filepath, this.context, this.options);
   } catch (e) {
     console.error("Error executing " + this.options.filename);
     console.trace(e.stack);
