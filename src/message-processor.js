@@ -163,6 +163,14 @@ var executeStepPositionsRequest = function (request) {
   this._emit(response);
 };
 
+var getImplementationFiles = function(request) {
+  var response = factory.createImplementationFileListResponse(this.options.message, request.messageId);
+  var folderPath = request.implementationFileListRequest.folderPath;
+  var files = impl_loader.getImplFileList(folderPath);
+  response.implementationFileListResponse.implementationFilePaths = files;
+  this._emit(response);
+}
+
 var executeRefactor = function (request) {
   var response = factory.createRefactorResponse(this.options.message, request.messageId);
   response = refactor(request, response);
@@ -209,6 +217,7 @@ var MessageProcessor = function (protoOptions) {
   this.processors[this.options.message.MessageType.CacheFileRequest] = executeCacheFileRequest;
   this.processors[this.options.message.MessageType.StepPositionsRequest] = executeStepPositionsRequest;
   this.processors[this.options.message.MessageType.KillProcessRequest] = killProcess;
+  this.processors[this.options.message.MessageType.ImplementationFileListRequest] = getImplementationFiles;
 };
 
 MessageProcessor.prototype.getResponseFor = function (request) {
