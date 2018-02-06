@@ -12,6 +12,12 @@ function loadImpl(projectRoot) {
   });
 }
 
+function getImplFileList(projectRoot) {
+  var configObject = config.getInstance(projectRoot);
+  return fileUtil.getListOfFilesFromPath(projectRoot, configObject)
+}
+
 module.exports= {
-  load: loadImpl
+  load: loadImpl,
+  getImplFileList: getImplFileList
 };
