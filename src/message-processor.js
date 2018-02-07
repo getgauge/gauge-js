@@ -147,7 +147,8 @@ var executeStepNameRequest = function (request) {
   var response = factory.createStepNameResponse(this.options.message, request.messageId);
   var step = stepRegistry.get(stepValue);
   if (step) {
-    response.stepNameResponse.stepName.push(step.stepText);
+    response.stepNameResponse.stepName = step.aliases;
+    response.stepNameResponse.hasAlias = step.hasAlias;
     response.stepNameResponse.isStepPresent = true;
     response.stepNameResponse.fileName = step.fileLocations[0].filePath;
     response.stepNameResponse.span = step.fileLocations[0].span;

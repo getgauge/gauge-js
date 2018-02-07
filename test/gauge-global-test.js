@@ -30,9 +30,8 @@ describe("Calling global gauge.step()", function() {
     assert(stepRegistry.add.calledOnce);
     assert(stepParser.generalise.calledOnce);
     assert.equal("Step <1>", stepParser.generalise.getCall(0).args[0]);
-    assert.equal("Step {}", stepRegistry.add.getCall(0).args[0]);
-    assert.equal("Step <1>", stepRegistry.add.getCall(0).args[1]);
-    assert.deepEqual(sampleFunction, stepRegistry.add.getCall(0).args[2]);
+    assert.equal("Step <1>", stepRegistry.add.getCall(0).args[0]);
+    assert.deepEqual(sampleFunction, stepRegistry.add.getCall(0).args[1]);
 
     stepRegistry.add.restore();
     stepParser.generalise.restore();
@@ -41,11 +40,11 @@ describe("Calling global gauge.step()", function() {
 
   it("should support step aliases", function(done) {
     var sampleFunction = function(stepnum) { console.log(stepnum); };
-    sinon.spy(stepRegistry, "add");
+    sinon.spy(stepRegistry, "addAlias");
 
     step(["Step <stepnum>","Another step <stepnum>"], sampleFunction);
 
-    assert(stepRegistry.add.calledTwice);
+    assert(stepRegistry.addAlias.calledOnce);
 
     var list = stepRegistry.registry;
 
@@ -53,12 +52,16 @@ describe("Calling global gauge.step()", function() {
     assert(list["Another step {}"]);
 
     assert.equal(list["Step {}"].stepText, "Step <stepnum>");
+    assert.equal(list["Step {}"].hasAlias, true);
+    assert.deepEqual(list["Step {}"].aliases, ["Step <stepnum>", "Another step <stepnum>"]);
     assert.deepEqual(list["Step {}"].fn, sampleFunction);
 
     assert.equal(list["Another step {}"].stepText, "Another step <stepnum>");
+    assert.equal(list["Another step {}"].hasAlias, true);
+    assert.deepEqual(list["Another step {}"].aliases, ["Step <stepnum>", "Another step <stepnum>"]);
     assert.deepEqual(list["Another step {}"].fn, sampleFunction);
 
-    stepRegistry.add.restore();
+    stepRegistry.addAlias.restore();
     done();
   });
 

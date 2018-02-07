@@ -1,6 +1,5 @@
 var hookRegistry = require("./hook-registry"),
   customMessageRegistry = require("./custom-message-registry"),
-  stepParser = require("./step-parser"),
   dataStore = require("./data-store-factory"),
   stepRegistry = require("./step-registry");
 
@@ -17,14 +16,9 @@ var step = function (stepName, options, stepFunction) {
 
   var filepath = process.env.GAUGE_STEPFILEPATH;
   if (typeof stepName === "object" && !!stepName.length) {
-    for (var i = 0; i < stepName.length; i++) {
-      if (!stepName[i].length) {
-        throw new Error("Step text cannot be empty");
-      }
-      stepRegistry.add(stepParser.generalise(stepName[i]), stepName[i], stepFunction, filepath, {}, options);
-    }
+    stepRegistry.addAlias(stepName, stepFunction, filepath, {}, options);
   } else if (typeof stepName === "string") {
-    stepRegistry.add(stepParser.generalise(stepName), stepName, stepFunction, filepath, {}, options);
+    stepRegistry.add(stepName, stepFunction, filepath, {}, options);
   }
 };
 

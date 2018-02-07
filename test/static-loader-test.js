@@ -14,11 +14,11 @@ describe("Static loader", function () {
       "\tassert.equal(+number, numberOfVowels(word));\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(source, {loc: true}));
+    loader.loadFile(filepath, esprima.parse(source, { loc: true }));
     var step = stepRegistry.get("vsdvsv");
     assert.isDefined(step);
     assert.isNull(step.fn);
-    assert.deepEqual(step.fileLocations, [{filePath: filepath, span: {start: 1, end: 3, startChar: 0, endChar: 2}}]);
+    assert.deepEqual(step.fileLocations, [{ filePath: filepath, span: { start: 1, end: 3, startChar: 0, endChar: 2 } }]);
     assert.equal(step.stepText, "vsdvsv");
     assert.equal(step.generalisedText, "vsdvsv");
     assert.isNull(step.options);
@@ -31,10 +31,15 @@ describe("Static loader", function () {
       "\tassert.equal(+number, numberOfVowels(word));\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(source, {loc: true}));
+    loader.loadFile(filepath, esprima.parse(source, { loc: true }));
     var steps = stepRegistry.getStepTexts();
     assert.equal(steps.length, 2);
     assert.deepEqual(steps, ["vsdvsv", "oohooo"]);
+    steps.forEach((stepText) => {
+      var step = stepRegistry.get(stepText);
+      assert.equal(step.hasAlias, true);
+      assert.deepEqual(step.aliases, ["vsdvsv", "oohooo"]);
+    });
     done();
   });
 
@@ -49,7 +54,7 @@ describe("Static loader", function () {
       "\tconsole.log('lets start the magic!');\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(sourceV1, {loc: true}));
+    loader.loadFile(filepath, esprima.parse(sourceV1, { loc: true }));
 
     var step = stepRegistry.get("vsdvsv");
     assert.isDefined(step);
@@ -62,7 +67,7 @@ describe("Static loader", function () {
     var newStep = stepRegistry.get("black magic");
     assert.isDefined(newStep);
     assert.isNull(newStep.fn);
-    assert.deepEqual(newStep.fileLocations, [{filePath: filepath, span: {start: 1, end: 3, startChar: 0, endChar: 2}}]);
+    assert.deepEqual(newStep.fileLocations, [{ filePath: filepath, span: { start: 1, end: 3, startChar: 0, endChar: 2 } }]);
     assert.equal(newStep.stepText, "black magic");
     assert.equal(newStep.generalisedText, "black magic");
     assert.isNull(newStep.options);
@@ -82,7 +87,7 @@ describe("Static loader", function () {
       "\\ // syntax error\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(sourceV1, {loc: true}));
+    loader.loadFile(filepath, esprima.parse(sourceV1, { loc: true }));
 
     var step = stepRegistry.get("vsdvsv");
     assert.isDefined(step);
@@ -104,7 +109,7 @@ describe("Static loader", function () {
       "\tconsole.log('it does not do anything')\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(source, {loc: true}));
+    loader.loadFile(filepath, esprima.parse(source, { loc: true }));
 
     var steps = Object.keys(stepRegistry.registry);
     assert.isOk(steps.length == 0);
@@ -118,7 +123,7 @@ describe("Static loader", function () {
       "\tconsole.log('it does not do anything')\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(source, {loc: true}));
+    loader.loadFile(filepath, esprima.parse(source, { loc: true }));
 
     var steps = Object.keys(stepRegistry.registry);
     assert.isOk(steps.length == 1);
