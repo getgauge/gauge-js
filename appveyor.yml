@@ -15,7 +15,7 @@ environment:
 install:
    - git submodule init
    - git submodule update
-   - ps: Install-Product node 6
+   - ps: Install-Product node 8
    - npm install
 build_script:
 - ps: >- 
