@@ -126,3 +126,17 @@ exports.createImplementationFileListResponse = function (message, messageId) {
   });
 
 };
+
+exports.createStubImplementationCodeResponse = function (message, messageId) {
+
+  return message.create({
+    messageId: messageId,
+    messageType: message.MessageType.StubImplementationCodeResponse,
+    stubImplementationCodeResponse: {
+      content: "",
+      error: "",
+      filePath: ""
+    }
+  });
+
+};

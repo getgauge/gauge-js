@@ -171,6 +171,24 @@ var getImplementationFiles = function(request) {
   this._emit(response);
 }
 
+var putStubImplementationCode = function(request) {
+  var response = factory.createStubImplementationCodeResponse(this.options.message, request.messageId);
+  var filePath = request.stubImplementationCodeRequest.filePath;
+  response.stubImplementationCodeResponse.filePath = filePath;
+  var code = request.stubImplementationCodeRequest.code;
+  if (fs.existsSync(filePath)) {
+    try {
+      var contents = fs.readFileSync(filePath, 'utf8');
+    response.stubImplementationCodeResponse.content = contents + "\n" + code;
+    } catch (err) {
+      response.stubImplementationCodeResponse.error = err.message
+   }
+  } else {
+    response.stubImplementationCodeResponse.content = code;
+  }
+  this._emit(response);
+}
+
 var executeRefactor = function (request) {
   var response = factory.createRefactorResponse(this.options.message, request.messageId);
   response = refactor(request, response);
@@ -218,6 +236,7 @@ var MessageProcessor = function (protoOptions) {
   this.processors[this.options.message.MessageType.StepPositionsRequest] = executeStepPositionsRequest;
   this.processors[this.options.message.MessageType.KillProcessRequest] = killProcess;
   this.processors[this.options.message.MessageType.ImplementationFileListRequest] = getImplementationFiles;
+  this.processors[this.options.message.MessageType.StubImplementationCodeRequest] = putStubImplementationCode;
 };
 
 MessageProcessor.prototype.getResponseFor = function (request) {
