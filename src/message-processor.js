@@ -165,26 +165,31 @@ var executeStepPositionsRequest = function (request) {
 
 var getImplementationFiles = function(request) {
   var response = factory.createImplementationFileListResponse(this.options.message, request.messageId);
-  var folderPath = request.implementationFileListRequest.folderPath;
-  var files = impl_loader.getImplFileList(folderPath);
+  var files = impl_loader.getImplFileList(GAUGE_PROJECT_ROOT);
   response.implementationFileListResponse.implementationFilePaths = files;
   this._emit(response);
 };
 
 var putStubImplementationCode = function(request) {
-  var response = factory.createStubImplementationCodeResponse(this.options.message, request.messageId);
-  var filePath = request.stubImplementationCodeRequest.filePath;
-  response.stubImplementationCodeResponse.filePath = filePath;
-  var code = request.stubImplementationCodeRequest.code;
+  var response = factory.createFileChangesResponse(this.options.message, request.messageId);
+  var filePath = request.stubImplementationCodeRequest.implementationFilePath;
+  response.fileChanges.fileName = filePath;
+  var stepTexts = request.stubImplementationCodeRequest.steps;
+  var codes = [];
+  stepTexts.map(step => {
+    var argCount = 0;
+    var stepText = step.stepValue.stepValue.replace(/{}/g, function () { return "<arg" + argCount++ + ">"; });
+    var code = "step(\"" + stepText + "\", async function(" + getParamsList(step.stepValue.parameters) + ") {\n\t" +
+      "throw 'Unimplemented Step';\n" +
+      "});";
+    codes.push(code);
+  });
+  const reducer = (accumulator, currentValue) => accumulator + "\n" + currentValue;
   if (fs.existsSync(filePath)) {
-    try {
-      var contents = fs.readFileSync(filePath, "utf8");
-      response.stubImplementationCodeResponse.content = contents + "\n" + code;
-    } catch (err) {
-      response.stubImplementationCodeResponse.error = err.message;
-    }
+    var contents = fs.readFileSync(filePath, "utf8");
+    response.fileChanges.fileContent = contents + "\n" + codes.reduce(reducer); 
   } else {
-    response.stubImplementationCodeResponse.content = code;
+    response.fileChanges.fileContent = codes.reduce(reducer);
   }
   this._emit(response);
 };
