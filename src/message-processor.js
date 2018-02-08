@@ -169,7 +169,7 @@ var getImplementationFiles = function(request) {
   var files = impl_loader.getImplFileList(folderPath);
   response.implementationFileListResponse.implementationFilePaths = files;
   this._emit(response);
-}
+};
 
 var putStubImplementationCode = function(request) {
   var response = factory.createStubImplementationCodeResponse(this.options.message, request.messageId);
@@ -178,16 +178,16 @@ var putStubImplementationCode = function(request) {
   var code = request.stubImplementationCodeRequest.code;
   if (fs.existsSync(filePath)) {
     try {
-      var contents = fs.readFileSync(filePath, 'utf8');
-    response.stubImplementationCodeResponse.content = contents + "\n" + code;
+      var contents = fs.readFileSync(filePath, "utf8");
+      response.stubImplementationCodeResponse.content = contents + "\n" + code;
     } catch (err) {
-      response.stubImplementationCodeResponse.error = err.message
-   }
+      response.stubImplementationCodeResponse.error = err.message;
+    }
   } else {
     response.stubImplementationCodeResponse.content = code;
   }
   this._emit(response);
-}
+};
 
 var executeRefactor = function (request) {
   var response = factory.createRefactorResponse(this.options.message, request.messageId);
