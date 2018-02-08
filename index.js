@@ -40,9 +40,6 @@ if(process.argv[2] === "--init") {
 else if(process.argv[2] === "--start") {
   var args = ["./src/gauge.js", "--run"];
   var cmd = "node";
-  if (process.env.DEBUG === "true") {
-    cmd = process.platform === "win32" ? "debug.bat" : "node-debug";
-  }
   var runner = child_process.spawn(cmd, args, { env: process.env, silent: false, stdio: "inherit" });
   runner.on("error", function (err) {
     console.trace(err.stack);

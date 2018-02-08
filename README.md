@@ -2,7 +2,7 @@
 JavaScript Runner for [Gauge](http://getgauge.io).
 
 [![Build Status - Travis CI](https://travis-ci.org/getgauge/gauge-js.svg?branch=master)](https://travis-ci.org/getgauge/gauge-js)
-[![Build status](https://ci.appveyor.com/api/projects/status/hrg965mofntxa53d/branch/master?svg=true)](https://ci.appveyor.com/project/getgauge/gauge-js/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/bpxrbrexfeeff6r6/branch/master?svg=true)](https://ci.appveyor.com/project/getgauge/gauge-js/branch/master)
 
 
 
