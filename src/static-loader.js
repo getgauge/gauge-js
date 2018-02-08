@@ -13,17 +13,13 @@ function hasAliases(node) {
 }
 
 function addStep(step, info) {
-  if (!step.value.length) {
-    console.log("[Error] : Step text cannot be empty.");
-    return;
-  }
-  stepRegistry.add(stepParser.generalise(step.value), step.value, null, info.filePath, info.span, null);
+  stepRegistry.add(step.value, null, info.filePath, info.span, null);
 }
 
 function addAliases(aliases, info) {
-  for (var i = 0; i < aliases.length; i++) {
-    addStep(aliases[i], info);
-  }
+  stepRegistry.addAlias(aliases.map(function (alias) {
+    return alias.value;
+  }), null, info.filePath, info.span, null);
 }
 
 function processNode(node, filePath) {
@@ -34,10 +30,14 @@ function processNode(node, filePath) {
     startChar: node.loc.start.column,
     endChar: node.loc.end.column
   };
-  if (hasAliases(stepNode)) {
-    addAliases(stepNode.elements, {filePath: filePath, span: span});
-  } else if (stepNode.type === "Literal") {
-    addStep(stepNode, {filePath: filePath, span: span});
+  try {
+    if (hasAliases(stepNode)) {
+      addAliases(stepNode.elements, { filePath: filePath, span: span });
+    } else if (stepNode.type === "Literal") {
+      addStep(stepNode, { filePath: filePath, span: span });
+    }
+  } catch (e) {
+    console.log(e);
   }
 }
 
@@ -50,12 +50,12 @@ function traverser(filePath) {
 }
 
 var loadFile = function (filePath, ast) {
-  estraverse.traverse(ast, {enter: traverser(filePath)});
+  estraverse.traverse(ast, { enter: traverser(filePath) });
 };
 
 function createAst(content) {
   try {
-    return esprima.parse(content, {loc: true});
+    return esprima.parse(content, { loc: true });
   } catch (e) {
     console.error(e.message);
     return "";
@@ -69,7 +69,7 @@ function loadFiles(projectRoot) {
     if (ast) {
       loadFile(filePath, ast);
     }
-  }); 
+  });
 }
 
 function unloadFile(filePath) {

@@ -28,7 +28,7 @@ function run() {
     });
 
   }).catch(function (e) {
-    console.error("Failed while loading proto file.\n", e);
+    console.error("Failed while loading runner.\n", e);
     process.exit();
   });
 }

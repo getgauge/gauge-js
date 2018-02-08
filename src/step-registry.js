@@ -1,4 +1,5 @@
 var fileUtil = require("./file-util");
+var stepParser = require("./step-parser");
 
 var StepRegistry = function () {
   this.registry = {};
@@ -7,13 +8,21 @@ var StepRegistry = function () {
 /**
  * Add a step to the registry
  *
- * @param stepName Name of the step.
+ * @param stepText Name of the step.
  * @param stepFunction Function to be executed for this step.
+ * @param filePath Filepath where the function is defined.
+ * @param span Location in file where the function is defined.
+ * @param options Optional parameters defined with the step.
+ * @returns The step added.
  */
-StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, filePath, span, options) {
+StepRegistry.prototype.add = function (stepText, stepFunction, filePath, span, options) {
+  if (!stepText.length) {
+    throw new Error("Step text cannot be empty.");
+  }
+  var generalisedText = stepParser.generalise(stepText);
   if (this.exists(generalisedText)) {
-    this.registry[generalisedText].fileLocations.push({filePath: filePath, span: span});
-    return;
+    this.registry[generalisedText].fileLocations.push({ filePath: filePath, span: span });
+    return this.registry[generalisedText];
   }
 
   this.registry[generalisedText] = {
@@ -29,15 +38,35 @@ StepRegistry.prototype.add = function (generalisedText, stepText, stepFunction, 
     count: function () {
       return this.fileLocations.length;
     },
+    hasAlias: false,
+    aliases: [stepText],
     options: options
   };
+  return this.registry[generalisedText];
+};
+
+/**
+ * Add a step to the registry
+ *
+ * @param stepTexts Step Names with all alias.
+ * @param stepFunction Function to be executed for this step.
+ * @param filePath Filepath where the function is defined.
+ * @param span Location in file where the function is defined.
+ * @param options Optional parameters defined with the step.
+ */
+StepRegistry.prototype.addAlias = function (stepTexts, stepFunction, filePath, span, options) {
+  stepTexts.forEach((stepText) => {
+    var step = this.add(stepText, stepFunction, filePath, span, options);
+    step.hasAlias = true;
+    step.aliases = stepTexts;
+  }, this);
 };
 
 /**
  * Get the function associated with a step.
  *
  * @param stepName Name of the step.
- * @returns Function The function to be executed for this step.
+ * @returns The step corresponding to the StepName.
  */
 StepRegistry.prototype.get = function (stepName) {
   return this.registry[stepName];
@@ -55,7 +84,7 @@ StepRegistry.prototype.getStepPositions = function (filePath) {
   for (var step in this.registry) {
     for (var i = 0; i < this.registry[step].fileLocations.length; i++) {
       if (fileUtil.isSameFilePath(this.registry[step].fileLocations[i].filePath, filePath)) {
-        stepPositions.push({stepValue: step, span: this.registry[step].fileLocations[i].span});
+        stepPositions.push({ stepValue: step, span: this.registry[step].fileLocations[i].span });
       }
     }
   }
@@ -86,12 +115,12 @@ StepRegistry.prototype.exists = function (stepName) {
 StepRegistry.prototype.validate = function (stepName) {
   var step = this.get(stepName);
   if (!step) {
-    return {valid: false, reason: "notfound", file: null};
+    return { valid: false, reason: "notfound", file: null };
   }
   if (step.fileLocations.length > 1) {
-    return {valid: false, reason: "duplicate", file: step.fileLocations[0].filePath};
+    return { valid: false, reason: "duplicate", file: step.fileLocations[0].filePath };
   }
-  return {valid: true, reason: null, file: null};
+  return { valid: true, reason: null, file: null };
 };
 
 StepRegistry.prototype.clear = function () {

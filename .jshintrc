@@ -3,7 +3,6 @@
     "camelcase": false,
     "curly": true,
     "eqeqeq": false,
-    "es3": false,
     "forin": false,
     "freeze": true,
     "immed": true,
@@ -43,5 +42,6 @@
     "supernew": false,
     "browser": false,
     "devel": true,
-    "node": true
+    "node": true,
+    "esversion": 6
 }
