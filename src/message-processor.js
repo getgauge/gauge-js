@@ -185,7 +185,7 @@ var putStubImplementationCode = function(request) {
   var stepTexts = request.stubImplementationCodeRequest.steps;
   var codes = [];
   stepTexts.map(function (step) {
-    var code = generateImplStub(step.stepValue);
+    var code = generateImplStub(step);
     codes.push(code);
   });
 
