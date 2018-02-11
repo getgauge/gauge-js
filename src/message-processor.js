@@ -11,6 +11,8 @@ var dataStore = require("./data-store-factory");
 var impl_loader = require("./impl-loader");
 var loader = require("./static-loader");
 var inspector = require("inspector");
+var fileUtil = require("./file-util");
+var config = require("./config");
 
 var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
@@ -118,15 +120,20 @@ var getParamsList = function (params) {
   }).join(", ");
 };
 
+var generateImplStub = function(stepValue) {
+  var argCount = 0;
+  var stepText = stepValue.stepValue.replace(/{}/g, function () { return "<arg" + argCount++ + ">"; });
+  return "step(\"" + stepText + "\", async function(" + getParamsList(stepValue.parameters) + ") {\n\t" +
+    "throw 'Unimplemented Step';\n" +
+    "});";
+};
+
+
 var getSuggestionFor = function (request, validated) {
   if (validated.reason !== "notfound") {
     return "";
   }
-  var argCount = 0;
-  var stepText = request.stepValue.stepValue.replace(/{}/g, function () { return "<arg" + argCount++ + ">"; });
-  return "step(\"" + stepText + "\", async function(" + getParamsList(request.stepValue.parameters) + ") {\n\t" +
-    "throw 'Unimplemented Step';\n" +
-    "});";
+  return generateImplStub(request.stepValue);
 };
 
 function validateStep(request) {
@@ -165,7 +172,8 @@ var executeStepPositionsRequest = function (request) {
 
 var getImplementationFiles = function(request) {
   var response = factory.createImplementationFileListResponse(this.options.message, request.messageId);
-  var files = impl_loader.getImplFileList(GAUGE_PROJECT_ROOT);
+  var configObject = config.getInstance(GAUGE_PROJECT_ROOT);
+  var files = fileUtil.getListOfFilesFromPath(GAUGE_PROJECT_ROOT, configObject);
   response.implementationFileListResponse.implementationFilePaths = files;
   this._emit(response);
 };
@@ -176,15 +184,15 @@ var putStubImplementationCode = function(request) {
   response.fileChanges.fileName = filePath;
   var stepTexts = request.stubImplementationCodeRequest.steps;
   var codes = [];
-  stepTexts.map(step => {
-    var argCount = 0;
-    var stepText = step.stepValue.stepValue.replace(/{}/g, function () { return "<arg" + argCount++ + ">"; });
-    var code = "step(\"" + stepText + "\", async function(" + getParamsList(step.stepValue.parameters) + ") {\n\t" +
-      "throw 'Unimplemented Step';\n" +
-      "});";
+  stepTexts.map(function (step) {
+    var code = generateImplStub(step.stepValue);
     codes.push(code);
   });
-  const reducer = (accumulator, currentValue) => accumulator + "\n" + currentValue;
+
+  var reducer = function (accumulator, currentValue) {
+    return accumulator + "\n" + currentValue;
+  };
+
   if (fs.existsSync(filePath)) {
     var contents = fs.readFileSync(filePath, "utf8");
     response.fileChanges.fileContent = contents + "\n" + codes.reduce(reducer); 
