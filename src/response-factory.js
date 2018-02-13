@@ -127,14 +127,14 @@ exports.createImplementationFileListResponse = function (message, messageId) {
 
 };
 
-exports.createFileEditResponse = function (message, messageId) {
+exports.createFileChanges = function (message, messageId) {
 
   return message.create({
     messageId: messageId,
-    messageType: message.MessageType.FileEditResponse,
-    fileEditResponse: {
-      filePath: "",
-      fileEdits: []
+    messageType: message.MessageType.FileChanges,
+    fileChanges: {
+      fileName: "",
+      fileContent: ""
     }
   });
 
