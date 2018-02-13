@@ -179,9 +179,9 @@ var getImplementationFiles = function(request) {
 };
 
 var putStubImplementationCode = function(request) {
-  var response = factory.createFileEditResponse(this.options.message, request.messageId);
+  var response = factory.createFileChanges(this.options.message, request.messageId);
   var filePath = request.stubImplementationCodeRequest.implementationFilePath;
-  response.fileEditResponse.filePath = filePath;
+  response.fileChanges.fileName = filePath;
   var stepTexts = request.stubImplementationCodeRequest.steps;
   var codes = [];
   stepTexts.map(function (step) {
@@ -192,15 +192,14 @@ var putStubImplementationCode = function(request) {
   var reducer = function (accumulator, currentValue) {
     return accumulator + "\n" + currentValue;
   };
-  var fileEdits = []
+  var fileContent = "";
   if (fs.existsSync(filePath)) {
-    var numLines = fs.readFileSync(filePath, "utf8").toString().split("\n").length;
-    fileEdits.push({lineNumber: numLines, content: codes.reduce(reducer)});
-    response.fileEditResponse.fileEdits = fileEdits;
+    fileContent = fs.readFileSync(filePath, "utf8").toString()
+    fileContent =  fileContent + codes.reduce(reducer)
   } else {
-    fileEdits.push({lineNumber: 0, content: codes.reduce(reducer)});
-    response.fileEditResponse.fileEdits = fileEdits;
+    fileContent =  codes.reduce(reducer);
   }
+  response.fileChanges.fileContent = fileContent;
   this._emit(response);
 };
 
