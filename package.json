@@ -30,7 +30,8 @@
     "estraverse": "^4.2.0",
     "micromatch": "^2.3.11",
     "protobufjs": "~6.8.0",
-    "q": "^1.5.0"
+    "q": "^1.5.0",
+    "valid-identifier": "^0.0.1"
   },
   "devDependencies": {
     "archiver": "^2.0.3",
