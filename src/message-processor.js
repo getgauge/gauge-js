@@ -182,12 +182,7 @@ var putStubImplementationCode = function(request) {
   var response = factory.createFileChanges(this.options.message, request.messageId);
   var filePath = request.stubImplementationCodeRequest.implementationFilePath;
   response.fileChanges.fileName = filePath;
-  var stepTexts = request.stubImplementationCodeRequest.steps;
-  var codes = [];
-  stepTexts.map(function (step) {
-    var code = generateImplStub(step);
-    codes.push(code);
-  });
+  var codes = request.stubImplementationCodeRequest.codes;
 
   var reducer = function (accumulator, currentValue) {
     return accumulator + "\n" + currentValue;
