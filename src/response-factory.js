@@ -112,3 +112,30 @@ exports.createStepPositionsResponse = function (message, messageId) {
   });
 
 };
+
+
+
+exports.createImplementationFileListResponse = function (message, messageId) {
+
+  return message.create({
+    messageId: messageId,
+    messageType: message.MessageType.ImplementationFileListResponse,
+    implementationFileListResponse: {
+      implementationFilePaths: []
+    }
+  });
+
+};
+
+exports.createFileChanges = function (message, messageId) {
+
+  return message.create({
+    messageId: messageId,
+    messageType: message.MessageType.FileChanges,
+    fileChanges: {
+      fileName: "",
+      fileContent: ""
+    }
+  });
+
+};

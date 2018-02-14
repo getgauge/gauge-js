@@ -11,6 +11,8 @@ var dataStore = require("./data-store-factory");
 var impl_loader = require("./impl-loader");
 var loader = require("./static-loader");
 var inspector = require("inspector");
+var fileUtil = require("./file-util");
+var config = require("./config");
 
 var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
@@ -118,15 +120,20 @@ var getParamsList = function (params) {
   }).join(", ");
 };
 
+var generateImplStub = function(stepValue) {
+  var argCount = 0;
+  var stepText = stepValue.stepValue.replace(/{}/g, function () { return "<arg" + argCount++ + ">"; });
+  return "step(\"" + stepText + "\", async function(" + getParamsList(stepValue.parameters) + ") {\n\t" +
+    "throw 'Unimplemented Step';\n" +
+    "});";
+};
+
+
 var getSuggestionFor = function (request, validated) {
   if (validated.reason !== "notfound") {
     return "";
   }
-  var argCount = 0;
-  var stepText = request.stepValue.stepValue.replace(/{}/g, function () { return "<arg" + argCount++ + ">"; });
-  return "step(\"" + stepText + "\", async function(" + getParamsList(request.stepValue.parameters) + ") {\n\t" +
-    "throw 'Unimplemented Step';\n" +
-    "});";
+  return generateImplStub(request.stepValue);
 };
 
 function validateStep(request) {
@@ -160,6 +167,34 @@ var executeStepPositionsRequest = function (request) {
   var response = factory.createStepPositionsResponse(this.options.message, request.messageId);
   var filepath = request.stepPositionsRequest.filePath;
   response.stepPositionsResponse.stepPositions = stepRegistry.getStepPositions(filepath);
+  this._emit(response);
+};
+
+var getImplementationFiles = function(request) {
+  var response = factory.createImplementationFileListResponse(this.options.message, request.messageId);
+  var configObject = config.getInstance(GAUGE_PROJECT_ROOT);
+  var files = fileUtil.getListOfFilesFromPath(GAUGE_PROJECT_ROOT, configObject);
+  response.implementationFileListResponse.implementationFilePaths = files;
+  this._emit(response);
+};
+
+var putStubImplementationCode = function(request) {
+  var response = factory.createFileChanges(this.options.message, request.messageId);
+  var filePath = request.stubImplementationCodeRequest.implementationFilePath;
+  response.fileChanges.fileName = filePath;
+  var codes = request.stubImplementationCodeRequest.codes;
+
+  var reducer = function (accumulator, currentValue) {
+    return accumulator + "\n" + currentValue;
+  };
+  var fileContent = "";
+  if (fs.existsSync(filePath)) {
+    fileContent = fs.readFileSync(filePath, "utf8").toString();
+    fileContent =  fileContent + codes.reduce(reducer);
+  } else {
+    fileContent =  codes.reduce(reducer);
+  }
+  response.fileChanges.fileContent = fileContent;
   this._emit(response);
 };
 
@@ -209,6 +244,8 @@ var MessageProcessor = function (protoOptions) {
   this.processors[this.options.message.MessageType.CacheFileRequest] = executeCacheFileRequest;
   this.processors[this.options.message.MessageType.StepPositionsRequest] = executeStepPositionsRequest;
   this.processors[this.options.message.MessageType.KillProcessRequest] = killProcess;
+  this.processors[this.options.message.MessageType.ImplementationFileListRequest] = getImplementationFiles;
+  this.processors[this.options.message.MessageType.StubImplementationCodeRequest] = putStubImplementationCode;
 };
 
 MessageProcessor.prototype.getResponseFor = function (request) {
