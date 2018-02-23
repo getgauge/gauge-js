@@ -19,7 +19,8 @@ var ExecutionConnection = function (host, port, message) {
 
   var errorHandler = function (err) {
     self.emit("socketError", err);
-  }
+  };
+  
   this.writeMessage = function(response) {
     self.socket.write(self.message.encodeDelimited(self.message.create(response)).finish());
   };

@@ -11,7 +11,7 @@ function run() {
   protobuf.load(path.resolve("gauge-proto/messages.proto")).then(function (root) {
     var message = root.lookupType("gauge.messages.Message");
     var errorType = root.lookupEnum("gauge.messages.StepValidateResponse.ErrorType");
-    return {message: message, errorType: errorType}
+    return {message: message, errorType: errorType};
   }).catch(function (e) {
     console.error("Failed while loading runner.\n", e);
     process.exit();
