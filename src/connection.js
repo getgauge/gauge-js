@@ -17,11 +17,15 @@ var ExecutionConnection = function (host, port, message) {
     self.emit("messageReceived", self.message.decodeDelimited(bytes));
   };
 
+  var errorHandler = function (err) {
+    self.emit("socketError", err);
+  }
   this.writeMessage = function(response) {
     self.socket.write(self.message.encodeDelimited(self.message.create(response)).finish());
   };
 
   this.socket.on("data", messageHandler);
+  this.socket.on("error", errorHandler);
 };
 
 util.inherits(ExecutionConnection, EventEmitter);
