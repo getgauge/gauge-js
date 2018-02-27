@@ -1,4 +1,4 @@
-/* globals gauge*/
+/* globals step,beforeScenario*/
 
 "use strict";
 
