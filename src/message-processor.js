@@ -189,8 +189,8 @@ var putStubImplementationCode = function(request) {
   };
   var fileContent = "";
   if (fs.existsSync(filePath)) {
-    fileContent = fs.readFileSync(filePath, "utf8").toString();
-    fileContent =  fileContent + "\n" + codes.reduce(reducer);
+    fileContent = fs.readFileSync(filePath, "utf8").toString().trim();
+    fileContent =  fileContent + "\n\n" + codes.reduce(reducer);
   } else {
     fileContent =  codes.reduce(reducer);
   }
