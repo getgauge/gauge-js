@@ -7,7 +7,7 @@ var ignoredDirs = [".gauge", ".git", "node_modules", "reports"];
 
 
 function shouldIgnore(item) {
-  return ignoredDirs.includes(path.basename(item.path));
+  return !ignoredDirs.includes(path.basename(item.path));
 }
 
 exports = module.exports;
