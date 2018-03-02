@@ -127,15 +127,12 @@ exports.createImplementationFileListResponse = function (message, messageId) {
 
 };
 
-exports.createFileChanges = function (message, messageId) {
+exports.createFileDiff = function (message, messageId) {
 
   return message.create({
     messageId: messageId,
-    messageType: message.MessageType.FileChanges,
-    fileChanges: {
-      fileName: "",
-      fileContent: ""
-    }
+    messageType: message.MessageType.FileDiff,
+    fileDiff: []
   });
 
 };
