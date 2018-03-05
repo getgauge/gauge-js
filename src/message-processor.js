@@ -179,22 +179,24 @@ var getImplementationFiles = function(request) {
 };
 
 var putStubImplementationCode = function(request) {
-  var response = factory.createFileChanges(this.options.message, request.messageId);
+  var response = factory.createFileDiff(this.options.message, request.messageId);
   var filePath = request.stubImplementationCodeRequest.implementationFilePath;
-  response.fileChanges.fileName = filePath;
   var codes = request.stubImplementationCodeRequest.codes;
 
   var reducer = function (accumulator, currentValue) {
     return accumulator + "\n" + currentValue;
   };
-  var fileContent = "";
+  var content = codes.reduce(reducer);
+
+  var fileLineCount = 0;
   if (fs.existsSync(filePath)) {
-    fileContent = fs.readFileSync(filePath, "utf8").toString().trim();
-    fileContent =  fileContent + "\n\n" + codes.reduce(reducer);
-  } else {
-    fileContent =  codes.reduce(reducer);
+    fileLineCount = 2 + fs.readFileSync(filePath, "utf8").toString().trim().split("\n").length;
   }
-  response.fileChanges.fileContent = fileContent;
+
+  var span = {start: fileLineCount, end: fileLineCount, startChar: 0, endChar: 0};
+  var textDiffs = [{span: span, content: content}];
+  response.fileDiff.filePath = filePath;
+  response.fileDiff.textDiffs = textDiffs;
   this._emit(response);
 };
 
