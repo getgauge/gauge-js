@@ -188,7 +188,7 @@ var putStubImplementationCode = function(request) {
 
   var fileLineCount = 0;
   if (fs.existsSync(filePath)) {
-    let fileContent = fs.readFileSync(filePath, "utf8").toString();
+    let fileContent = fs.readFileSync(filePath, "utf8").toString().replace("\r\n", "\n");
     if (fileContent.trim().split("\n").length == fileContent.split("\n").length) {
       fileLineCount = fileContent.split("\n").length;
       content = "\n\n" + content;
