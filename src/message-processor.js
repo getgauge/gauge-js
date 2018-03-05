@@ -12,7 +12,6 @@ var impl_loader = require("./impl-loader");
 var loader = require("./static-loader");
 var inspector = require("inspector");
 var fileUtil = require("./file-util");
-var config = require("./config");
 
 var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
@@ -172,8 +171,7 @@ var executeStepPositionsRequest = function (request) {
 
 var getImplementationFiles = function(request) {
   var response = factory.createImplementationFileListResponse(this.options.message, request.messageId);
-  var configObject = config.getInstance(GAUGE_PROJECT_ROOT);
-  var files = fileUtil.getListOfFilesFromPath(GAUGE_PROJECT_ROOT, configObject);
+  var files = fileUtil.getListOfFiles(GAUGE_PROJECT_ROOT);
   response.implementationFileListResponse.implementationFilePaths = files;
   this._emit(response);
 };

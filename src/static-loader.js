@@ -6,8 +6,6 @@ var fileUtil = require("./file-util");
 var stepRegistry = require("./step-registry");
 var stepParser = require("./step-parser");
 
-var config = require("./config");
-
 function hasAliases(node) {
   return node.type === "ArrayExpression" && !!node.elements.length;
 }
@@ -63,8 +61,7 @@ function createAst(content) {
 }
 
 function loadFiles(projectRoot) {
-  var configObject = config.getInstance(projectRoot);
-  fileUtil.getListOfFilesFromPath(projectRoot, configObject).forEach(function (filePath) {
+  fileUtil.getListOfFiles(projectRoot).forEach(function (filePath) {
     var ast = createAst(fs.readFileSync(filePath, "UTF-8"));
     if (ast) {
       loadFile(filePath, ast);
