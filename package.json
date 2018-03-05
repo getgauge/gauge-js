@@ -1,6 +1,6 @@
 {
   "name": "gauge-js",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "JavaScript runner for Gauge",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,6 @@
     "esprima": "^4.0.0",
     "estraverse": "^4.2.0",
     "klaw-sync": "^3.0.2",
-    "micromatch": "^2.3.11",
     "protobufjs": "~6.8.0",
     "q": "^1.5.0",
     "valid-identifier": "^0.0.1"
@@ -42,6 +41,7 @@
     "jscs": "^3.0.7",
     "jshint": "^2.9.5",
     "mocha": "^4.0.1",
+    "mock-fs": "^4.4.2",
     "sinon": "^4.0.1"
   }
 }
