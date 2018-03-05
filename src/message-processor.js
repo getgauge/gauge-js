@@ -190,7 +190,14 @@ var putStubImplementationCode = function(request) {
 
   var fileLineCount = 0;
   if (fs.existsSync(filePath)) {
-    fileLineCount = 2 + fs.readFileSync(filePath, "utf8").toString().trim().split("\n").length;
+    let fileContent = fs.readFileSync(filePath, "utf8").toString();
+    if (fileContent.trim().split("\n").length == fileContent.split("\n").length) {
+      fileLineCount = fileContent.split("\n").length;
+      content = "\n\n" + content;
+    } else {
+      fileLineCount = fileContent.split("\n").length;
+      content = "\n" + content;
+    }
   }
 
   var span = {start: fileLineCount, end: fileLineCount, startChar: 0, endChar: 0};
