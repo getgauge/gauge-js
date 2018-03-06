@@ -21,9 +21,8 @@ function getImplDirs(projectRoot) {
   return [path.join(projectRoot, "tests")];
 }
 
-exports = module.exports;
 
-exports.getListOfFiles = function (projectRoot) {
+function getListOfFiles(projectRoot) {
   var results = getImplDirs(projectRoot).reduce(function (files, dir) {
     if (!fs.existsSync(dir)) {
       console.log("Failed to load implementations from " + dir);
@@ -32,8 +31,24 @@ exports.getListOfFiles = function (projectRoot) {
     return files.concat(collectFilesIn(dir));
   }, []);
   return results;
-};
+}
 
-exports.isSameFilePath = function (filePath1, filePath2) {
+function isSameFilePath(filePath1, filePath2) {
   return path.relative(filePath1, filePath2) === "";
+}
+
+function getFileName(dir, counter = 0) {
+  var tmpl = counter && "step-implementation-" + counter + ".js" || "step-implementation.js";
+  var fileName = path.join(dir, tmpl);
+  if (!fs.existsSync(fileName)) {
+    return fileName;
+  }
+  return getFileName(dir, ++counter);
+}
+
+module.exports = {
+  getImplDirs: getImplDirs,
+  getListOfFiles: getListOfFiles,
+  isSameFilePath: isSameFilePath,
+  getFileName: getFileName
 };
