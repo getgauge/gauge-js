@@ -72,7 +72,7 @@ function executeBeforeSuiteHook(request) {
     console.log("Trying to connect to debugger.", port);
     inspector.open(port, "127.0.0.1", true);
     var inspectorWaitTime = 1000;
-    setTimeout(function () { startExecution(self,request); }, inspectorWaitTime);
+    setTimeout(function () { startExecution(self, request); }, inspectorWaitTime);
   } else {
     startExecution(self, request);
   }
@@ -119,7 +119,7 @@ var getParamsList = function (params) {
   }).join(", ");
 };
 
-var generateImplStub = function(stepValue) {
+var generateImplStub = function (stepValue) {
   var argCount = 0;
   var stepText = stepValue.stepValue.replace(/{}/g, function () { return "<arg" + argCount++ + ">"; });
   return "step(\"" + stepText + "\", async function(" + getParamsList(stepValue.parameters) + ") {\n\t" +
@@ -169,14 +169,14 @@ var executeStepPositionsRequest = function (request) {
   this._emit(response);
 };
 
-var getImplementationFiles = function(request) {
+var getImplementationFiles = function (request) {
   var response = factory.createImplementationFileListResponse(this.options.message, request.messageId);
   var files = fileUtil.getListOfFiles(GAUGE_PROJECT_ROOT);
   response.implementationFileListResponse.implementationFilePaths = files;
   this._emit(response);
 };
 
-var putStubImplementationCode = function(request) {
+var putStubImplementationCode = function (request) {
   var response = factory.createFileDiff(this.options.message, request.messageId);
   var filePath = request.stubImplementationCodeRequest.implementationFilePath;
   var codes = request.stubImplementationCodeRequest.codes;
@@ -196,10 +196,12 @@ var putStubImplementationCode = function(request) {
       fileLineCount = fileContent.split("\n").length;
       content = "\n" + content;
     }
+  } else {
+    filePath = fileUtil.getFileName(fileUtil.getImplDirs(GAUGE_PROJECT_ROOT)[0]);
   }
 
-  var span = {start: fileLineCount, end: fileLineCount, startChar: 0, endChar: 0};
-  var textDiffs = [{span: span, content: content}];
+  var span = { start: fileLineCount, end: fileLineCount, startChar: 0, endChar: 0 };
+  var textDiffs = [{ span: span, content: content }];
   response.fileDiff.filePath = filePath;
   response.fileDiff.textDiffs = textDiffs;
   this._emit(response);

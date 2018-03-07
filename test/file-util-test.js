@@ -1,4 +1,5 @@
 var assert = require("chai").assert;
+var path = require("path");
 var fileUtil = require("../src/file-util");
 var isWindows = require("check-if-windows");
 var mock = require("mock-fs");
@@ -116,6 +117,45 @@ describe("File util functions", function () {
       process.env.STEP_IMP_DIR = "custom";
       var files = fileUtil.getListOfFiles(process.cwd());
       assert.equal(files.length, 2);
+    });
+  });
+
+
+  describe("getFileName", function () {
+    afterEach(function () {
+      mock.restore();
+    });
+
+    it("should give default file name does not exist", function () {
+      mock({
+        "tests": {},
+      });
+
+      var file = fileUtil.getFileName(path.join(process.cwd(), "tests"));
+      assert.equal(path.basename(file), "step-implementation.js");
+    });
+
+    it("should give file name with increment if default exists", function () {
+      mock({
+        "tests": {
+          "step-implementation.js": "foo"
+        },
+      });
+
+      var file = fileUtil.getFileName(path.join(process.cwd(), "tests"));
+      assert.equal(path.basename(file), "step-implementation-1.js");
+
+      mock.restore();
+
+      mock({
+        "tests": {
+          "step-implementation.js": "foo",
+          "step-implementation-1.js": "something",
+        },
+      });
+
+      file = fileUtil.getFileName(path.join(process.cwd(), "tests"));
+      assert.equal(path.basename(file), "step-implementation-2.js");
     });
   });
 });
