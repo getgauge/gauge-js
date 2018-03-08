@@ -9,7 +9,7 @@ var GAUGE_INTERNAL_PORT = process.env.GAUGE_INTERNAL_PORT;
 var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
 function run() {
-  if (process.env.IsDaemon) {
+  if (process.env.IS_DAEMON) {
     consoleStamp(console, { label: false, pattern: "HH:MM:ss.l", datePrefix: "", dateSuffix: "" });
   }
   protobuf.load(path.resolve("gauge-proto/messages.proto")).then(function (root) {
