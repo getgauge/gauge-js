@@ -62,7 +62,9 @@ var chopStackTrace = function (stack, pattern) {
 var runFn = function () {
   var self = this;
   try {
-    resetTimeout.call(self);
+    if (!process.env.DEBUGGING){
+      resetTimeout.call(self);
+    }
     var res = self.fn.apply({}, self.params);
     if (Object.prototype.toString.call(res) === "[object Promise]") {
       res.then(function () {
@@ -83,7 +85,9 @@ var runFn = function () {
 var runFnAsync = function () {
   var self = this;
   self.params.push(function (err) { done.call(self, err); });
-  resetTimeout.call(self);
+  if(!process.env.DEBUGGING){
+    resetTimeout.call(self);
+  }
   try {
     self.fn.apply({}, self.params);
   } catch (e) {
