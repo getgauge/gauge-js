@@ -2,17 +2,18 @@ var fs = require("fs");
 var path = require("path");
 var klawSync = require("klaw-sync");
 
-function isJSFile(item) {
-  return path.extname(item.path) === ".js";
+function isJSFile(file) {
+  return path.extname(file) === ".js";
 }
 
 function collectFilesIn(dir) {
-  return klawSync(dir, { filter: isJSFile }).map(function (item) {
+  return klawSync(dir, { filter: function (item) { return isJSFile(item.path); } }).map(function (item) {
     return item.path;
   });
 }
 
-function getImplDirs(projectRoot) {
+function getImplDirs() {
+  const projectRoot = process.env.GAUGE_PROJECT_ROOT;
   if (process.env.STEP_IMPL_DIR) {
     return process.env.STEP_IMPL_DIR.split(",").map(function (dir) {
       return path.join(projectRoot, dir.trim());
@@ -22,8 +23,8 @@ function getImplDirs(projectRoot) {
 }
 
 
-function getListOfFiles(projectRoot) {
-  var results = getImplDirs(projectRoot).reduce(function (files, dir) {
+function getListOfFiles() {
+  var results = getImplDirs().reduce(function (files, dir) {
     if (!fs.existsSync(dir)) {
       console.log("Failed to load implementations from " + dir);
       return files;
@@ -46,9 +47,19 @@ function getFileName(dir, counter = 0) {
   return getFileName(dir, ++counter);
 }
 
+function isInImplDir(filePath) {
+  return getImplDirs().findIndex((implDir) => {
+    if (path.normalize(filePath).startsWith(path.normalize(implDir))) {
+      return true;
+    }
+  }) !== -1;
+}
+
 module.exports = {
   getImplDirs: getImplDirs,
   getListOfFiles: getListOfFiles,
   isSameFilePath: isSameFilePath,
-  getFileName: getFileName
+  getFileName: getFileName,
+  isJSFile: isJSFile,
+  isInImplDir: isInImplDir
 };
