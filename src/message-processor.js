@@ -62,7 +62,7 @@ function executeHook(request, hookName, currentExecutionInfo) {
 }
 
 function startExecution(self, request) {
-  impl_loader.load(GAUGE_PROJECT_ROOT);
+  impl_loader.load();
   executeHook.apply(self, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]);
 }
 
@@ -173,7 +173,7 @@ var executeStepPositionsRequest = function (request) {
 
 var getImplementationFiles = function (request) {
   var response = factory.createImplementationFileListResponse(this.options.message, request.messageId);
-  var files = fileUtil.getListOfFiles(GAUGE_PROJECT_ROOT);
+  var files = fileUtil.getListOfFiles();
   response.implementationFileListResponse.implementationFilePaths = files;
   this._emit(response);
 };
@@ -216,14 +216,20 @@ var executeRefactor = function (request) {
 };
 
 var executeCacheFileRequest = function (request) {
-  if (!request.cacheFileRequest.isClosed) {
-    loader.reloadFile(request.cacheFileRequest.filePath, request.cacheFileRequest.content);
+  const filePath = request.cacheFileRequest.filePath;
+  if (!fileUtil.isJSFile(filePath) || !fileUtil.isInImplDir(filePath)) {
+    return;
+  }
+  if (request.cacheFileRequest.status === this.options.fileStatus.values.CREATED) {
+    loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
+  } else if (request.cacheFileRequest.status === this.options.fileStatus.values.CHANGED ||
+    request.cacheFileRequest.status === this.options.fileStatus.values.OPENED) {
+    loader.reloadFile(filePath, request.cacheFileRequest.content);
+  } else if (request.cacheFileRequest.status === this.options.fileStatus.values.CLOSED &&
+    fs.existsSync(filePath)) {
+    loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
   } else {
-    if (fs.existsSync(request.cacheFileRequest.filePath)) {
-      loader.reloadFile(request.cacheFileRequest.filePath, fs.readFileSync(request.cacheFileRequest.filePath, "UTF-8"));
-    } else {
-      loader.unloadFile(request.cacheFileRequest.filePath);
-    }
+    loader.unloadFile(filePath);
   }
 };
 
