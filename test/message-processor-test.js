@@ -1,13 +1,13 @@
 var assert = require("chai").assert;
 var sinon = require("sinon");
 var protobuf = require("protobufjs");
-var esprima = require("esprima");
 var stepRegistry = require("../src/step-registry");
 var loader = require("../src/static-loader");
 var MessageProcessor = require("../src/message-processor");
+var mock = require("mock-fs");
+var path = require("path");
 
 describe("Step Validate Request Processing", function () {
-
   var stepValidateRequest = [];
   var message = null;
   this.timeout(10000);
@@ -88,7 +88,6 @@ describe("Step Validate Request Processing", function () {
     });
     processor.getResponseFor(stepValidateRequest[0]);
   });
-
 });
 
 describe("StepNameRequest Processing", function () {
@@ -105,7 +104,7 @@ describe("StepNameRequest Processing", function () {
       "  console.log('in context step');\n" +
       "});\n";
 
-    loader.loadFile(filePath, esprima.parse(content, { loc: true }));
+    loader.reloadFile(filePath, content);
 
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
       message = root.lookupType("gauge.messages.Message");
@@ -166,7 +165,7 @@ describe("StepPositionsRequest Processing", function () {
       "  assert.equal(number, vowels.numVowels(word));\n" +
       "});";
 
-    loader.loadFile(filePath, esprima.parse(content, { loc: true }));
+    loader.reloadFile(filePath, content);
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
       message = root.lookupType("gauge.messages.Message");
       stepPositionsRequest =
@@ -197,5 +196,105 @@ describe("StepPositionsRequest Processing", function () {
       done();
     });
     processor.getResponseFor(stepPositionsRequest);
+  });
+});
+
+describe("CacheFileRequest Processing", function () {
+  var message = null;
+  var fileStatus = null;
+  var filePath = path.join(process.cwd(), "tests", "example.js");
+  var fileContent = "\"use strict\";\n" +
+    "var assert = require(\"assert\");\n" +
+    "var vowels = require(\"./vowels\");\n" +
+    "step(\"Vowels in English language are <vowels>.\", function(vowelsGiven) {\n" +
+    "  assert.equal(vowelsGiven, vowels.vowelList.join(\"\"));\n" +
+    "});";
+  this.timeout(10000);
+
+  var getCacheFileRequestMessage = function (filePath, status) {
+    return message.create({
+      messageId: 1,
+      messageType: message.MessageType.CacheFileRequest,
+      cacheFileRequest: {
+        filePath: filePath,
+        status: status
+      }
+    });
+  };
+
+  before(function (done) {
+    process.env.GAUGE_PROJECT_ROOT = process.cwd();
+    stepRegistry.clear();
+    protobuf.load("gauge-proto/messages.proto").then(function (root) {
+      message = root.lookupType("gauge.messages.Message");
+      fileStatus = root.lookupType("gauge.messages.CacheFileRequest").FileStatus;
+      done();
+    });
+  });
+
+  afterEach(function () {
+    mock.restore();
+  });
+
+  it("should reload files on create", function () {
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.CREATED);
+    mock({
+      "tests": {
+        "example.js": fileContent
+      }
+    });
+
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    processor.getResponseFor(cacheFileRequest);
+    assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
+  });
+
+  it("should unload file on delete.", function () {
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.DELETED);
+    loader.reloadFile(filePath, fileContent);
+    assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    processor.getResponseFor(cacheFileRequest);
+    assert.isUndefined(stepRegistry.get("Vowels in English language are {}."));
+  });
+
+  it("should reload file from disk on closed.", function () {
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.CLOSED);
+    mock({
+      "tests": {
+        "example.js": fileContent
+      }
+    });
+    loader.reloadFile(filePath, fileContent);
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    processor.getResponseFor(cacheFileRequest);
+    assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
+  });
+
+  it("should unload file from disk on closed and file does not exists.", function () {
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.CLOSED);
+    mock({
+      "tests": {}
+    });
+    loader.reloadFile(filePath, fileContent);
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    processor.getResponseFor(cacheFileRequest);
+    assert.isUndefined(stepRegistry.get("Vowels in English language are {}."));
+  });
+
+  it("should load changed content on file opened", function () {
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.OPENED);
+    cacheFileRequest.cacheFileRequest.content = fileContent;
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    processor.getResponseFor(cacheFileRequest);
+    assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
+  });
+
+  it("should load changed content on file changed", function () {
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.OPENED);
+    cacheFileRequest.cacheFileRequest.content = fileContent;
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    processor.getResponseFor(cacheFileRequest);
+    assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
   });
 });
