@@ -28,6 +28,8 @@ VM.prototype.contextify = function (filePath, root) {
   var sandbox = {
     isVM: true,
     console: console,
+    __dirname: path.dirname(path.resolve(filePath)),
+    __filename: path.resolve(filePath),
     require: self.require.fn,
     module: self.require.mod,
     exports: self.require.exports,
