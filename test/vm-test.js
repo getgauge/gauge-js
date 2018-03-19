@@ -108,6 +108,18 @@ describe("VM", function () {
         assert.doesNotThrow(function () { vm.run(type + "(function(){})"); });
       });
     });
+
+    it("setImmediate", function () {
+      var vm = new VM();
+      vm.contextify();
+      assert.doesNotThrow(function () { vm.run("setImmediate(function () {})"); });
+    });
+
+    it("clearImmediate", function () {
+      var vm = new VM();
+      vm.contextify();
+      assert.doesNotThrow(function () { vm.run("clearImmediate()"); });
+    });
   });
 
   it("should not read from file and run code", function () {

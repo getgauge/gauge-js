@@ -36,10 +36,12 @@ VM.prototype.contextify = function (filePath, root) {
     process: process,
     gauge: gaugeGlobal.gauge,
     step: gaugeGlobal.step,
-    setTimeout: setTimeout,
+    setImmediate: setImmediate,
     setInterval: setInterval,
-    clearTimeout: clearTimeout,
+    setTimeout: setTimeout,
+    clearImmediate: clearImmediate,
     clearInterval: clearInterval,
+    clearTimeout: clearTimeout,
     gauge_runner_root: process.cwd(),
     gauge_project_root: self.options.root
   };
