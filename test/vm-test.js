@@ -49,6 +49,34 @@ describe("VM", function () {
       assert.doesNotThrow(function () { vm.run("var ohai = gauge.step"); });
     });
 
+    it("__dirname", function () {
+      var vm = new VM();
+      vm.contextify(path.join("/", "some", "file.js"));
+      assert.doesNotThrow(function () {
+        vm.run(`
+          var path = require('path');
+          var expected = path.join('/', 'some');
+          if (__dirname !== expected) {
+            throw new Error('__dirname "' + __dirname + '" did not match "' + expected + '"');
+          }
+        `);
+      });
+    });
+
+    it("__filename", function () {
+      var vm = new VM();
+      vm.contextify(path.join("/", "some", "file.js"));
+      assert.doesNotThrow(function () {
+        vm.run(`
+          var path = require('path');
+          var expected = path.join('/', 'some', 'file.js');
+          if (__filename !== expected) {
+            throw new Error('__filename "' + __filename + '" did not match "' + expected + '"');
+          }
+        `);
+      });
+    });
+
     it("require", function () {
       var vm = new VM();
       vm.contextify();
@@ -79,6 +107,18 @@ describe("VM", function () {
       hookRegistry.types.forEach(function (type) {
         assert.doesNotThrow(function () { vm.run(type + "(function(){})"); });
       });
+    });
+
+    it("setImmediate", function () {
+      var vm = new VM();
+      vm.contextify();
+      assert.doesNotThrow(function () { vm.run("setImmediate(function () {})"); });
+    });
+
+    it("clearImmediate", function () {
+      var vm = new VM();
+      vm.contextify();
+      assert.doesNotThrow(function () { vm.run("clearImmediate()"); });
     });
   });
 
