@@ -28,16 +28,20 @@ VM.prototype.contextify = function (filePath, root) {
   var sandbox = {
     isVM: true,
     console: console,
+    __dirname: path.dirname(path.resolve(filePath)),
+    __filename: path.resolve(filePath),
     require: self.require.fn,
     module: self.require.mod,
     exports: self.require.exports,
     process: process,
     gauge: gaugeGlobal.gauge,
     step: gaugeGlobal.step,
-    setTimeout: setTimeout,
+    setImmediate: setImmediate,
     setInterval: setInterval,
-    clearTimeout: clearTimeout,
+    setTimeout: setTimeout,
+    clearImmediate: clearImmediate,
     clearInterval: clearInterval,
+    clearTimeout: clearTimeout,
     gauge_runner_root: process.cwd(),
     gauge_project_root: self.options.root
   };
