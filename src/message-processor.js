@@ -13,6 +13,8 @@ var loader = require("./static-loader");
 var inspector = require("inspector");
 var fileUtil = require("./file-util");
 
+const ATTACH_DEBUGGER_EVENT = "Runner Ready for Debugging";
+
 var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
 var processCustomMessages = function (response) {
@@ -69,7 +71,7 @@ function executeBeforeSuiteHook(request) {
   var self = this;
   if (process.env.DEBUGGING) {
     var port = parseInt(process.env.DEBUG_PORT);
-    console.log("Trying to connect to debugger.", port);
+    console.log(ATTACH_DEBUGGER_EVENT);
     inspector.open(port, "127.0.0.1", true);
     var inspectorWaitTime = 1000;
     setTimeout(function () { startExecution(self, request); }, inspectorWaitTime);
