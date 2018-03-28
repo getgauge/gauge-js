@@ -20,7 +20,7 @@ function run() {
     console.error("Failed while loading runner.\n", e);
     process.exit();
   }).then(function (types) {
-    var gaugeInternalConnection = new Connection("localhost", GAUGE_INTERNAL_PORT, types.message);
+    var gaugeInternalConnection = new Connection("127.0.0.1", GAUGE_INTERNAL_PORT, types.message);
     gaugeInternalConnection.run();
 
     loader.load(GAUGE_PROJECT_ROOT);
