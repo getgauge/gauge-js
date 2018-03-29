@@ -1,5 +1,6 @@
 var util = require("util");
 var EventEmitter = require("events").EventEmitter;
+var reader = require("protobufjs").Reader;
 
 var ExecutionConnection = function (host, port, message) {
   EventEmitter.call(this);
@@ -14,14 +15,17 @@ var ExecutionConnection = function (host, port, message) {
   };
 
   var messageHandler = function (bytes) {
-    self.emit("messageReceived", self.message.decodeDelimited(bytes));
+    var r = reader.create(new Buffer(bytes));
+    while (r.pos < r.len) {
+      self.emit("messageReceived", self.message.decodeDelimited(r));
+    }
   };
 
   var errorHandler = function (err) {
     self.emit("socketError", err);
   };
-  
-  this.writeMessage = function(response) {
+
+  this.writeMessage = function (response) {
     self.socket.write(self.message.encodeDelimited(self.message.create(response)).finish());
   };
 
