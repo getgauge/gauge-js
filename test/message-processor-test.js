@@ -298,3 +298,48 @@ describe("CacheFileRequest Processing", function () {
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
   });
 });
+
+describe("ImplementationFileGlobPatternRequest Processing", function () {
+  var message = null;
+  this.timeout(10000);
+  var implementationFileGlobPatternMessage;
+  var projectRoot = "exampleProject";
+
+  before(function (done) {
+    process.env.GAUGE_PROJECT_ROOT = projectRoot;
+    stepRegistry.clear();
+    protobuf.load("gauge-proto/messages.proto").then(function (root) {
+      message = root.lookupType("gauge.messages.Message");
+      implementationFileGlobPatternMessage = message.create({
+        messageId: 1,
+        messageType: message.MessageType.ImplementationFileGlobPatternRequest,
+        implementationFileGlobPatternRequest: {}
+      });
+      done();
+    });
+  });
+
+  after(function() {
+    process.env.GAUGE_PROJECT_ROOT = process.cwd();
+    process.env.STEP_IMPL_DIR = "";
+  });
+
+  it("should return glob pattern for default test directory", function () {
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: {} } });
+    processor.on("messageProcessed", function (response) {
+      var expectedGlobPattern = [projectRoot + "/tests/**/*.js"];
+      assert.deepEqual(response.implementationFileGlobPatternResponse.globPatterns, expectedGlobPattern);
+    });
+    processor.getResponseFor(implementationFileGlobPatternMessage);
+  });
+
+  it("should return glob patterns when multiple test directories present", function () {
+    process.env.STEP_IMPL_DIR = "test1, test2";
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: {} } });
+    processor.on("messageProcessed", function (response) {
+      var expectedGlobPatterns = [projectRoot + "/test1/**/*.js", projectRoot + "/test2/**/*.js"] ;
+      assert.deepEqual(response.implementationFileGlobPatternResponse.globPatterns, expectedGlobPatterns);
+    });
+    processor.getResponseFor(implementationFileGlobPatternMessage);
+  });
+});

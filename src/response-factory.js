@@ -127,6 +127,18 @@ exports.createImplementationFileListResponse = function (message, messageId) {
 
 };
 
+exports.createImplementationFileGlobPatternResponse = function (message, messageId) {
+
+  return message.create({
+    messageId: messageId,
+    messageType: message.MessageType.ImplementationFileGlobPatternResponse,
+    implementationFileGlobPatternResponse: {
+      globPatterns: []
+    }
+  });
+
+};
+
 exports.createFileDiff = function (message, messageId) {
 
   return message.create({

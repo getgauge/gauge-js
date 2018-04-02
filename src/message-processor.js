@@ -231,6 +231,16 @@ var executeCacheFileRequest = function (request) {
   }
 };
 
+function getImplementationFileGlobPatterns(request) {
+  var response = factory.createImplementationFileGlobPatternResponse(this.options.message, request.messageId);
+  var globPatterns = [];
+  fileUtil.getImplDirs().forEach((dir) => {
+    globPatterns.push(dir + "/**/*.js");
+  });
+  response.implementationFileGlobPatternResponse.globPatterns = globPatterns;
+  this._emit(response);
+}
+
 function killProcess() {
   process.exit();
 }
@@ -260,6 +270,7 @@ var MessageProcessor = function (protoOptions) {
   this.processors[this.options.message.MessageType.StepPositionsRequest] = executeStepPositionsRequest;
   this.processors[this.options.message.MessageType.KillProcessRequest] = killProcess;
   this.processors[this.options.message.MessageType.ImplementationFileListRequest] = getImplementationFiles;
+  this.processors[this.options.message.MessageType.ImplementationFileGlobPatternRequest] = getImplementationFileGlobPatterns;
   this.processors[this.options.message.MessageType.StubImplementationCodeRequest] = putStubImplementationCode;
 };
 

@@ -19,7 +19,7 @@
   },
   "lib": "libs",
   "gaugeVersionSupport": {
-    "minimum": "0.9.9",
+    "minimum": "0.9.8",
     "maximum": ""
   },
   "lspLangId" : "javascript"
