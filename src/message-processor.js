@@ -1,6 +1,7 @@
 var fs = require("fs");
 var EventEmitter = require("events").EventEmitter;
 var util = require("util");
+var path = require("path");
 
 var factory = require("./response-factory");
 var stepRegistry = require("./step-registry");
@@ -235,7 +236,7 @@ function getImplementationFileGlobPatterns(request) {
   var response = factory.createImplementationFileGlobPatternResponse(this.options.message, request.messageId);
   var globPatterns = [];
   fileUtil.getImplDirs().forEach((dir) => {
-    globPatterns.push(dir + "/**/*.js");
+    globPatterns.push(dir.split(path.sep).join("/") + "/**/*.js");
   });
   response.implementationFileGlobPatternResponse.globPatterns = globPatterns;
   this._emit(response);
