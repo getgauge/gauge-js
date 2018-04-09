@@ -1,5 +1,4 @@
 var assert = require("chai").assert;
-var esprima = require("esprima");
 var loader = require("../src/static-loader");
 var stepRegistry = require("../src/step-registry");
 
@@ -14,7 +13,7 @@ describe("Static loader", function () {
       "\tassert.equal(+number, numberOfVowels(word));\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(source, { loc: true }));
+    loader.reloadFile(filepath, source);
     var step = stepRegistry.get("vsdvsv");
     assert.isDefined(step);
     assert.isNull(step.fn);
@@ -31,7 +30,7 @@ describe("Static loader", function () {
       "\tassert.equal(+number, numberOfVowels(word));\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(source, { loc: true }));
+    loader.reloadFile(filepath, source);
     var steps = stepRegistry.getStepTexts();
     assert.equal(steps.length, 2);
     assert.deepEqual(steps, ["vsdvsv", "oohooo"]);
@@ -54,7 +53,7 @@ describe("Static loader", function () {
       "\tconsole.log('lets start the magic!');\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(sourceV1, { loc: true }));
+    loader.reloadFile(filepath, sourceV1);
 
     var step = stepRegistry.get("vsdvsv");
     assert.isDefined(step);
@@ -87,7 +86,7 @@ describe("Static loader", function () {
       "\\ // syntax error\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(sourceV1, { loc: true }));
+    loader.reloadFile(filepath, sourceV1);
 
     var step = stepRegistry.get("vsdvsv");
     assert.isDefined(step);
@@ -109,7 +108,7 @@ describe("Static loader", function () {
       "\tconsole.log('it does not do anything')\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(source, { loc: true }));
+    loader.reloadFile(filepath, source);
 
     var steps = Object.keys(stepRegistry.registry);
     assert.isOk(steps.length == 0);
@@ -123,7 +122,7 @@ describe("Static loader", function () {
       "\tconsole.log('it does not do anything')\n" +
       "});";
 
-    loader.loadFile(filepath, esprima.parse(source, { loc: true }));
+    loader.reloadFile(filepath, source);
 
     var steps = Object.keys(stepRegistry.registry);
     assert.isOk(steps.length == 1);

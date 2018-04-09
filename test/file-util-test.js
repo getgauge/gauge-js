@@ -65,7 +65,8 @@ describe("File util functions", function () {
           },
         },
       });
-      var files = fileUtil.getListOfFiles(process.cwd());
+      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      var files = fileUtil.getListOfFiles();
       assert.equal(files.length, 2);
     });
 
@@ -79,7 +80,8 @@ describe("File util functions", function () {
           },
         }
       });
-      var files = fileUtil.getListOfFiles(process.cwd());
+      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      var files = fileUtil.getListOfFiles();
       assert.equal(files.length, 2);
     });
 
@@ -93,7 +95,8 @@ describe("File util functions", function () {
           },
         }
       });
-      var files = fileUtil.getListOfFiles(process.cwd());
+      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      var files = fileUtil.getListOfFiles();
       assert.equal(files.length, 0);
     });
 
@@ -115,7 +118,8 @@ describe("File util functions", function () {
         }
       });
       process.env.STEP_IMP_DIR = "custom";
-      var files = fileUtil.getListOfFiles(process.cwd());
+      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      var files = fileUtil.getListOfFiles();
       assert.equal(files.length, 2);
     });
   });
@@ -156,6 +160,53 @@ describe("File util functions", function () {
 
       file = fileUtil.getFileName(path.join(process.cwd(), "tests"));
       assert.equal(path.basename(file), "step-implementation-2.js");
+    });
+  });
+
+  describe("isInImplDir", function () {
+    afterEach(function () {
+      mock.restore();
+    });
+
+    it("should be true if file is under implementation dir", function () {
+      mock({
+        "tests": {
+          "step-impl.js": "file content"
+        },
+      });
+      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      assert.isTrue(fileUtil.isInImplDir(path.join(process.cwd(), "tests", "step-impl.js")));
+    });
+
+    it("should be true if file in nested dir under implementation dir", function () {
+      mock({
+        "tests": {
+          "inner-dir": {
+            "step-impl.js": "file content",
+          }
+        },
+      });
+      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      assert.isTrue(fileUtil.isInImplDir(path.join(process.cwd(), "tests", "inner-dir", "step-impl.js")));
+    });
+
+    it("should be false if file is not under implementation dir", function () {
+      mock({
+        "tests": {
+          "inner-dir": {
+            "step-impl.js": "file content",
+          }
+        },
+      });
+      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      assert.isFalse(fileUtil.isInImplDir(path.join(process.cwd(), "step-impl.js")));
+    });
+  });
+
+  describe("isJSFile", function () {
+    it("should check for js file extensions", function () {
+      assert.isTrue(fileUtil.isJSFile("step-impl.js"));
+      assert.isFalse(fileUtil.isJSFile("step-impl.java"));
     });
   });
 });
