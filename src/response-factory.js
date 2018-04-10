@@ -116,7 +116,6 @@ exports.createStepPositionsResponse = function (message, messageId) {
 
 
 exports.createImplementationFileListResponse = function (message, messageId) {
-
   return message.create({
     messageId: messageId,
     messageType: message.MessageType.ImplementationFileListResponse,
@@ -124,11 +123,9 @@ exports.createImplementationFileListResponse = function (message, messageId) {
       implementationFilePaths: []
     }
   });
-
 };
 
 exports.createImplementationFileGlobPatternResponse = function (message, messageId) {
-
   return message.create({
     messageId: messageId,
     messageType: message.MessageType.ImplementationFileGlobPatternResponse,
@@ -136,7 +133,6 @@ exports.createImplementationFileGlobPatternResponse = function (message, message
       globPatterns: []
     }
   });
-
 };
 
 exports.createFileDiff = function (message, messageId) {
@@ -144,7 +140,6 @@ exports.createFileDiff = function (message, messageId) {
   return message.create({
     messageId: messageId,
     messageType: message.MessageType.FileDiff,
-    fileDiff: []
+    fileDiff: {}
   });
-
 };

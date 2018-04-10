@@ -3,7 +3,7 @@ var sinon = require("sinon");
 var protobuf = require("protobufjs");
 var stepRegistry = require("../src/step-registry");
 var loader = require("../src/static-loader");
-var MessageProcessor = require("../src/message-processor");
+var MessageProcessor = require("../src/message-processor").MessageProcessor;
 var mock = require("mock-fs");
 var path = require("path");
 
@@ -227,7 +227,7 @@ describe("CacheFileRequest Processing", function () {
     stepRegistry.clear();
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
       message = root.lookupType("gauge.messages.Message");
-      fileStatus = root.lookupType("gauge.messages.CacheFileRequest").FileStatus;
+      fileStatus = root.lookupEnum("gauge.messages.CacheFileRequest.FileStatus");
       done();
     });
   });
@@ -237,63 +237,62 @@ describe("CacheFileRequest Processing", function () {
   });
 
   it("should reload files on create", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.CREATED);
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CREATED]);
     mock({
       "tests": {
         "example.js": fileContent
       }
     });
-
-    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: fileStatus });
     processor.getResponseFor(cacheFileRequest);
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
   });
 
   it("should unload file on delete.", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.DELETED);
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.DELETED]);
     loader.reloadFile(filePath, fileContent);
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
-    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: fileStatus });
     processor.getResponseFor(cacheFileRequest);
     assert.isUndefined(stepRegistry.get("Vowels in English language are {}."));
   });
 
   it("should reload file from disk on closed.", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.CLOSED);
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CLOSED]);
     mock({
       "tests": {
         "example.js": fileContent
       }
     });
     loader.reloadFile(filePath, fileContent);
-    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: fileStatus });
     processor.getResponseFor(cacheFileRequest);
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
   });
 
   it("should unload file from disk on closed and file does not exists.", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.CLOSED);
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CLOSED]);
     mock({
       "tests": {}
     });
     loader.reloadFile(filePath, fileContent);
-    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: fileStatus });
     processor.getResponseFor(cacheFileRequest);
     assert.isUndefined(stepRegistry.get("Vowels in English language are {}."));
   });
 
   it("should load changed content on file opened", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.OPENED);
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.OPENED]);
     cacheFileRequest.cacheFileRequest.content = fileContent;
-    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: fileStatus });
     processor.getResponseFor(cacheFileRequest);
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
   });
 
   it("should load changed content on file changed", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.OPENED);
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.OPENED]);
     cacheFileRequest.cacheFileRequest.content = fileContent;
-    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: { CHANGED: 0, CLOSED: 1, CREATED: 2, DELETED: 3, OPENED: 4 } } });
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: fileStatus });
     processor.getResponseFor(cacheFileRequest);
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
   });
@@ -319,7 +318,7 @@ describe("ImplementationFileGlobPatternRequest Processing", function () {
     });
   });
 
-  after(function() {
+  after(function () {
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
     process.env.STEP_IMPL_DIR = "";
   });
@@ -337,7 +336,7 @@ describe("ImplementationFileGlobPatternRequest Processing", function () {
     process.env.STEP_IMPL_DIR = "test1, test2";
     var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: { values: {} } });
     processor.on("messageProcessed", function (response) {
-      var expectedGlobPatterns = [projectRoot + "/test1/**/*.js", projectRoot + "/test2/**/*.js"] ;
+      var expectedGlobPatterns = [projectRoot + "/test1/**/*.js", projectRoot + "/test2/**/*.js"];
       assert.deepEqual(response.implementationFileGlobPatternResponse.globPatterns, expectedGlobPatterns);
     });
     processor.getResponseFor(implementationFileGlobPatternMessage);

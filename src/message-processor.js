@@ -130,7 +130,6 @@ var generateImplStub = function (stepValue) {
     "});";
 };
 
-
 var getSuggestionFor = function (request, validated) {
   if (validated.reason !== "notfound") {
     return "";
@@ -138,20 +137,28 @@ var getSuggestionFor = function (request, validated) {
   return generateImplStub(request.stepValue);
 };
 
-function validateStep(request) {
+var stepValidateResponse = function (request) {
   var validated = stepRegistry.validate(request.stepValidateRequest.stepText);
   var suggestion = getSuggestionFor(request.stepValidateRequest, validated);
   var response = factory.createStepValidateResponse(this.options.message, request.messageId, this.options.errorType, validated, suggestion);
-  this._emit(response);
-}
-
-var executeStepNamesRequest = function (request) {
-  var response = factory.createStepNamesResponse(this.options.message, request.messageId);
-  response.stepNamesResponse.steps = response.stepNamesResponse.steps.concat(stepRegistry.getStepTexts());
-  this._emit(response);
+  return response;
 };
 
-var executeStepNameRequest = function (request) {
+var validateStep = function (request) {
+  this._emit(stepValidateResponse.call(this, request));
+};
+
+var stepNamesResponse = function (request) {
+  var response = factory.createStepNamesResponse(this.options.message, request.messageId);
+  response.stepNamesResponse.steps = response.stepNamesResponse.steps.concat(stepRegistry.getStepTexts());
+  return response;
+};
+
+var executeStepNamesRequest = function (request) {
+  this._emit(stepNamesResponse.call(this, request));
+};
+
+var stepNameResponse = function (request) {
   var stepValue = request.stepNameRequest.stepValue;
   var response = factory.createStepNameResponse(this.options.message, request.messageId);
   var step = stepRegistry.get(stepValue);
@@ -162,24 +169,36 @@ var executeStepNameRequest = function (request) {
     response.stepNameResponse.fileName = step.fileLocations[0].filePath;
     response.stepNameResponse.span = step.fileLocations[0].span;
   }
-  this._emit(response);
+  return response;
 };
 
-var executeStepPositionsRequest = function (request) {
+var executeStepNameRequest = function (request) {
+  this._emit(stepNameResponse.call(this, request));
+};
+
+var stepPositions = function (request) {
   var response = factory.createStepPositionsResponse(this.options.message, request.messageId);
   var filepath = request.stepPositionsRequest.filePath;
   response.stepPositionsResponse.stepPositions = stepRegistry.getStepPositions(filepath);
-  this._emit(response);
+  return response;
 };
 
-var getImplementationFiles = function (request) {
+var executeStepPositionsRequest = function (request) {
+  this._emit(stepPositions.call(this, request));
+};
+
+var implementationFiles = function (request) {
   var response = factory.createImplementationFileListResponse(this.options.message, request.messageId);
   var files = fileUtil.getListOfFiles();
   response.implementationFileListResponse.implementationFilePaths = files;
-  this._emit(response);
+  return response;
 };
 
-var putStubImplementationCode = function (request) {
+var getImplementationFiles = function (request) {
+  this._emit(implementationFiles.call(this, request));
+};
+
+var implementStubResponse = function (request) {
   var response = factory.createFileDiff(this.options.message, request.messageId);
   var filePath = request.stubImplementationCodeRequest.implementationFilePath;
   var codes = request.stubImplementationCodeRequest.codes;
@@ -207,26 +226,34 @@ var putStubImplementationCode = function (request) {
   var textDiffs = [{ span: span, content: content }];
   response.fileDiff.filePath = filePath;
   response.fileDiff.textDiffs = textDiffs;
-  this._emit(response);
+  return response;
+};
+
+var putStubImplementationCode = function (request) {
+  this._emit(implementStubResponse.call(this, request));
+};
+
+var refactorResponse = function (request) {
+  var response = factory.createRefactorResponse(this.options.message, request.messageId);
+  response = refactor(request, response);
+  return response;
 };
 
 var executeRefactor = function (request) {
-  var response = factory.createRefactorResponse(this.options.message, request.messageId);
-  response = refactor(request, response);
-  this._emit(response);
+  this._emit(refactorResponse.call(this, request));
 };
 
-var executeCacheFileRequest = function (request) {
+var cacheFileResponse = function (request) {
   const filePath = request.cacheFileRequest.filePath;
   if (!fileUtil.isJSFile(filePath) || !fileUtil.isInImplDir(filePath)) {
     return;
   }
-  if (request.cacheFileRequest.status === this.options.fileStatus.values.CREATED) {
+  if (request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.CREATED]) {
     loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
-  } else if (request.cacheFileRequest.status === this.options.fileStatus.values.CHANGED ||
-    request.cacheFileRequest.status === this.options.fileStatus.values.OPENED) {
+  } else if (request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.CHANGED] ||
+    request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.OPENED]) {
     loader.reloadFile(filePath, request.cacheFileRequest.content);
-  } else if (request.cacheFileRequest.status === this.options.fileStatus.values.CLOSED &&
+  } else if (request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.CLOSED] &&
     fs.existsSync(filePath)) {
     loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
   } else {
@@ -234,15 +261,23 @@ var executeCacheFileRequest = function (request) {
   }
 };
 
-function getImplementationFileGlobPatterns(request) {
+var executeCacheFileRequest = function (request) {
+  cacheFileResponse.call(this, request);
+};
+
+var implementationGlobPatternResponse = function (request) {
   var response = factory.createImplementationFileGlobPatternResponse(this.options.message, request.messageId);
   var globPatterns = [];
   fileUtil.getImplDirs().forEach((dir) => {
     globPatterns.push(dir.split(path.sep).join("/") + "/**/*.js");
   });
   response.implementationFileGlobPatternResponse.globPatterns = globPatterns;
-  this._emit(response);
-}
+  return response;
+};
+
+var getImplementationFileGlobPatterns = function (request) {
+  this._emit(implementationGlobPatternResponse.call(this, request));
+};
 
 function killProcess() {
   process.exit();
@@ -285,4 +320,15 @@ MessageProcessor.prototype._emit = function (data) {
   this.emit("messageProcessed", data);
 };
 
-module.exports = MessageProcessor;
+module.exports = {
+  MessageProcessor: MessageProcessor,
+  stepNamesResponse: stepNamesResponse,
+  cacheFileResponse: cacheFileResponse,
+  stepPositions: stepPositions,
+  implementationFiles: implementationFiles,
+  implementStubResponse: implementStubResponse,
+  stepValidateResponse: stepValidateResponse,
+  refactorResponse: refactorResponse,
+  stepNameResponse: stepNameResponse,
+  implementationGlobPatternResponse: implementationGlobPatternResponse
+};
