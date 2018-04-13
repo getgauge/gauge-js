@@ -17,6 +17,11 @@
     "linux": ["./index.js", "--init"],
     "darwin": ["./index.js", "--init"]
   },
+  "postInstall": {
+    "windows": ["npm", "install", "--production"],
+    "linux": ["npm", "install", "--production"],
+    "darwin": ["npm", "install", "--production"]
+  },
   "lib": "libs",
   "gaugeVersionSupport": {
     "minimum": "0.9.8",

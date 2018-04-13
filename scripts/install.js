@@ -33,7 +33,7 @@ var recreateDir = function (dirPath) {
 
 var prepareFiles = function () {
   var buildDir = localPath("build"),
-      copyList = ["gauge-proto", "src", "skel", "index.js", "index.bat", "debug.bat", "js.json", "package.json", ".node-inspectorrc", "README.md"];
+      copyList = ["gauge-proto", "src", "skel", "index.js", "index.bat", "debug.bat", "js.json", "package.json", "package-lock.json", ".node-inspectorrc", "README.md"];
 
   recreateDir(buildDir);
 
@@ -62,15 +62,6 @@ var prepareFiles = function () {
     console.error("Failed to remove .git in gauge-proto: %s", err.message);
     console.error(err.stack);
   }
-
-  try {
-    console.log("Installing npm packages...");
-    child_process.execSync("npm install --production", { cwd: buildDir });
-  } catch (err) {
-    console.error("Error installing modules from NPM: %s", err.message);
-    console.error(err.stack);
-  }
-
 };
 
 var createPackage = function (callback) {
