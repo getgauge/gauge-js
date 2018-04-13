@@ -31,7 +31,7 @@ function run() {
       var server = new grpc.Server();
       server.addService(lspProto.lspService.service, new LspServerHandler(server, types));
       var p = server.bind("127.0.0.1:0", grpc.ServerCredentials.createInsecure());
-      console.log("Listening on port:", p);
+      console.log("Listening on port:" + p);
       server.start();
     } else {
       var gaugeInternalConnection = new Connection("127.0.0.1", GAUGE_INTERNAL_PORT, types.message);
