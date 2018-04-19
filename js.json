@@ -18,9 +18,9 @@
     "darwin": ["./index.js", "--init"]
   },
   "postInstall": {
-    "windows": ["npm", "install", "--production"],
-    "linux": ["npm", "install", "--production"],
-    "darwin": ["npm", "install", "--production"]
+    "windows": ["npm", "install", "--production", "--silent"],
+    "linux": ["npm", "install", "--production", "--silent"],
+    "darwin": ["npm", "install", "--production", "--silent"]
   },
   "lib": "libs",
   "gaugeVersionSupport": {
