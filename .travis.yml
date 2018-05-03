@@ -3,7 +3,7 @@ os:
   - linux
 language: node_js
 node_js:
-  - "node"
+  - "9"
 install:
   - npm install
 env:
