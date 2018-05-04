@@ -4,6 +4,7 @@ os:
 language: node_js
 node_js:
   - "9"
+  - "node"
 install:
   - npm install
 env:
