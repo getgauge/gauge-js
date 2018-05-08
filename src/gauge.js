@@ -1,3 +1,4 @@
+var gaugeGlobal = require("./gauge-global");
 var Connection = require("./connection");
 var MessageProcessor = require("./message-processor").MessageProcessor;
 var protobuf = require("protobufjs");
@@ -12,6 +13,7 @@ var LspServerHandler = require("./lsp-server");
 var GAUGE_INTERNAL_PORT = process.env.GAUGE_INTERNAL_PORT;
 
 function run() {
+  global.gauge = gaugeGlobal.gauge;
   if (process.env.IS_DAEMON) {
     consoleStamp(console, { label: false, pattern: "HH:MM:ss.l", datePrefix: "", dateSuffix: "" });
   }
