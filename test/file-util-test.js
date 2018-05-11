@@ -52,73 +52,27 @@ describe("File util functions", function () {
   });
 
   describe("getListOfFiles", function () {
-    afterEach(function () {
-      mock.restore();
-    });
-
     it("should get all the js file", function () {
-      mock({
-        "tests": {
-          "step-impl.js": "file content",
-          "inner-dir": {
-            "foo.js": "foo"
-          },
-        },
-      });
-      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      process.env.GAUGE_PROJECT_ROOT = path.join(__dirname, "testdata");
       var files = fileUtil.getListOfFiles();
       assert.equal(files.length, 2);
     });
 
     it("should get only js file", function () {
-      mock({
-        "tests": {
-          "step-impl.js": "file content",
-          "inner-dir": {
-            "foo.js": "foo",
-            "foo.txt": "foo"
-          },
-        }
-      });
-      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      process.env.GAUGE_PROJECT_ROOT = path.join(__dirname, "testdata");
       var files = fileUtil.getListOfFiles();
       assert.equal(files.length, 2);
     });
 
     it("should get scan only tests dir by default", function () {
-      mock({
-        "some-other": {
-          "step-impl.js": "file content",
-          "inner-dir": {
-            "foo.js": "foo",
-            "foo.txt": "foo"
-          },
-        }
-      });
-      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      process.env.GAUGE_PROJECT_ROOT = path.join(__dirname, "testdata", "custom");
       var files = fileUtil.getListOfFiles();
       assert.equal(files.length, 0);
     });
 
     it("should get scan only dir specified as STEP_IMPL_DIR env", function () {
-      mock({
-        "custom": {
-          "step-impl.js": "file content",
-          "inner-dir": {
-            "foo.js": "foo",
-            "foo.txt": "foo"
-          },
-        },
-        "tests": {
-          "step-impl.js": "file content",
-          "inner-dir": {
-            "foo.js": "foo",
-            "foo.txt": "foo"
-          },
-        }
-      });
       process.env.STEP_IMP_DIR = "custom";
-      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      process.env.GAUGE_PROJECT_ROOT = path.join(__dirname, "testdata");
       var files = fileUtil.getListOfFiles();
       assert.equal(files.length, 2);
     });
