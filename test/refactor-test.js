@@ -1,282 +1,372 @@
-var assert = require( "chai" ).assert;
-var protobuf = require( "protobufjs" );
+var assert = require("chai").assert;
+var protobuf = require("protobufjs");
 var stepRegistry = require("../src/step-registry");
 
-var refactor = require( "../src/refactor" );
-var factory = require( "../src/response-factory" );
-var fs = require( "fs" );
-var sinon = require( "sinon" );
+var refactor = require("../src/refactor");
+var factory = require("../src/response-factory");
+var fs = require("fs");
+var sinon = require("sinon");
 
 var sandbox, request, response;
 var contentInput, contentOutput, outputFile, info;
 
-describe( "Refactor", function () {
+describe("Refactor", function () {
   var message = null;
   this.timeout(10000);
-  before( function (done) {
+  before(function (done) {
     sandbox = sinon.sandbox.create();
 
-    sandbox.stub( fs, "readFileSync").callsFake(function () {
+    sandbox.stub(fs, "readFileSync").callsFake(function () {
       return contentInput;
     });
 
-    sandbox.stub( fs, "writeFileSync").callsFake(function ( file, data ) {
+    sandbox.stub(fs, "writeFileSync").callsFake(function (file, data) {
       outputFile = file;
       contentOutput = data;
     });
 
-    sandbox.stub( stepRegistry, "get").callsFake(function () {
+    sandbox.stub(stepRegistry, "get").callsFake(function () {
       return info;
     });
-    protobuf.load("gauge-proto/messages.proto").then(function(root){
+    protobuf.load("gauge-proto/messages.proto").then(function (root) {
       message = root.lookupType("gauge.messages.Message");
       done();
     });
   });
 
-  beforeEach( function () {
+  beforeEach(function () {
     contentOutput = contentInput = outputFile = info = request = response = null;
     response = factory.createRefactorResponse(message, 123);
   });
 
-  after( function () {
+  after(function () {
     sandbox.restore();
   });
 
-  it( "Should refactor step text without changing function ref", function () {
+  it("Should refactor step text without changing function ref", function () {
     var output = [];
-    output.push( "var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];" );
-    output.push( "hakunaMatata('What a wonderful phrase!');" );
-    output.push( "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});" );
-    output.push( "var myfn = function (number) {\n};" );
-    output.push( "gauge.step('There are <number> vowels.', myfn);" );
-    contentInput = output.join( "\n" );
+    output.push("var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];");
+    output.push("hakunaMatata('What a wonderful phrase!');");
+    output.push("gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});");
+    output.push("var myfn = function (number) {\n};");
+    output.push("gauge.step('There are <number> vowels.', myfn);");
+    contentInput = output.join("\n");
 
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "This English word {} has {} vowels.",
           parameterizedStepValue: "This English word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: 0,
           newPosition: 0
         }, {
           oldPosition: 1,
           newPosition: 1
-        } ],
+        }],
         saveChanges: true
       }
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response, fs );
-    assert.strictEqual( response.refactorResponse.error, "" );
-    assert.strictEqual( response.refactorResponse.success, true );
-    assert.strictEqual( response.refactorResponse.filesChanged.length, 1 );
-    assert.strictEqual( response.refactorResponse.filesChanged[0], "test/data/refactor-output.js");
-    assert.strictEqual( response.refactorResponse.fileChanges.length, 1);
-    assert.strictEqual( response.refactorResponse.fileChanges[0].fileName, "test/data/refactor-output.js");
-    assert.strictEqual( contentOutput, "var vowels = [\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];\nhakunaMatata('What a wonderful phrase!');\ngauge.step('This English word <word> has <number> vowels.', function (word, number) {\n});\nvar myfn = function (number) {\n};\ngauge.step('There are <number> vowels.', myfn);");
-    assert.strictEqual( response.refactorResponse.fileChanges[0].fileContent, contentOutput);
+    response = refactor(request, response, fs);
+    assert.strictEqual(response.refactorResponse.error, "");
+    assert.strictEqual(response.refactorResponse.success, true);
+    assert.strictEqual(response.refactorResponse.filesChanged.length, 1);
+    assert.strictEqual(response.refactorResponse.filesChanged[0], "test/data/refactor-output.js");
+    assert.strictEqual(response.refactorResponse.fileChanges.length, 1);
+    assert.strictEqual(response.refactorResponse.fileChanges[0].fileName, "test/data/refactor-output.js");
+    assert.strictEqual(contentOutput, "var vowels = [\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];\nhakunaMatata('What a wonderful phrase!');\ngauge.step('This English word <word> has <number> vowels.', function (word, number) {\n});\nvar myfn = function (number) {\n};\ngauge.step('There are <number> vowels.', myfn);");
+    assert.strictEqual(response.refactorResponse.fileChanges[0].fileContent, contentOutput);
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"This English word <word> has <number> vowels.\"",
+      span: {
+        start: 9,
+        startChar: 11,
+        end: 9,
+        endChar: 49
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs[1], {
+      content: "function (word, number) ",
+      span: {
+        start: 9,
+        startChar: 51,
+        end: 9,
+        endChar: 75
+      }
+    });
   });
 
-  it( "Should not save changes when request save changes is false", function () {
+  it("Should not save changes when request save changes is false", function () {
     var output = [];
-    output.push( "var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];" );
-    output.push( "hakunaMatata('What a wonderful phrase!');" );
-    output.push( "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});" );
-    output.push( "var myfn = function (number) {\n};" );
-    output.push( "gauge.step('There are <number> vowels.', myfn);" );
-    contentInput = output.join( "\n" );
+    output.push("var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];");
+    output.push("hakunaMatata('What a wonderful phrase!');");
+    output.push("gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});");
+    output.push("var myfn = function (number) {\n};");
+    output.push("gauge.step('There are <number> vowels.', myfn);");
+    contentInput = output.join("\n");
 
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "This English word {} has {} vowels.",
           parameterizedStepValue: "This English word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: 0,
           newPosition: 0
         }, {
           oldPosition: 1,
           newPosition: 1
-        } ],
+        }],
         saveChanges: false
       }
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response, fs );
-    assert.strictEqual( response.refactorResponse.error, "" );
-    assert.strictEqual( response.refactorResponse.success, true );
-    assert.strictEqual( response.refactorResponse.filesChanged.length, 1 );
-    assert.strictEqual( response.refactorResponse.filesChanged[0], "test/data/refactor-output.js");
-    assert.strictEqual( response.refactorResponse.fileChanges.length, 1);
-    assert.strictEqual( response.refactorResponse.fileChanges[0].fileName, "test/data/refactor-output.js");
-    assert.strictEqual( response.refactorResponse.fileChanges[0].fileContent, "var vowels = [\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];\nhakunaMatata('What a wonderful phrase!');\ngauge.step('This English word <word> has <number> vowels.', function (word, number) {\n});\nvar myfn = function (number) {\n};\ngauge.step('There are <number> vowels.', myfn);");
-    assert.notExists( contentOutput );
+    response = refactor(request, response, fs);
+    assert.strictEqual(response.refactorResponse.error, "");
+    assert.strictEqual(response.refactorResponse.success, true);
+    assert.strictEqual(response.refactorResponse.filesChanged.length, 1);
+    assert.strictEqual(response.refactorResponse.filesChanged[0], "test/data/refactor-output.js");
+    assert.strictEqual(response.refactorResponse.fileChanges.length, 1);
+    assert.strictEqual(response.refactorResponse.fileChanges[0].fileName, "test/data/refactor-output.js");
+    assert.strictEqual(response.refactorResponse.fileChanges[0].fileContent, "var vowels = [\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];\nhakunaMatata('What a wonderful phrase!');\ngauge.step('This English word <word> has <number> vowels.', function (word, number) {\n});\nvar myfn = function (number) {\n};\ngauge.step('There are <number> vowels.', myfn);");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"This English word <word> has <number> vowels.\"",
+      span: {
+        start: 9,
+        startChar: 11,
+        end: 9,
+        endChar: 49
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs[1], {
+      content: "function (word, number) ",
+      span: {
+        start: 9,
+        startChar: 51,
+        end: 9,
+        endChar: 75
+      }
+    });
+    assert.notExists(contentOutput);
   });
 
-  it( "Should refactor global step text without changing function ref", function () {
+  it("Should refactor global step text without changing function ref", function () {
     var output = [];
-    output.push( "var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];" );
-    output.push( "hakunaMatata('What a wonderful phrase!');" );
-    output.push( "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});" );
-    output.push( "var myfn = function (number) {\n};" );
-    output.push( "step('There are <number> vowels.', myfn);" );
-    contentInput = output.join( "\n" );
+    output.push("var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];");
+    output.push("hakunaMatata('What a wonderful phrase!');");
+    output.push("gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});");
+    output.push("var myfn = function (number) {\n};");
+    output.push("step('There are <number> vowels.', myfn);");
+    contentInput = output.join("\n");
 
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "This English word {} has {} vowels.",
           parameterizedStepValue: "This English word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: 0,
           newPosition: 0
         }, {
           oldPosition: 1,
           newPosition: 1
-        } ],
+        }],
         saveChanges: true
       }
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response, fs );
-    assert.strictEqual( response.refactorResponse.error, "" );
-    assert.strictEqual( response.refactorResponse.success, true );
-    assert.strictEqual( response.refactorResponse.filesChanged.length, 1 );
+    response = refactor(request, response, fs);
+    assert.strictEqual(response.refactorResponse.error, "");
+    assert.strictEqual(response.refactorResponse.success, true);
+    assert.strictEqual(response.refactorResponse.filesChanged.length, 1);
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"This English word <word> has <number> vowels.\"",
+      span: {
+        start: 9,
+        startChar: 11,
+        end: 9,
+        endChar: 49
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs[1], {
+      content: "function (word, number) ",
+      span: {
+        start: 9,
+        startChar: 51,
+        end: 9,
+        endChar: 75
+      }
+    });
   });
 
-  it( "Should perform refactoring when param names are changed", function () {
+  it("Should perform refactoring when param names are changed", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "This English word {} has {} vowels.",
           parameterizedStepValue: "This English word <word_en> has <numbers> vowels.",
-          parameters: [ "word_en", "numbers" ]
+          parameters: ["word_en", "numbers"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: -1,
           newPosition: 0
         }, {
           oldPosition: -1,
           newPosition: 1
-        } ],
+        }],
         saveChanges: true
       }
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response );
+    response = refactor(request, response);
 
-    assert.strictEqual( contentOutput, "gauge.step('This English word <word_en> has <numbers> vowels.', function (argWord_en, argNumbers) {\n});");
+    assert.strictEqual(contentOutput, "gauge.step('This English word <word_en> has <numbers> vowels.', function (argWord_en, argNumbers) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"This English word <word_en> has <numbers> vowels.\"",
+      span: {
+        start: 1,
+        startChar: 11,
+        end: 1,
+        endChar: 49
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (argWord_en, argNumbers) ",
+      span: {
+        start: 1,
+        startChar: 51,
+        end: 1,
+        endChar: 75
+      }
+    });
   });
 
-  it( "Should perform refactoring for global step when param names are changed", function () {
+  it("Should perform refactoring for global step when param names are changed", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "This English word {} has {} vowels.",
           parameterizedStepValue: "This English word <word_en> has <numbers> vowels.",
-          parameters: [ "word_en", "numbers" ]
+          parameters: ["word_en", "numbers"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: -1,
           newPosition: 0
         }, {
           oldPosition: -1,
           newPosition: 1
-        } ],
+        }],
         saveChanges: true
       }
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response );
+    response = refactor(request, response);
 
-    assert.strictEqual( contentOutput, "step('This English word <word_en> has <numbers> vowels.', function (argWord_en, argNumbers) {\n});");
+    assert.strictEqual(contentOutput, "step('This English word <word_en> has <numbers> vowels.', function (argWord_en, argNumbers) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"This English word <word_en> has <numbers> vowels.\"",
+      span: {
+        start: 1,
+        startChar: 5,
+        end: 1,
+        endChar: 43
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (argWord_en, argNumbers) ",
+      span: {
+        start: 1,
+        startChar: 45,
+        end: 1,
+        endChar: 69
+      }
+    });
   });
 
-  it( "Should perform refactoring when params are removed", function () {
+  it("Should perform refactoring when params are removed", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "This English word {} has {} vowels.",
           parameterizedStepValue: "This English word has <numbers> vowels.",
-          parameters: [ "numbers" ]
+          parameters: ["numbers"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: -1,
           newPosition: 0
         }],
@@ -285,32 +375,50 @@ describe( "Refactor", function () {
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response );
+    response = refactor(request, response);
 
-    assert.strictEqual( contentOutput, "gauge.step('This English word has <numbers> vowels.', function (argNumbers) {\n});");
+    assert.strictEqual(contentOutput, "gauge.step('This English word has <numbers> vowels.', function (argNumbers) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"This English word has <numbers> vowels.\"",
+      span: {
+        start: 1,
+        startChar: 11,
+        end: 1,
+        endChar: 49
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (argNumbers) ",
+      span: {
+        start: 1,
+        startChar: 51,
+        end: 1,
+        endChar: 75
+      }
+    });
   });
 
-  it( "Should perform refactoring for global when params are removed", function () {
+  it("Should perform refactoring for global when params are removed", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "This English word {} has {} vowels.",
           parameterizedStepValue: "This English word has <numbers> vowels.",
-          parameters: [ "numbers" ]
+          parameters: ["numbers"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: -1,
           newPosition: 0
         }],
@@ -319,106 +427,160 @@ describe( "Refactor", function () {
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response );
+    response = refactor(request, response);
 
-    assert.strictEqual( contentOutput, "step('This English word has <numbers> vowels.', function (argNumbers) {\n});");
+    assert.strictEqual(contentOutput, "step('This English word has <numbers> vowels.', function (argNumbers) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"This English word has <numbers> vowels.\"",
+      span: {
+        start: 1,
+        startChar: 5,
+        end: 1,
+        endChar: 43
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (argNumbers) ",
+      span: {
+        start: 1,
+        startChar: 45,
+        end: 1,
+        endChar: 69
+      }
+    });
   });
 
-  it( "Should perform refactoring when params are reordered", function () {
+  it("Should perform refactoring when params are reordered", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "There are {} vowels in the word {}",
           parameterizedStepValue: "There are <number> vowels in the word <word>.",
-          parameters: [ "number", "word" ]
+          parameters: ["number", "word"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: 0,
           newPosition: 1
         }, {
           oldPosition: 1,
           newPosition: 0
-        } ],
+        }],
         saveChanges: true
       }
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response );
+    response = refactor(request, response);
 
-    assert.strictEqual( contentOutput, "gauge.step('There are <number> vowels in the word <word>.', function (number, word) {\n});");
+    assert.strictEqual(contentOutput, "gauge.step('There are <number> vowels in the word <word>.', function (number, word) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"There are <number> vowels in the word <word>.\"",
+      span: {
+        start: 1,
+        startChar: 11,
+        end: 1,
+        endChar: 49
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (number, word) ",
+      span: {
+        start: 1,
+        startChar: 51,
+        end: 1,
+        endChar: 75
+      }
+    });
   });
 
-  it( "Should perform refactoring for global step when params are reordered", function () {
+  it("Should perform refactoring for global step when params are reordered", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "There are {} vowels in the word {}",
           parameterizedStepValue: "There are <number> vowels in the word <word>.",
-          parameters: [ "number", "word" ]
+          parameters: ["number", "word"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: 0,
           newPosition: 1
         }, {
           oldPosition: 1,
           newPosition: 0
-        } ],
+        }],
         saveChanges: true
       }
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response );
+    response = refactor(request, response);
 
-    assert.strictEqual( contentOutput, "step('There are <number> vowels in the word <word>.', function (number, word) {\n});");
+    assert.strictEqual(contentOutput, "step('There are <number> vowels in the word <word>.', function (number, word) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"There are <number> vowels in the word <word>.\"",
+      span: {
+        start: 1,
+        startChar: 5,
+        end: 1,
+        endChar: 43
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (number, word) ",
+      span: {
+        start: 1,
+        startChar: 45,
+        end: 1,
+        endChar: 69
+      }
+    });
   });
 
-  it( "Should perform refactoring when new params are added", function () {
+  it("Should perform refactoring when new params are added", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "The word {} has {} vowels and ends with {}.",
           parameterizedStepValue: "The word <word> has <number> vowels and ends with <end_letter>.",
-          parameters: [ "word", "number", "end_letter" ]
+          parameters: ["word", "number", "end_letter"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: 0,
           newPosition: 0
         }, {
@@ -427,38 +589,56 @@ describe( "Refactor", function () {
         }, {
           oldPosition: -1,
           newPosition: 2
-        } ],
+        }],
         saveChanges: true
       }
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response );
+    response = refactor(request, response);
 
     assert.strictEqual(contentOutput, "gauge.step('The word <word> has <number> vowels and ends with <end_letter>.', function (word, number, argEnd_letter) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"The word <word> has <number> vowels and ends with <end_letter>.\"",
+      span: {
+        start: 1,
+        startChar: 11,
+        end: 1,
+        endChar: 49
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (word, number, argEnd_letter) ",
+      span: {
+        start: 1,
+        startChar: 51,
+        end: 1,
+        endChar: 75
+      }
+    });
   });
 
-  it( "Should perform refactoring for global step when new params are added", function () {
+  it("Should perform refactoring for global step when new params are added", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "The word {} has {} vowels and ends with {}.",
           parameterizedStepValue: "The word <word> has <number> vowels and ends with <end_letter>.",
-          parameters: [ "word", "number", "end_letter" ]
+          parameters: ["word", "number", "end_letter"]
         },
-        paramPositions: [ {
+        paramPositions: [{
           oldPosition: 0,
           newPosition: 0
         }, {
@@ -467,73 +647,54 @@ describe( "Refactor", function () {
         }, {
           oldPosition: -1,
           newPosition: 2
-        } ],
+        }],
         saveChanges: true
       }
     };
 
     info = {
-      fn: function ( word, number ) { word = "such"; number = "wow"; },
+      fn: function (word, number) { word = "such"; number = "wow"; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response );
+    response = refactor(request, response);
 
     assert.strictEqual(contentOutput, "step('The word <word> has <number> vowels and ends with <end_letter>.', function (word, number, argEnd_letter) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"The word <word> has <number> vowels and ends with <end_letter>.\"",
+      span: {
+        start: 1,
+        startChar: 5,
+        end: 1,
+        endChar: 43
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (word, number, argEnd_letter) ",
+      span: {
+        start: 1,
+        startChar: 45,
+        end: 1,
+        endChar: 69
+      }
+    });
   });
 
-  it( "Should perform refactoring while retaining callbacks for async step implementation calls", function () {
+  it("Should perform refactoring while retaining callbacks for async step implementation calls", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number, done) {\n});";
     request = {
       refactorRequest: {
         oldStepValue: {
           stepValue: "The word {} has {} vowels.",
           parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
+          parameters: ["word", "number"]
         },
         newStepValue: {
           stepValue: "This English word {} has {} vowels.",
           parameterizedStepValue: "This English word <word> has <numbers> vowels.",
-          parameters: [ "word", "numbers" ]
-        },
-        paramPositions: [ {
-          oldPosition: 0,
-          newPosition: 0
-        }, {
-          oldPosition: -1,
-          newPosition: 1
-        } ],
-        saveChanges: true
-      }
-    };
-
-    info = {
-      fn: function ( word, number, done ) { word = "such"; number = "wow"; done = "phew."; },
-      stepText: "The word <word> has <number> vowels.",
-      generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
-    };
-
-    response = refactor( request, response );
-
-    assert.strictEqual(contentOutput, "gauge.step('This English word <word> has <numbers> vowels.', function (word, argNumbers, done) {\n});");
-  });
-
-  it( "Should perform refactoring while retaining callbacks for async for global step implementation calls", function () {
-    contentInput = "step('The word <word> has <number> vowels.', function (word, number, done) {\n});";
-    request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: [ "word", "number" ]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word <word> has <numbers> vowels.",
-          parameters: [ "word", "numbers" ]
+          parameters: ["word", "numbers"]
         },
         paramPositions: [{
           oldPosition: 0,
@@ -547,15 +708,88 @@ describe( "Refactor", function () {
     };
 
     info = {
-      fn: function ( word, number, done ) { word = "such"; number = "wow"; done = "phew."; },
+      fn: function (word, number, done) { word = "such"; number = "wow"; done = "phew."; },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
-      fileLocations: [{filePath: "test/data/refactor-output.js"}]
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor( request, response );
+    response = refactor(request, response);
+
+    assert.strictEqual(contentOutput, "gauge.step('This English word <word> has <numbers> vowels.', function (word, argNumbers, done) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"This English word <word> has <numbers> vowels.\"",
+      span: {
+        start: 1,
+        startChar: 11,
+        end: 1,
+        endChar: 49
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (word, argNumbers, done) ",
+      span: {
+        start: 1,
+        startChar: 51,
+        end: 1,
+        endChar: 81
+      }
+    });
+  });
+
+  it("Should perform refactoring while retaining callbacks for async for global step implementation calls", function () {
+    contentInput = "step('The word <word> has <number> vowels.', function (word, number, done) {\n});";
+    request = {
+      refactorRequest: {
+        oldStepValue: {
+          stepValue: "The word {} has {} vowels.",
+          parameterizedStepValue: "The word <word> has <number> vowels.",
+          parameters: ["word", "number"]
+        },
+        newStepValue: {
+          stepValue: "This English word {} has {} vowels.",
+          parameterizedStepValue: "This English word <word> has <numbers> vowels.",
+          parameters: ["word", "numbers"]
+        },
+        paramPositions: [{
+          oldPosition: 0,
+          newPosition: 0
+        }, {
+          oldPosition: -1,
+          newPosition: 1
+        }],
+        saveChanges: true
+      }
+    };
+
+    info = {
+      fn: function (word, number, done) { word = "such"; number = "wow"; done = "phew."; },
+      stepText: "The word <word> has <number> vowels.",
+      generalisedText: "The word {} has {} vowels.",
+      fileLocations: [{ filePath: "test/data/refactor-output.js" }]
+    };
+
+    response = refactor(request, response);
 
     assert.strictEqual(contentOutput, "step('This English word <word> has <numbers> vowels.', function (word, argNumbers, done) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"This English word <word> has <numbers> vowels.\"",
+      span: {
+        start: 1,
+        startChar: 5,
+        end: 1,
+        endChar: 43
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (word, argNumbers, done) ",
+      span: {
+        start: 1,
+        startChar: 45,
+        end: 1,
+        endChar: 75
+      }
+    });
   });
 
   it("Should perform refactoring when new params are interchanged", function () {
@@ -593,5 +827,23 @@ describe( "Refactor", function () {
     response = refactor(request, response);
 
     assert.strictEqual(contentOutput, "step('There are <number> of vowels in <word>.', function (number, word) {\n});");
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "\"There are <number> of vowels in <word>.\"",
+      span: {
+        start: 1,
+        startChar: 5,
+        end: 1,
+        endChar: 43
+      }
+    });
+    assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
+      content: "function (number, word) ",
+      span: {
+        start: 1,
+        startChar: 45,
+        end: 1,
+        endChar: 69
+      }
+    });
   });
 });
