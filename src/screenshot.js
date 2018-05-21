@@ -11,7 +11,7 @@ var screenshot = function (tmpfile) {
     return "";
   }
   try {
-    return new Buffer(fs.readFileSync(tmpfile)).toString("base64");
+    return Buffer.from(fs.readFileSync(tmpfile)).toString("base64");
   } catch (e) {
     console.log(e.toString());
     return "";
