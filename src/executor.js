@@ -92,6 +92,10 @@ var executeHook = function(request, message, hookLevel, currentExecutionInfo) {
 
   var onError = function(result) {
     var errorResponse = factory.createExecutionStatusResponse(message, request.messageId, true, result.duration, result.exception);
+    if (process.env.screenshot_on_failure !== "false") {
+      var screenshotFn = global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function" ? global.gauge.screenshotFn : screenshot;
+      errorResponse.executionStatusResponse.executionResult.screenShot = screenshotFn();
+    }
     deferred.reject(errorResponse);
   };
 
