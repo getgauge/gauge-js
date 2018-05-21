@@ -276,7 +276,7 @@ describe("Refactor", function () {
 
     response = refactor(request, response);
 
-    assert.strictEqual(contentOutput, "gauge.step('This English word <word_en> has <numbers> vowels.', function (argWord_en, argNumbers) {\n});");
+    assert.strictEqual(contentOutput, "gauge.step('This English word <word_en> has <numbers> vowels.', function (arg0, arg1) {\n});");
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
       content: "\"This English word <word_en> has <numbers> vowels.\"",
       span: {
@@ -287,7 +287,7 @@ describe("Refactor", function () {
       }
     });
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
-      content: "function (argWord_en, argNumbers) ",
+      content: "function (arg0, arg1) ",
       span: {
         start: 1,
         startChar: 51,
@@ -331,7 +331,7 @@ describe("Refactor", function () {
 
     response = refactor(request, response);
 
-    assert.strictEqual(contentOutput, "step('This English word <word_en> has <numbers> vowels.', function (argWord_en, argNumbers) {\n});");
+    assert.strictEqual(contentOutput, "step('This English word <word_en> has <numbers> vowels.', function (arg0, arg1) {\n});");
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
       content: "\"This English word <word_en> has <numbers> vowels.\"",
       span: {
@@ -342,7 +342,7 @@ describe("Refactor", function () {
       }
     });
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
-      content: "function (argWord_en, argNumbers) ",
+      content: "function (arg0, arg1) ",
       span: {
         start: 1,
         startChar: 45,
@@ -383,7 +383,7 @@ describe("Refactor", function () {
 
     response = refactor(request, response);
 
-    assert.strictEqual(contentOutput, "gauge.step('This English word has <numbers> vowels.', function (argNumbers) {\n});");
+    assert.strictEqual(contentOutput, "gauge.step('This English word has <numbers> vowels.', function (arg0) {\n});");
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
       content: "\"This English word has <numbers> vowels.\"",
       span: {
@@ -394,7 +394,7 @@ describe("Refactor", function () {
       }
     });
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
-      content: "function (argNumbers) ",
+      content: "function (arg0) ",
       span: {
         start: 1,
         startChar: 51,
@@ -435,7 +435,7 @@ describe("Refactor", function () {
 
     response = refactor(request, response);
 
-    assert.strictEqual(contentOutput, "step('This English word has <numbers> vowels.', function (argNumbers) {\n});");
+    assert.strictEqual(contentOutput, "step('This English word has <numbers> vowels.', function (arg0) {\n});");
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
       content: "\"This English word has <numbers> vowels.\"",
       span: {
@@ -446,7 +446,7 @@ describe("Refactor", function () {
       }
     });
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
-      content: "function (argNumbers) ",
+      content: "function (arg0) ",
       span: {
         start: 1,
         startChar: 45,
@@ -603,7 +603,7 @@ describe("Refactor", function () {
 
     response = refactor(request, response);
 
-    assert.strictEqual(contentOutput, "gauge.step('The word <word> has <number> vowels and ends with <end_letter>.', function (word, number, argEnd_letter) {\n});");
+    assert.strictEqual(contentOutput, "gauge.step('The word <word> has <number> vowels and ends with <end_letter>.', function (word, number, arg2) {\n});");
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
       content: "\"The word <word> has <number> vowels and ends with <end_letter>.\"",
       span: {
@@ -614,7 +614,7 @@ describe("Refactor", function () {
       }
     });
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
-      content: "function (word, number, argEnd_letter) ",
+      content: "function (word, number, arg2) ",
       span: {
         start: 1,
         startChar: 51,
@@ -661,7 +661,7 @@ describe("Refactor", function () {
 
     response = refactor(request, response);
 
-    assert.strictEqual(contentOutput, "step('The word <word> has <number> vowels and ends with <end_letter>.', function (word, number, argEnd_letter) {\n});");
+    assert.strictEqual(contentOutput, "step('The word <word> has <number> vowels and ends with <end_letter>.', function (word, number, arg2) {\n});");
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
       content: "\"The word <word> has <number> vowels and ends with <end_letter>.\"",
       span: {
@@ -672,7 +672,7 @@ describe("Refactor", function () {
       }
     });
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
-      content: "function (word, number, argEnd_letter) ",
+      content: "function (word, number, arg2) ",
       span: {
         start: 1,
         startChar: 45,
@@ -716,7 +716,7 @@ describe("Refactor", function () {
 
     response = refactor(request, response);
 
-    assert.strictEqual(contentOutput, "gauge.step('This English word <word> has <numbers> vowels.', function (word, argNumbers, done) {\n});");
+    assert.strictEqual(contentOutput, "gauge.step('This English word <word> has <numbers> vowels.', function (word, arg1, done) {\n});");
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
       content: "\"This English word <word> has <numbers> vowels.\"",
       span: {
@@ -727,7 +727,7 @@ describe("Refactor", function () {
       }
     });
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
-      content: "function (word, argNumbers, done) ",
+      content: "function (word, arg1, done) ",
       span: {
         start: 1,
         startChar: 51,
@@ -771,7 +771,7 @@ describe("Refactor", function () {
 
     response = refactor(request, response);
 
-    assert.strictEqual(contentOutput, "step('This English word <word> has <numbers> vowels.', function (word, argNumbers, done) {\n});");
+    assert.strictEqual(contentOutput, "step('This English word <word> has <numbers> vowels.', function (word, arg1, done) {\n});");
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
       content: "\"This English word <word> has <numbers> vowels.\"",
       span: {
@@ -782,7 +782,7 @@ describe("Refactor", function () {
       }
     });
     assert.deepInclude(response.refactorResponse.fileChanges[0].diffs, {
-      content: "function (word, argNumbers, done) ",
+      content: "function (word, arg1, done) ",
       span: {
         start: 1,
         startChar: 45,

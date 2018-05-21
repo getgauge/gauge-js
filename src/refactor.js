@@ -3,8 +3,7 @@ var fs = require("fs"),
   estraverse = require("estraverse"),
   escodegen = require("escodegen"),
   stepRegistry = require("./step-registry"),
-  stepParser = require("./step-parser"),
-  stringUtil = require("./string-util");
+  stepParser = require("./step-parser");
 
 var isArrowFunction = function (node) {
   return node.type === "ArrowFunctionExpression";
@@ -12,6 +11,14 @@ var isArrowFunction = function (node) {
 
 var isFunction = function (node) {
   return (node.type === "FunctionExpression" || isArrowFunction(node));
+};
+
+var getParamName = function(index, params) {
+  var name = "arg" + index;
+  if (!params.includes(name)){
+    return name;
+  }
+  return getParamName(++index, params);
 };
 
 var processNode = function (node, req) {
@@ -25,11 +32,7 @@ var processNode = function (node, req) {
     var oldPosition = req.paramPositions[i].oldPosition || 0;
     var newPosition = req.paramPositions[i].newPosition || 0;
     if (oldPosition < 0) {
-      var paramName = stringUtil.toCamelCase("arg " + req.newStepValue.parameters[i]);
-      if (paramName == "arg") {
-        paramName = paramName + i;
-      }
-      paramName = stringUtil.filterInvalidIdentifiers(paramName);
+      var paramName = getParamName(i, newParams);
       newParams.splice(newPosition, 0, paramName);
     } else {
       newParams.splice(newPosition, 0, oldParams[oldPosition].name);
@@ -44,6 +47,7 @@ var processNode = function (node, req) {
   node.arguments[li].params = node.arguments[li].params.concat(asyncparams);
   return node;
 };
+
 
 var generateSignature = function (oldFunction, newfunction) {
   var signature = newfunction.params.map(function (param) { return escodegen.generate(param); }).join(", ");
