@@ -13,9 +13,9 @@ var isFunction = function (node) {
   return (node.type === "FunctionExpression" || isArrowFunction(node));
 };
 
-var getParamName = function(index, params) {
+var getParamName = function (index, params) {
   var name = "arg" + index;
-  if (!params.includes(name)){
+  if (!params.includes(name)) {
     return name;
   }
   return getParamName(++index, params);
@@ -32,7 +32,7 @@ var processNode = function (node, req) {
     var oldPosition = req.paramPositions[i].oldPosition || 0;
     var newPosition = req.paramPositions[i].newPosition || 0;
     if (oldPosition < 0) {
-      var paramName = getParamName(i, oldParams);
+      var paramName = getParamName(i, oldParams.map(function (p) { return p.name }));
       newParams.splice(newPosition, 0, paramName);
     } else {
       newParams.splice(newPosition, 0, oldParams[oldPosition].name);
@@ -89,8 +89,8 @@ var getSignatureDiff = function (newStep, oldStep) {
 var createDiff = function (oldNode, newNode) {
   var oldStep = oldNode.arguments[0];
   var newStep = newNode.arguments[0];
-  var oldFunction = oldNode.arguments[oldNode.arguments.length -1];
-  var newFunction = newNode.arguments[oldNode.arguments.length -1];
+  var oldFunction = oldNode.arguments[oldNode.arguments.length - 1];
+  var newFunction = newNode.arguments[oldNode.arguments.length - 1];
   return [getSignatureDiff(newStep, oldStep), getParamDiff(oldFunction, newFunction)];
 };
 
