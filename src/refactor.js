@@ -32,7 +32,7 @@ var processNode = function (node, req) {
     var oldPosition = req.paramPositions[i].oldPosition || 0;
     var newPosition = req.paramPositions[i].newPosition || 0;
     if (oldPosition < 0) {
-      var paramName = getParamName(i, oldParams.map(function (p) { return p.name }));
+      var paramName = getParamName(i, oldParams.map(function (p) { return p.name; }));
       newParams.splice(newPosition, 0, paramName);
     } else {
       newParams.splice(newPosition, 0, oldParams[oldPosition].name);
