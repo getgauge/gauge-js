@@ -98,7 +98,7 @@ describe("LspServerHandler", function () {
     const req = { request: { implementationFilePath: "New File", codes: ["foo", "bar"] } };
     handler.implementStub(req, function (err, res) {
       assert.isNull(err);
-      assert.equal(path.basename(res.filePath), "step-implementation.js");
+      assert.equal(path.basename(res.filePath), "step_implementation.js");
       assert.equal(res.textDiffs[0].content, "foo\nbar");
     });
   });
