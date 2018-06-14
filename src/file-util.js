@@ -39,7 +39,7 @@ function isSameFilePath(filePath1, filePath2) {
 }
 
 function getFileName(dir, counter = 0) {
-  var tmpl = counter && "step_implementation-" + counter + ".js" || "step_implementation.js";
+  var tmpl = counter && "step_implementation_" + counter + ".js" || "step_implementation.js";
   var fileName = path.join(dir, tmpl);
   if (!fs.existsSync(fileName)) {
     return fileName;

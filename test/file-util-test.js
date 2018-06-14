@@ -101,19 +101,19 @@ describe("File util functions", function () {
       });
 
       var file = fileUtil.getFileName(path.join(process.cwd(), "tests"));
-      assert.equal(path.basename(file), "step_implementation-1.js");
+      assert.equal(path.basename(file), "step_implementation_1.js");
 
       mock.restore();
 
       mock({
         "tests": {
           "step_implementation.js": "foo",
-          "step_implementation-1.js": "something",
+          "step_implementation_1.js": "something",
         },
       });
 
       file = fileUtil.getFileName(path.join(process.cwd(), "tests"));
-      assert.equal(path.basename(file), "step_implementation-2.js");
+      assert.equal(path.basename(file), "step_implementation_2.js");
     });
   });
 
