@@ -1,7 +1,8 @@
 var hookRegistry = require("./hook-registry"),
   customMessageRegistry = require("./custom-message-registry"),
   dataStore = require("./data-store-factory"),
-  stepRegistry = require("./step-registry");
+  stepRegistry = require("./step-registry"),
+  screenshotFactory = require("./screenshot-factory");
 
 var gauge = { hooks: {}, dataStore: dataStore };
 
@@ -47,6 +48,10 @@ gauge.step = function (stepName, options, stepFunction) {
   console.warn("[DEPRECATED] gauge.step() will be removed soon, use step() instead.");
   step(stepName, options, stepFunction);
   this.step = step;
+};
+
+gauge.screenshot = function() {
+  screenshotFactory.add();
 };
 
 module.exports = {

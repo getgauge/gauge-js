@@ -13,6 +13,7 @@ var impl_loader = require("./impl-loader");
 var loader = require("./static-loader");
 var inspector = require("inspector");
 var fileUtil = require("./file-util");
+var screenshotFactory = require("./screenshot-factory");
 
 const ATTACH_DEBUGGER_EVENT = "Runner Ready for Debugging";
 
@@ -22,6 +23,13 @@ var processCustomMessages = function (response) {
   var msgs = customMessageRegistry.get();
   response.executionStatusResponse.executionResult.message = response.executionStatusResponse.executionResult.message.concat(msgs);
   customMessageRegistry.clear();
+  return response;
+};
+
+var processScreenshots = function (response) {
+  var screenshot = screenshotFactory.get();
+  response.executionStatusResponse.executionResult.screenShot = response.executionStatusResponse.executionResult.screenShot.concat(screenshot);
+  screenshotFactory.clear();
   return response;
 };
 
@@ -53,6 +61,7 @@ function executeHook(request, hookName, currentExecutionInfo) {
   promise.then(
     function (response) {
       response = processCustomMessages(response);
+      response = processScreenshots(response);
       self._emit(response);
     },
     function (reason) {
