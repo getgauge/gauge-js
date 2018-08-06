@@ -28,7 +28,7 @@ gauge run specs
 
 ## Documentation
 
-For other details refer the documentation [here](https://getgauge.github.io/gauge-js)
+For other details refer the documentation [here](https://docs.gauge.org)
 
 ## Demos and examples
 
@@ -81,7 +81,6 @@ The plugin is authored in [Javascript](https://en.wikipedia.org/wiki/JavaScript)
 Gauge is authored in golang. These are independent processes talking to each other over TCP on port GAUGE_INTERNAL_PORT (env variable) using [Protobuf](https://github.com/getgauge/gauge-proto).
 
 ##### Pre-Requisites
-* [Golang](http://golang.org/)
 * [Node.js](https://nodejs.org/en/) - Version > 8
 * [Npm](https://www.npmjs.com/get-npm)
 
