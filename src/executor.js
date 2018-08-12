@@ -4,7 +4,10 @@ var factory = require("./response-factory"),
     Test = require("./test"),
     screenshot = require("./screenshot"),
     stepRegistry = require("./step-registry"),
-    hookRegistry = require("./hook-registry");
+    hookRegistry = require("./hook-registry"),
+    screenshotFactory = require("./screenshot-factory"),
+    customMessageRegistry = require("./custom-message-registry");
+
 
 /* If test_timeout env variable is not available set the default to 1000ms */
 var timeout = process.env.test_timeout || 1000;
@@ -43,22 +46,26 @@ var executeStep = function(request, message) {
     return item.value ? item.value : item.table;
   });
   var step = stepRegistry.get(parsedStepText);
+  var screenshots = screenshotFactory.get();
+  var msgs = customMessageRegistry.get();
   new Test(step.fn, parameters, timeout).run().then(
     function(result) {
-      var response = factory.createExecutionStatusResponse(message, request.messageId, false, result.duration, false, [], [], step.options.continueOnFailure);
+      var response = factory.createExecutionStatusResponse(message, request.messageId, false, result.duration, false, msgs, "", step.options.continueOnFailure,screenshots);
       deferred.resolve(response);
     },
 
     function(result) {
-      var errorResponse = factory.createExecutionStatusResponse(message, request.messageId, true, result.duration, result.exception, [], [], step.options.continueOnFailure);
+      var errorResponse = factory.createExecutionStatusResponse(message, request.messageId, true, result.duration, result.exception, msgs, "", step.options.continueOnFailure,screenshots);
       if (process.env.screenshot_on_failure !== "false") {
         var screenshotFn = global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function" ? global.gauge.screenshotFn : screenshot;
-        errorResponse.executionStatusResponse.executionResult.screenShot.push(screenshotFn());
+        errorResponse.executionStatusResponse.executionResult.screenShot = screenshotFn();
+        errorResponse.executionStatusResponse.executionResult.failedScreenshot = screenshotFn();
       }
       deferred.reject(errorResponse);
     }
   );
-
+  screenshotFactory.clear();
+  customMessageRegistry.clear();
   return deferred.promise;
 };
 
@@ -95,6 +102,7 @@ var executeHook = function(request, message, hookLevel, currentExecutionInfo) {
     if (process.env.screenshot_on_failure !== "false") {
       var screenshotFn = global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function" ? global.gauge.screenshotFn : screenshot;
       errorResponse.executionStatusResponse.executionResult.screenShot = screenshotFn();
+      errorResponse.executionStatusResponse.executionResult.failedScreenshot = screenshotFn();
     }
     deferred.reject(errorResponse);
   };

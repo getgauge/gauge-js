@@ -28,7 +28,7 @@ var processCustomMessages = function (response) {
 
 var processScreenshots = function (response) {
   var screenshot = screenshotFactory.get();
-  response.executionStatusResponse.executionResult.screenShot = response.executionStatusResponse.executionResult.screenShot.concat(screenshot);
+  response.executionStatusResponse.executionResult.screenshots = response.executionStatusResponse.executionResult.screenshots.concat(screenshot);
   screenshotFactory.clear();
   return response;
 };
