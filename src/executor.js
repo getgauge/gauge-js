@@ -59,7 +59,7 @@ var executeStep = function(request, message) {
       if (process.env.screenshot_on_failure !== "false") {
         var screenshotFn = global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function" ? global.gauge.screenshotFn : screenshot;
         errorResponse.executionStatusResponse.executionResult.screenShot = screenshotFn();
-        errorResponse.executionStatusResponse.executionResult.failedScreenshot = screenshotFn();
+        errorResponse.executionStatusResponse.executionResult.failureScreenshot = screenshotFn();
       }
       deferred.reject(errorResponse);
     }
@@ -102,7 +102,7 @@ var executeHook = function(request, message, hookLevel, currentExecutionInfo) {
     if (process.env.screenshot_on_failure !== "false") {
       var screenshotFn = global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function" ? global.gauge.screenshotFn : screenshot;
       errorResponse.executionStatusResponse.executionResult.screenShot = screenshotFn();
-      errorResponse.executionStatusResponse.executionResult.failedScreenshot = screenshotFn();
+      errorResponse.executionStatusResponse.executionResult.failureScreenshot = screenshotFn();
     }
     deferred.reject(errorResponse);
   };

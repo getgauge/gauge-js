@@ -95,7 +95,7 @@ exports.createExecutionStatusResponse = function (message, messageId, isFailed, 
         errorMessage: err ? err.toString() : "",
         message: msg || [],
         screenShot: screenShot || "",
-        failedScreenshot: screenShot || "",
+        failureScreenshot: screenShot || "",
         screenshots: screenshots || []
       }
     }
