@@ -13,7 +13,7 @@ var impl_loader = require("./impl-loader");
 var loader = require("./static-loader");
 var inspector = require("inspector");
 var fileUtil = require("./file-util");
-var screenshotFactory = require("./screenshot-factory");
+var customScreenshotRegistry = require("./custom-screenshot-registry");
 
 const ATTACH_DEBUGGER_EVENT = "Runner Ready for Debugging";
 
@@ -27,9 +27,9 @@ var processCustomMessages = function (response) {
 };
 
 var processScreenshots = function (response) {
-  var screenshot = screenshotFactory.get();
+  var screenshot = customScreenshotRegistry.get();
   response.executionStatusResponse.executionResult.screenshots = response.executionStatusResponse.executionResult.screenshots.concat(screenshot);
-  screenshotFactory.clear();
+  customScreenshotRegistry.clear();
   return response;
 };
 

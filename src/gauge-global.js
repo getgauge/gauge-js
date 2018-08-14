@@ -2,7 +2,7 @@ var hookRegistry = require("./hook-registry"),
   customMessageRegistry = require("./custom-message-registry"),
   dataStore = require("./data-store-factory"),
   stepRegistry = require("./step-registry"),
-  screenshotFactory = require("./screenshot-factory");
+  customScreenshotFactory = require("./custom-screenshot-registry");
 
 var gauge = { hooks: {}, dataStore: dataStore };
 
@@ -51,7 +51,7 @@ gauge.step = function (stepName, options, stepFunction) {
 };
 
 gauge.screenshot = function() {
-  screenshotFactory.add();
+  customScreenshotFactory.add();
 };
 
 module.exports = {

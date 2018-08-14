@@ -5,7 +5,7 @@ var factory = require("./response-factory"),
     screenshot = require("./screenshot"),
     stepRegistry = require("./step-registry"),
     hookRegistry = require("./hook-registry"),
-    screenshotFactory = require("./screenshot-factory"),
+    customScreenshotRegistry = require("./custom-screenshot-registry"),
     customMessageRegistry = require("./custom-message-registry");
 
 
@@ -46,7 +46,7 @@ var executeStep = function(request, message) {
     return item.value ? item.value : item.table;
   });
   var step = stepRegistry.get(parsedStepText);
-  var screenshots = screenshotFactory.get();
+  var screenshots = customScreenshotRegistry.get();
   var msgs = customMessageRegistry.get();
   new Test(step.fn, parameters, timeout).run().then(
     function(result) {
@@ -64,7 +64,7 @@ var executeStep = function(request, message) {
       deferred.reject(errorResponse);
     }
   );
-  screenshotFactory.clear();
+  customScreenshotRegistry.clear();
   customMessageRegistry.clear();
   return deferred.promise;
 };
