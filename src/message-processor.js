@@ -27,10 +27,11 @@ var processCustomMessages = function (response) {
 };
 
 var processScreenshots = function (response) {
-  var screenshot = customScreenshotRegistry.get();
-  response.executionStatusResponse.executionResult.screenshots = response.executionStatusResponse.executionResult.screenshots.concat(screenshot);
-  customScreenshotRegistry.clear();
-  return response;
+  var screenshotPromises = customScreenshotRegistry.get();
+  return screenshotPromises.then(function (screenshots) {
+    response.executionStatusResponse.executionResult.screenshots = response.executionStatusResponse.executionResult.screenshots.concat(screenshots);
+    customScreenshotRegistry.clear();
+  });
 };
 
 function executionResponse(message, isFailed, executionTime, messageId) {
@@ -60,13 +61,16 @@ function executeHook(request, hookName, currentExecutionInfo) {
   var promise = executor.hook(request, this.options.message, hookName, currentExecutionInfo);
   promise.then(
     function (response) {
-      response = processCustomMessages(response);
-      response = processScreenshots(response);
-      self._emit(response);
+      processCustomMessages(response);
+      processScreenshots(response).then(function () {
+        self._emit(response);
+      });
     },
     function (reason) {
       processCustomMessages(reason);
-      self._emit(reason);
+      processScreenshots(reason).then(function () {
+        self._emit(reason);
+      });
     }
   );
 }

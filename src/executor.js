@@ -46,10 +46,12 @@ var executeStep = function (request, message) {
     return item.value ? item.value : item.table;
   });
   var step = stepRegistry.get(parsedStepText);
-  var screenshotPromises = customScreenshotRegistry.get();
-  var msgs = customMessageRegistry.get();
   new Test(step.fn, parameters, timeout).run().then(
     function (result) {
+      var screenshotPromises = customScreenshotRegistry.get();
+      var msgs = customMessageRegistry.get();
+      customScreenshotRegistry.clear();
+      customMessageRegistry.clear();
       screenshotPromises.then(function (screenshots) {
         var response = factory.createExecutionStatusResponse(message, request.messageId, false, result.duration, false, msgs, "", step.options.continueOnFailure, screenshots);
         deferred.resolve(response);
@@ -57,6 +59,10 @@ var executeStep = function (request, message) {
     },
 
     function (result) {
+      var screenshotPromises = customScreenshotRegistry.get();
+      var msgs = customMessageRegistry.get();
+      customScreenshotRegistry.clear();
+      customMessageRegistry.clear();
       screenshotPromises.then(function (screenshots) {
         var errorResponse = factory.createExecutionStatusResponse(message, request.messageId, true, result.duration, result.exception, msgs, "", step.options.continueOnFailure, screenshots);
         if (process.env.screenshot_on_failure !== "false") {
@@ -65,12 +71,13 @@ var executeStep = function (request, message) {
             errorResponse.executionStatusResponse.executionResult.failureScreenshot = bytes;
             deferred.reject(errorResponse);
           });
+        }else{
+          deferred.reject(errorResponse);
         }
       });
     }
   );
-  customScreenshotRegistry.clear();
-  customMessageRegistry.clear();
+
   return deferred.promise;
 };
 
@@ -105,7 +112,7 @@ var executeHook = function (request, message, hookLevel, currentExecutionInfo) {
   var onError = function (result) {
     var errorResponse = factory.createExecutionStatusResponse(message, request.messageId, true, result.duration, result.exception);
     if (process.env.screenshot_on_failure !== "false") {
-      screenshot.capture().then(function name(bytes) {
+      screenshot.capture().then(function (bytes) {
         errorResponse.executionStatusResponse.executionResult.screenShot = bytes;
         errorResponse.executionStatusResponse.executionResult.failureScreenshot = bytes;
         deferred.reject(errorResponse);
