@@ -1,6 +1,6 @@
 var assert = require("chai").assert;
 var gauge = require("../src/gauge-global").gauge;
-var screenshotFactory = require("../src/screenshot-factory");
+var customScreenshotRegistry = require("../src/custom-screenshot-registry");
 
 describe("Screenshot Factory", () => {
   beforeEach( () => {
@@ -10,17 +10,17 @@ describe("Screenshot Factory", () => {
     global.gauge = gauge;
   });
   afterEach( () => {
-    screenshotFactory.clear();  
+    customScreenshotRegistry.clear();  
   });
   it("should add a screenshot", () => {
-    screenshotFactory.add();
-    var screenshots = screenshotFactory.get();
+    customScreenshotRegistry.add();
+    var screenshots = customScreenshotRegistry.get();
     assert.deepEqual(screenshots, ["foo"]);
   });
   it("should clear the screenshots", () => {
-    screenshotFactory.add();
-    screenshotFactory.clear();
-    var screenshots = screenshotFactory.get();
+    customScreenshotRegistry.add();
+    customScreenshotRegistry.clear();
+    var screenshots = customScreenshotRegistry.get();
     assert.deepEqual(screenshots, []);
   });
 });
