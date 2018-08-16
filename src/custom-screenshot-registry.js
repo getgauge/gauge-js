@@ -3,14 +3,14 @@ var screenshot = require("./screenshot");
 var ScreenshotFactory = function () {
   this.screenshots = [];
 };
-  
+
 ScreenshotFactory.prototype.add = function () {
-  var screenshotFn = global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function" ? global.gauge.screenshotFn : screenshot;
-  this.screenshots.push(screenshotFn());
+  var bytePromise = screenshot.capture();
+  this.screenshots.push(bytePromise);
 };
 
 ScreenshotFactory.prototype.get = function () {
-  return this.screenshots;
+  return Promise.all(this.screenshots);
 };
 
 ScreenshotFactory.prototype.clear = function () {

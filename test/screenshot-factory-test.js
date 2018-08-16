@@ -3,24 +3,31 @@ var gauge = require("../src/gauge-global").gauge;
 var customScreenshotRegistry = require("../src/custom-screenshot-registry");
 
 describe("Screenshot Factory", () => {
-  beforeEach( () => {
+  beforeEach(() => {
     gauge.screenshotFn = function () {
       return "foo";
     };
     global.gauge = gauge;
   });
-  afterEach( () => {
-    customScreenshotRegistry.clear();  
+
+  afterEach(() => {
+    customScreenshotRegistry.clear();
   });
-  it("should add a screenshot", () => {
+
+  it("should add a screenshot", (done) => {
     customScreenshotRegistry.add();
-    var screenshots = customScreenshotRegistry.get();
-    assert.deepEqual(screenshots, ["foo"]);
+    customScreenshotRegistry.get().then((screenshots) => {
+      assert.deepEqual(screenshots, ["foo"]);
+      done();
+    });
   });
-  it("should clear the screenshots", () => {
+
+  it("should clear the screenshots", (done) => {
     customScreenshotRegistry.add();
     customScreenshotRegistry.clear();
-    var screenshots = customScreenshotRegistry.get();
-    assert.deepEqual(screenshots, []);
+    customScreenshotRegistry.get().then((screenshots) => {
+      assert.deepEqual(screenshots, []);
+      done();
+    });
   });
 });

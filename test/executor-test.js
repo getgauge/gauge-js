@@ -17,6 +17,11 @@ describe("Executing steps", function () {
     stepRegistry.add("Say <hi> to <me>", function () { }, "executor-test.js", 3, opts);
     stepRegistry.add("failing test", function () { throw new Error("error message"); }, "executor-test.js", 6, opts);
     sinon.spy(stepRegistry, "get");
+    global.gauge = {
+      screenshotFn: function() {
+        return Promise.resolve("screenshot");
+      }
+    };
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
       message = root.lookupType("gauge.messages.Message");
       executeStepMessage = message.create({
