@@ -2,7 +2,7 @@ var assert = require("chai").assert;
 var gauge = require("../src/gauge-global").gauge;
 var customScreenshotRegistry = require("../src/custom-screenshot-registry");
 
-describe("Screenshot Factory", () => {
+describe("Custom Screenshot Registry", () => {
   beforeEach(() => {
     gauge.screenshotFn = function () {
       return "foo";
