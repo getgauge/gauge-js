@@ -1,7 +1,7 @@
 var os = require("os"),
-    path = require("path"),
-    fs = require("fs"),
-    child_process = require("child_process");
+  path = require("path"),
+  fs = require("fs"),
+  child_process = require("child_process");
 
 var screenshot = function (tmpfile) {
   tmpfile = tmpfile || path.join(os.tmpdir(), "screenshot-gauge-js-" + Date.now() + ".png");
@@ -18,4 +18,17 @@ var screenshot = function (tmpfile) {
   }
 };
 
-module.exports = screenshot;
+function hasCustumScreenGrabber() {
+  return global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function";
+}
+
+function capture() {
+  var screenshotFn = hasCustumScreenGrabber() ? global.gauge.screenshotFn : screenshot;
+  var res = screenshotFn();
+  if (res instanceof Promise) {
+    return res;
+  }
+  return Promise.resolve(res);
+}
+
+module.exports = { capture: capture };
