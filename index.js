@@ -40,7 +40,7 @@ if(process.argv[2] === "--init") {
 else if(process.argv[2] === "--start") {
   var args = ["./src/gauge.js", "--run"];
   if(process.env.gauge_nodejs_args) {
-    args = process.env.gauge_nodejs_args.split(' ').concat(args);
+    args = process.env.gauge_nodejs_args.split(" ").concat(args);
   }
   var cmd = process.env.gauge_nodejs_bin || "node";
   var runner = child_process.spawn(cmd, args, { env: process.env, silent: false, stdio: "inherit" });
