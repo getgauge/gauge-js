@@ -20,7 +20,8 @@ var getPostData = function (medium, cid) {
     aip: "1", an: "Gauge Core", av: version, cid: cid,
     cm: medium, cs: "Gauge Core",
     ea: "js", ec: "runner", el: pi.dependencies.taiko && "taiko" || "",
-    t: "event", tid: "UA-126973798-1", v: "1"
+    t: "event", v: "1",
+    tid: "UA-54838477-1"
   });
 };
 
