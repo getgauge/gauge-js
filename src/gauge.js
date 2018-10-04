@@ -9,6 +9,7 @@ var PROTO_PATH = __dirname + "/../gauge-proto/lsp.proto";
 var grpc = require("grpc");
 var lspProto = grpc.load(PROTO_PATH).gauge.messages;
 var LspServerHandler = require("./lsp-server");
+var tracker = require("./tracker.js");
 
 var GAUGE_INTERNAL_PORT = process.env.GAUGE_INTERNAL_PORT;
 
@@ -35,9 +36,11 @@ function run() {
       var p = server.bind("127.0.0.1:0", grpc.ServerCredentials.createInsecure());
       console.log("Listening on port:" + p);
       server.start();
+      tracker.trackLSP().then(function(){}).catch(function(){});
     } else {
       var gaugeInternalConnection = new Connection("127.0.0.1", GAUGE_INTERNAL_PORT, types.message);
       gaugeInternalConnection.run();
+      tracker.trackConsole().then(function(){}).catch(function(){});
       var processor = new MessageProcessor(types);
       gaugeInternalConnection.on("messageReceived", function (decodedData) {
         processor.getResponseFor(decodedData);
