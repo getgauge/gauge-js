@@ -3,6 +3,7 @@ var qs = require("querystring");
 var fs = require("fs");
 var path = require("path");
 var version = require("../package.json").version;
+var os = require("os");
 
 var isCI = function () {
   var env = process.env;
@@ -16,10 +17,11 @@ var getProjectInfo = function () {
 
 var getPostData = function (medium, cid) {
   var pi = getProjectInfo();
+  var labels = pi.dependencies.taiko && "taiko," + os.platform() || os.platform();
   return qs.stringify({
     aip: "1", an: "Gauge Core", av: version, cid: cid,
     cm: medium, cs: "Gauge Core",
-    ea: "js", ec: "runner", el: pi.dependencies.taiko && "taiko" || "",
+    ea: "js", ec: "runner", el: labels,
     t: "event", v: "1",
     tid: "UA-54838477-1"
   });
