@@ -4,9 +4,8 @@
   "description": "JavaScript runner for Gauge",
   "main": "index.js",
   "scripts": {
-    "check-style": "jscs index.js src/ skel/ test/",
-    "lint": "jshint index.js src/ skel/ test/ scripts/",
-    "test": "npm run check-style && npm run lint && mocha --recursive",
+    "lint": "eslint index.js src/ skel/ test/ scripts/",
+    "test": "npm run lint && mocha --recursive",
     "installPlugin": "node scripts/install.js",
     "package": "node scripts/install.js --package"
   },
@@ -25,9 +24,9 @@
   },
   "homepage": "https://github.com/getgauge/gauge-js",
   "dependencies": {
-    "console-stamp": "^0.2.6",
-    "escodegen": "^1.9.0",
-    "esprima": "^4.0.0",
+    "console-stamp": "^0.2.7",
+    "escodegen": "^1.11.0",
+    "esprima": "^4.0.1",
     "estraverse": "^4.2.0",
     "grpc": "^1.15.1",
     "klaw-sync": "^3.0.2",
@@ -35,14 +34,14 @@
     "q": "^1.5.0"
   },
   "devDependencies": {
-    "archiver": "^2.0.3",
-    "chai": "^4.1.2",
+    "archiver": "^2.1.1",
+    "chai": "^4.2.0",
     "check-if-windows": "^1.0.0",
+    "eslint": "^5.7.0",
+    "eslint-plugin-mocha": "^5.2.0",
     "fs-extra": "^4.0.2",
-    "jscs": "^3.0.7",
-    "jshint": "^2.9.6",
-    "mocha": "^4.0.1",
-    "mock-fs": "^4.4.2",
-    "sinon": "^4.0.1"
+    "mocha": "^4.1.0",
+    "mock-fs": "^4.7.0",
+    "sinon": "^4.5.0"
   }
 }

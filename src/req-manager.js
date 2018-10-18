@@ -1,5 +1,5 @@
 var mod = require("module"),
-    path = require("path");
+  path = require("path");
 
 var Req = function (filepath, root) {
   this.Module = mod.Module;

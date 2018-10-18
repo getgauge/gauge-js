@@ -1,5 +1,5 @@
 var fileUtil = require("./file-util"),
-    VM = require("./vm");
+  VM = require("./vm");
 
 function loadImpl() {
   var vm = new VM();

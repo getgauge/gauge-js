@@ -50,7 +50,7 @@ describe("Hook registry", function () {
 
   describe("Adding and removing", function () {
     var hookfn = function () { assert(1 + 1, 2); },
-        hookopts = { tags: ["hello world"]};
+      hookopts = { tags: ["hello world"]};
 
     it("Should store and retrieve hooks for valid hook types", function (done) {
       var got;

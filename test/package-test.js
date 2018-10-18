@@ -3,7 +3,7 @@ var assert = require("chai").assert;
 describe("Package", function () {
 
   var packageJSON = require("../package.json"),
-      jsJSON = require("../js.json");
+    jsJSON = require("../js.json");
 
   describe("version", function () {
 

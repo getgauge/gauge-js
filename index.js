@@ -6,14 +6,14 @@ if (parseInt(version[0]) === 0 && parseInt(version[1]) < 12) {
 }
 
 var fs = require("fs"),
-    path = require("path"),
-    child_process = require("child_process");
+  path = require("path"),
+  child_process = require("child_process");
 
 var skeldir = path.join(__dirname, "skel"),
-    srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, "tests"),
-    envdir = path.join(process.env.GAUGE_PROJECT_ROOT, "env", "default"),
-    testCode = "step_implementation.js",
-    jsPropertyFile = "js.properties";
+  srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, "tests"),
+  envdir = path.join(process.env.GAUGE_PROJECT_ROOT, "env", "default"),
+  testCode = "step_implementation.js",
+  jsPropertyFile = "js.properties";
 
 if(process.argv[2] === "--init") {
 

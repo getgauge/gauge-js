@@ -8,7 +8,7 @@ var fs = require("fs");
 var sinon = require("sinon");
 
 var sandbox, request, response;
-var contentInput, contentOutput, outputFile, info;
+var contentInput, contentOutput, info;
 
 describe("Refactor", function () {
   var message = null;
@@ -21,7 +21,6 @@ describe("Refactor", function () {
     });
 
     sandbox.stub(fs, "writeFileSync").callsFake(function (file, data) {
-      outputFile = file;
       contentOutput = data;
     });
 
@@ -35,7 +34,7 @@ describe("Refactor", function () {
   });
 
   beforeEach(function () {
-    contentOutput = contentInput = outputFile = info = request = response = null;
+    contentOutput = contentInput = info = request = response = null;
     response = factory.createRefactorResponse(message, 123);
   });
 
@@ -45,7 +44,7 @@ describe("Refactor", function () {
 
   it("Should refactor step text without changing function ref", function () {
     var output = [];
-    output.push("var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];");
+    output.push("var vowels=[\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];");
     output.push("hakunaMatata('What a wonderful phrase!');");
     output.push("gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});");
     output.push("var myfn = function (number) {\n};");
@@ -76,7 +75,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -113,7 +112,7 @@ describe("Refactor", function () {
 
   it("Should not save changes when request save changes is false", function () {
     var output = [];
-    output.push("var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];");
+    output.push("var vowels=[\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];");
     output.push("hakunaMatata('What a wonderful phrase!');");
     output.push("gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});");
     output.push("var myfn = function (number) {\n};");
@@ -144,7 +143,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -181,7 +180,7 @@ describe("Refactor", function () {
 
   it("Should refactor global step text without changing function ref", function () {
     var output = [];
-    output.push("var vowels=[\n    \'a\',\n    \'e\',\n    \'i\',\n    \'o\',\n    \'u\'\n];");
+    output.push("var vowels=[\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];");
     output.push("hakunaMatata('What a wonderful phrase!');");
     output.push("gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});");
     output.push("var myfn = function (number) {\n};");
@@ -212,7 +211,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -268,7 +267,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -323,7 +322,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -375,7 +374,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -427,7 +426,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -482,7 +481,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -537,7 +536,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -595,7 +594,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -653,7 +652,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -708,7 +707,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number, done) { word = "such"; number = "wow"; done = "phew."; },
+      fn: function (word, number, done) { console.log(word, number, done); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -763,7 +762,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number, done) { word = "such"; number = "wow"; done = "phew."; },
+      fn: function (word, number, done) { console.log(word, number, done); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
@@ -818,7 +817,7 @@ describe("Refactor", function () {
     };
 
     info = {
-      fn: function (word, number) { word = "such"; number = "wow"; },
+      fn: function (word, number) { console.log(word, number); },
       stepText: "The word <word> has <number> vowels.",
       generalisedText: "The word {} has {} vowels.",
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]

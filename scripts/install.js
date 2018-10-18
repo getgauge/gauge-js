@@ -1,8 +1,8 @@
 var fs = require("fs-extra"),
-    path = require("path"),
-    archiver = require("archiver"),
-    child_process = require("child_process"),
-    CWD = process.cwd();
+  path = require("path"),
+  archiver = require("archiver"),
+  child_process = require("child_process"),
+  CWD = process.cwd();
 
 var localPath = function (relativePath) {
   return relativePath ? path.resolve(CWD, relativePath) : path.resolve(CWD);
@@ -33,7 +33,7 @@ var recreateDir = function (dirPath) {
 
 var prepareFiles = function () {
   var buildDir = localPath("build"),
-      copyList = ["gauge-proto", "src", "skel", "index.js", "index.bat", "debug.bat", "js.json", "package.json", "package-lock.json", ".node-inspectorrc", "README.md"];
+    copyList = ["gauge-proto", "src", "skel", "index.js", "index.bat", "debug.bat", "js.json", "package.json", "package-lock.json", ".node-inspectorrc", "README.md"];
 
   recreateDir(buildDir);
 
@@ -66,9 +66,9 @@ var prepareFiles = function () {
 
 var createPackage = function (callback) {
   var zip = archiver("zip"),
-      deployDir = localPath("deploy"),
-      buildDir = localPath("build"),
-      packageFile = "gauge-" + plugin.id + "-" + plugin.version + ".zip";
+    deployDir = localPath("deploy"),
+    buildDir = localPath("build"),
+    packageFile = "gauge-" + plugin.id + "-" + plugin.version + ".zip";
 
   callback = callback || function () {};
 
