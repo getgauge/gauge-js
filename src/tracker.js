@@ -43,7 +43,7 @@ var getPostOptions = function (data) {
 
 
 var send = function (medium) {
-  if (!process.env.GAUGE_TELEMETRY_ENABLED) { return Promise.resolve(); }
+  if (!JSON.parse(process.env.GAUGE_TELEMETRY_ENABLED)) { return Promise.resolve(); }
   if (medium === "console" && isCI()) { medium = "CI"; }
   var data = getPostData(medium, process.env.GAUGE_UNIQUE_INSTALLATION_ID);
   return new Promise(function (resolve, reject) {
