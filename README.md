@@ -50,7 +50,7 @@ $ gauge init js_puppeteer
 
 ### WebDriver
 
-Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_webdriver) [WebDriver](https://webdriver.io) template
+Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_webdriver) [WebDriver](http://webdriver.io/) template
 ```
 $ gauge init js_webdriver
 ```
