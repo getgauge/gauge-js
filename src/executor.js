@@ -70,7 +70,8 @@ var executeStep = function (request, message) {
             errorResponse.executionStatusResponse.executionResult.screenShot = bytes;
             errorResponse.executionStatusResponse.executionResult.failureScreenshot = bytes;
             deferred.reject(errorResponse);
-          }).catch(function(){
+          }).catch(function(error){
+            console.error("\nFailed to capture screenshot on failure.\n" + error);
             deferred.reject(errorResponse);
           });
         }else{
@@ -118,7 +119,8 @@ var executeHook = function (request, message, hookLevel, currentExecutionInfo) {
         errorResponse.executionStatusResponse.executionResult.screenShot = bytes;
         errorResponse.executionStatusResponse.executionResult.failureScreenshot = bytes;
         deferred.reject(errorResponse);
-      }).catch(function(){
+      }).catch(function(error){
+        console.error("\nFailed to capture screenshot on failure.\n" + error);
         deferred.reject(errorResponse);
       });
     }
