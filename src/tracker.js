@@ -11,13 +11,11 @@ var isCI = function () {
 };
 
 var getProjectInfo = function () {
-  fs.open(path.join(process.env.GAUGE_PROJECT_ROOT, "package.json"), 'r', function (err, fd) {
-    if (err && err.code === 'ENOENT') {
-      return;
-    }
-    var data = fs.readFileSync(path.join(process.env.GAUGE_PROJECT_ROOT, "package.json"), "utf-8");
-    return JSON.parse(data);
-  });
+  if (!fs.existsSync(path.join(process.env.GAUGE_PROJECT_ROOT, "package.json"))) {
+    return;
+  }
+  var data = fs.readFileSync(path.join(process.env.GAUGE_PROJECT_ROOT, "package.json"), "utf-8");
+  return JSON.parse(data);
 };
 
 var getPostData = function (medium, cid) {
@@ -68,7 +66,7 @@ var send = function (medium) {
   var req = http.request(getPostOptions(data), function (res) {
     res.setEncoding("utf8");
   });
-  req.on('error', (e) => {
+  req.on("error", (e) => {
     console.error(`Connection Error: ${e.message}`);
   });
   req.write(data);
