@@ -4,6 +4,8 @@ var fs = require("fs");
 var path = require("path");
 var version = require("../package.json").version;
 var os = require("os");
+const gaTestTrackingID = "UA-100778536-1",
+      gaTrackingID = "UA-54838477-1";
 
 var isCI = function () {
   var env = process.env;
@@ -24,6 +26,7 @@ var getPostData = function (medium, cid) {
     return "";
   }
   var labels = pi.dependencies.taiko && "taiko," + os.platform() || os.platform();
+  var gaID = process.env.use_test_ga.toLowerCase() === "true" ? gaTestTrackingID : gaTrackingID;
   return qs.stringify({
     aip: "1",
     an: "Gauge Core",
@@ -36,7 +39,7 @@ var getPostData = function (medium, cid) {
     el: labels,
     t: "event",
     v: "1",
-    tid: "UA-54838477-1"
+    tid: gaID
   });
 };
 
