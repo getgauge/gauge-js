@@ -5,7 +5,7 @@ var path = require("path");
 var version = require("../package.json").version;
 var os = require("os");
 const gaTestTrackingID = "UA-100778536-1",
-      gaTrackingID = "UA-54838477-1";
+  gaTrackingID = "UA-54838477-1";
 
 var isCI = function () {
   var env = process.env;
