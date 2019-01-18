@@ -139,4 +139,16 @@ StepRegistry.prototype.deleteSteps = function (filePath) {
   }
 };
 
+StepRegistry.prototype.isFileCached = function (filePath) {
+  var filterFunc = function (location) {
+    return fileUtil.isSameFilePath(location.filePath, filePath);
+  };
+  for (var stepText in this.registry) {
+    if(this.registry[stepText].fileLocations.find(filterFunc)) {
+      return true;
+    }
+  }
+  return false;
+};
+
 module.exports = new StepRegistry();

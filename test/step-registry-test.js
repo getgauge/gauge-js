@@ -74,4 +74,12 @@ describe("Store and retrieve steps", function () {
 
     done();
   });
+
+  it("Should check if given filepath is already cached", function (done) {
+    var filepath = "impl.js";
+    stepRegistry.add("Sample Step <1>", sampleFunction, filepath, 2);
+    assert.isTrue(stepRegistry.isFileCached(filepath));
+    assert.isNotTrue(stepRegistry.isFileCached("some_impl.js"));
+    done();
+  });
 });

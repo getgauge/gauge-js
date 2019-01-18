@@ -248,6 +248,20 @@ describe("CacheFileRequest Processing", function () {
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
   });
 
+  it("should not reload files on create if file is cached already", function () {
+    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CREATED]);
+    mock({
+      "tests": {
+        "example.js": ""
+      }
+    });
+    loader.reloadFile(filePath, fileContent);
+    assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
+    var processor = new MessageProcessor({ message: message, errorType: { values: {} }, fileStatus: fileStatus });
+    processor.getResponseFor(cacheFileRequest);
+    assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
+  });
+
   it("should unload file on delete.", function () {
     var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.DELETED]);
     loader.reloadFile(filePath, fileContent);
