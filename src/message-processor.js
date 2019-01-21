@@ -262,7 +262,9 @@ var cacheFileResponse = function (request) {
     return;
   }
   if (request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.CREATED]) {
-    loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
+    if (!stepRegistry.isFileCached(filePath)) {
+      loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
+    }
   } else if (request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.CHANGED] ||
     request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.OPENED]) {
     loader.reloadFile(filePath, request.cacheFileRequest.content);
