@@ -17,7 +17,6 @@ var ExecutionConnection = function (host, port, message) {
   var messageHandler = function (bytes) {
     var r = reader.create(Buffer.from(bytes));
     while (r.pos < r.len) {
-      console.log("message ---------- : ",  self.message);
       self.emit("messageReceived", self.message.decodeDelimited(r));
     }
   };

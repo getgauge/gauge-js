@@ -38,7 +38,11 @@ if(process.argv[2] === "--init") {
 }
 
 else if(process.argv[2] === "--start") {
-  var args = ["./src/gauge.js", "--run", "--experimental-worker"];
+  if (parseFloat(process.version.substring(1, process.version.length)) < 10.5) {
+    console.log("Multithreading is not supported in node versions below 10.5.0. Please upgrade node or disable multithreading.");
+    process.exit(1);
+  }
+  var args = process.env.GAUGE_LSP_GRPC ? ["./src/gaugeLSP.js"] : ["./src/gaugeAPI.js"];
   if(process.env.gauge_nodejs_args) {
     args = process.env.gauge_nodejs_args.split(" ").concat(args);
   }

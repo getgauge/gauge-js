@@ -54,7 +54,12 @@ VM.prototype.contextify = function (filePath, root) {
 
 VM.prototype.run = function (code) {
   try {
-    vm.runInContext("(function () { process.chdir(gauge_project_root); })()", this.context, this.options);
+    const oldNodeModulesPaths = module.constructor._nodeModulePaths;
+    module.constructor._nodeModulePaths = function () {
+      const ret = oldNodeModulesPaths.apply(this, arguments);
+      ret.push(path.join(this.options.root,"node_modules"));
+      return ret;
+    };
     vm.runInContext(code +  "\n//# sourceURL="+ this.options.filepath, this.context, this.options);
   } catch (e) {
     console.error("Error executing " + this.options.filename);
