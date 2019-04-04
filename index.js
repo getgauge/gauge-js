@@ -38,11 +38,11 @@ if(process.argv[2] === "--init") {
 }
 
 else if(process.argv[2] === "--start") {
-  if (parseFloat(process.version.substring(1, process.version.length)) < 10.5) {
+  if (parseFloat(process.version.substring(1, process.version.length)) < 10.5 && process.env.GAUGE_API_PORTS) {
     console.log("Multithreading is not supported in node versions below 10.5.0. Please upgrade node or disable multithreading.");
     process.exit(1);
   }
-  var args = process.env.GAUGE_LSP_GRPC ? ["./src/gaugeLSP.js"] : ["./src/gaugeAPI.js"];
+  var args = process.env.GAUGE_LSP_GRPC || !process.env.GAUGE_API_PORTS ? ["./src/gauge.js"] : ["--experimental-worker","./src/gauge-threads.js"];
   if(process.env.gauge_nodejs_args) {
     args = process.env.gauge_nodejs_args.split(" ").concat(args);
   }
