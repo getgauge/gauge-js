@@ -38,7 +38,7 @@ if(process.argv[2] === "--init") {
 }
 
 else if(process.argv[2] === "--start") {
-  var args = ["./src/gauge.js", "--run"];
+  var args = ["--prof", "./src/gauge.js", "--run"];
   if(process.env.gauge_nodejs_args) {
     args = process.env.gauge_nodejs_args.split(" ").concat(args);
   }
