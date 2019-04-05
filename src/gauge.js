@@ -36,18 +36,34 @@ function run() {
       server.start();
       tracker.trackLSP();
     } else {
-      var gaugeInternalConnection = new Connection("127.0.0.1", GAUGE_INTERNAL_PORT, types.message);
-      gaugeInternalConnection.run();
-      tracker.trackConsole();
-      var processor = new MessageProcessor(types);
-      gaugeInternalConnection.on("messageReceived", function (decodedData) {
-        processor.getResponseFor(decodedData);
-      });
-      gaugeInternalConnection.on("socketError", function (err) {
-        throw err;
-      });
-      processor.on("messageProcessed", function (response) {
-        gaugeInternalConnection.writeMessage(response);
+      var portInfo = process.env.GAUGE_API_PORTS;
+      if (portInfo !== undefined && portInfo !== null && portInfo.trim() !== "") {
+        portInfo = portInfo.split(",");
+      }else{
+        portInfo = [GAUGE_INTERNAL_PORT];
+      }
+      portInfo.forEach(port => {
+        var socketsCount = portInfo.length;
+        var gaugeInternalConnection = new Connection("127.0.0.1", port, types.message);
+        gaugeInternalConnection.run();
+        tracker.trackConsole();
+        var processor = new MessageProcessor(types);
+        gaugeInternalConnection.on("messageReceived", function (decodedData) {
+          processor.getResponseFor(decodedData);
+        });
+        gaugeInternalConnection.on("socketError", function (err) {
+          throw err;
+        });
+        processor.on("messageProcessed", function (response) {
+          gaugeInternalConnection.writeMessage(response);
+        });
+        processor.on("closeSocket", function () {
+          socketsCount--;
+          gaugeInternalConnection.closeSocket();
+          if (socketsCount === 0){
+            process.exit();
+          }
+        });
       });
     }
   }).catch(function (e) {

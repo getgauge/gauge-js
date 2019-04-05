@@ -295,7 +295,7 @@ var getImplementationFileGlobPatterns = function (request) {
 };
 
 function killProcess() {
-  process.exit();
+  this.emit("closeSocket");
 }
 
 var MessageProcessor = function (protoOptions) {

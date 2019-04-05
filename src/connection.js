@@ -29,6 +29,10 @@ var ExecutionConnection = function (host, port, message) {
     self.socket.write(self.message.encodeDelimited(self.message.create(response)).finish());
   };
 
+  this.closeSocket = function(){
+    self.socket.destroy();
+  };
+
   this.socket.on("data", messageHandler);
   this.socket.on("error", errorHandler);
 };
