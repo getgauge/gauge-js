@@ -76,12 +76,11 @@ function executeHook(request, hookName, currentExecutionInfo) {
 }
 
 function startExecution(self, request) {
-  impl_loader.load();
+  impl_loader.load(stepRegistry);
   executeHook.apply(self, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]);
 }
 
 function executeBeforeSuiteHook(request) {
-  stepRegistry.clear();
   var self = this;
   if (process.env.DEBUGGING) {
     var port = parseInt(process.env.DEBUG_PORT);
