@@ -76,8 +76,9 @@ function executeHook(request, hookName, currentExecutionInfo) {
 }
 
 function startExecution(self, request) {
-  impl_loader.load(stepRegistry);
-  executeHook.apply(self, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]);
+  impl_loader.load(stepRegistry).then(() => {
+    executeHook.apply(self, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]); 
+  });
 }
 
 function executeBeforeSuiteHook(request) {
