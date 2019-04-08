@@ -42,8 +42,8 @@ function run() {
       }else{
         portInfo = [GAUGE_INTERNAL_PORT];
       }
+      var socketsCount = portInfo.length;
       portInfo.forEach(port => {
-        var socketsCount = portInfo.length;
         var gaugeInternalConnection = new Connection("127.0.0.1", port, types.message);
         gaugeInternalConnection.run();
         tracker.trackConsole();
