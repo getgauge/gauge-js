@@ -7,11 +7,6 @@ var os = require("os");
 const gaTestTrackingID = "UA-100778536-1",
   gaTrackingID = "UA-54838477-1";
 
-var isCI = function () {
-  var env = process.env;
-  return !!(env.CI || env.GO_SERVER_URL || env.JENKINS_URL || env.TEAMCITY_VERSION || env.TFS_BUILD);
-};
-
 var getProjectInfo = function () {
   if (!fs.existsSync(path.join(process.env.GAUGE_PROJECT_ROOT, "package.json"))) {
     return;
@@ -62,9 +57,6 @@ var send = function (medium) {
   if (!JSON.parse(process.env.GAUGE_TELEMETRY_ENABLED)) {
     return;
   }
-  if (medium === "console" && isCI()) {
-    medium = "CI";
-  }
   var data = getPostData(medium, process.env.GAUGE_UNIQUE_INSTALLATION_ID);
   var req = http.request(getPostOptions(data), function (res) {
     res.setEncoding("utf8");
@@ -77,10 +69,7 @@ var send = function (medium) {
 };
 
 module.exports = {
-  trackConsole: function () {
-    send("console");
-  },
   trackLSP: function () {
-    send("deamon");
+    send("demon");
   }
 };

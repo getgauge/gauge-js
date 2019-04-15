@@ -46,7 +46,6 @@ function run() {
       portInfo.forEach(port => {
         var gaugeInternalConnection = new Connection("127.0.0.1", port, types.message);
         gaugeInternalConnection.run();
-        tracker.trackConsole();
         var processor = new MessageProcessor(types);
         gaugeInternalConnection.on("messageReceived", function (decodedData) {
           processor.getResponseFor(decodedData);
