@@ -70,6 +70,6 @@ var send = function (medium) {
 
 module.exports = {
   trackLSP: function () {
-    send("demon");
+    send("daemon");
   }
 };
