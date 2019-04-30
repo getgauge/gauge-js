@@ -20,7 +20,7 @@ var getPostData = function (medium, cid) {
   if (!pi) {
     return "";
   }
-  var labels = pi.dependencies.taiko && "taiko," + os.platform() || os.platform();
+  var labels = pi.dependencies && pi.dependencies.taiko && "taiko," + os.platform() || os.platform();
   var gaID = process.env.use_test_ga.toLowerCase() === "true" ? gaTestTrackingID : gaTrackingID;
   return qs.stringify({
     aip: "1",
