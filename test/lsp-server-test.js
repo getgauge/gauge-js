@@ -1,6 +1,7 @@
 var path = require("path");
 var protobuf = require("protobufjs");
-var mock = require("mock-fs");
+var fs = require("fs");
+var sinon = require("sinon");
 var assert = require("chai").assert;
 
 var LspServerHandler = require("../src/lsp-server");
@@ -21,6 +22,15 @@ describe("LspServerHandler", function () {
   });
 
   it(".getGlobPatterns should give the file glob patters", function (done) {
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedExistsSync.withArgs().returns();
+    mockedLstatsSync.withArgs().returns();
+    mockedReaddirSync.withArgs().returns();
+    mockedReadfileSync.withArgs().returns();
+
     process.env.GAUGE_PROJECT_ROOT = "";
     var handler = new LspServerHandler(null, options);
     handler.getGlobPatterns({ request: {} }, function (err, res) {
@@ -31,11 +41,15 @@ describe("LspServerHandler", function () {
   });
 
   it(".getImplementationFiles should get implementation files", function (done) {
-    mock({
-      "tests": {
-        "example.js": "file content"
-      },
-    });
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedReadfileSync.withArgs().returns();
+    mockedExistsSync.withArgs(path.join(process.cwd(),"tests")).returns(true);
+    mockedReaddirSync.withArgs(path.join(process.cwd(),"tests")).returns(["example.js"]);
+    mockedLstatsSync.withArgs(path.join(process.cwd(),"tests/example.js")).returns(new fs.Stats(undefined,33206));
+
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
     var handler = new LspServerHandler(null, options);
     handler.getImplementationFiles({ request: {} }, function (err, res) {
@@ -48,6 +62,15 @@ describe("LspServerHandler", function () {
   });
 
   it(".getStepName should get step info", function (done) {
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedExistsSync.withArgs().returns();
+    mockedLstatsSync.withArgs().returns();
+    mockedReaddirSync.withArgs().returns();
+    mockedReadfileSync.withArgs().returns();
+
     registry.add("foo <bar>", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
     var handler = new LspServerHandler(null, options);
     handler.getStepName({ request: { stepValue: "foo {}" } }, function (err, res) {
@@ -59,6 +82,15 @@ describe("LspServerHandler", function () {
   });
 
   it(".getStepNames should give all steps", function (done) {
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedExistsSync.withArgs().returns();
+    mockedLstatsSync.withArgs().returns();
+    mockedReaddirSync.withArgs().returns();
+    mockedReadfileSync.withArgs().returns();
+
     registry.add("foo <bar>", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
     registry.add("foo", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
     registry.add("bar", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
@@ -75,6 +107,15 @@ describe("LspServerHandler", function () {
   });
 
   it(".getStepPositions should give all step positions in a given file", function () {
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedExistsSync.withArgs().returns();
+    mockedLstatsSync.withArgs().returns();
+    mockedReaddirSync.withArgs().returns();
+    mockedReadfileSync.withArgs().returns();
+
     registry.add("foo <bar>", null, "nothing.js", { start: 1, end: 2, statCahr: 0, endChar: 0 }, {});
     registry.add("foo", null, "example.js", { start: 1, end: 3, statCahr: 0, endChar: 0 }, {});
     registry.add("bar", null, "example.js", { start: 4, end: 6, statCahr: 0, endChar: 0 }, {});
@@ -93,6 +134,15 @@ describe("LspServerHandler", function () {
   });
 
   it(".implementStub should add stub in file when does not exists", function () {
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedExistsSync.withArgs().returns();
+    mockedLstatsSync.withArgs().returns();
+    mockedReaddirSync.withArgs().returns();
+    mockedReadfileSync.withArgs().returns();
+
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
     var handler = new LspServerHandler(null, options);
     const req = { request: { implementationFilePath: "New File", codes: ["foo", "bar"] } };
@@ -104,11 +154,15 @@ describe("LspServerHandler", function () {
   });
 
   it(".implementStub should add stub in existing file", function () {
-    mock({
-      "tests": {
-        "example.js": "something is here"
-      }
-    });
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedLstatsSync.withArgs().returns();
+    mockedReaddirSync.withArgs().returns();
+    mockedExistsSync.withArgs(path.join(process.cwd(),"tests/example.js")).returns(true);
+    mockedReadfileSync.withArgs(path.join(process.cwd(),"tests/example.js"),"utf8").returns("something is here");
+
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
     var handler = new LspServerHandler(null, options);
     const req = { request: { implementationFilePath: path.join(process.cwd(), "tests", "example.js"), codes: ["foo", "bar"] } };
@@ -121,7 +175,14 @@ describe("LspServerHandler", function () {
 
   it(".refactor should refactor step", function () {
     var content = "step('shhh',function(){\n\tconsole.log('hello')\n})";
-    mock({ "tests": { "example.js": content } });
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedLstatsSync.withArgs().returns();
+    mockedReaddirSync.withArgs().returns();
+    mockedExistsSync.withArgs().returns();
+    mockedReadfileSync.withArgs(path.join(process.cwd(),"tests/example.js")).returns(content);
     loader.reloadFile(path.join(process.cwd(), "tests", "example.js"), content);
 
     var handler = new LspServerHandler(null, options);
@@ -148,6 +209,15 @@ describe("LspServerHandler", function () {
   });
 
   it(".validateStep should validate a step", function () {
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedExistsSync.withArgs().returns();
+    mockedLstatsSync.withArgs().returns();
+    mockedReaddirSync.withArgs().returns();
+    mockedReadfileSync.withArgs().returns();
+
     registry.add("foo", null, "example.js", { start: 1, end: 3, statCahr: 0, endChar: 0 }, {});
     var handler = new LspServerHandler(null, options);
     const req = {
@@ -167,6 +237,15 @@ describe("LspServerHandler", function () {
   });
 
   it(".cacheFile should update registry with new steps", function () {
+    const mockedExistsSync = sinon.stub(fs,"existsSync");
+    const mockedReaddirSync = sinon.stub(fs,"readdirSync");
+    const mockedReadfileSync = sinon.stub(fs,"readFileSync");
+    const mockedLstatsSync = sinon.stub(fs,"lstatSync");
+    mockedExistsSync.withArgs().returns();
+    mockedLstatsSync.withArgs().returns();
+    mockedReaddirSync.withArgs().returns();
+    mockedReadfileSync.withArgs().returns();
+
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
     var filePath = path.join(process.cwd(), "tests", "example.js");
     var fileContent = "step('shhh',function(){\n\tconsole.log('hello')\n})";
@@ -189,6 +268,9 @@ describe("LspServerHandler", function () {
 
   afterEach(function () {
     registry.clear();
-    mock.restore();
+    fs.existsSync.restore();
+    fs.readdirSync.restore();
+    fs.readFileSync.restore();
+    fs.lstatSync.restore();
   });
 });
