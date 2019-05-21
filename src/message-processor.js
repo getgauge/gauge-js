@@ -14,6 +14,7 @@ var loader = require("./static-loader");
 var inspector = require("inspector");
 var fileUtil = require("./file-util");
 var customScreenshotRegistry = require("./custom-screenshot-registry");
+var logger = require("./logger");
 
 const ATTACH_DEBUGGER_EVENT = "Runner Ready for Debugging";
 
@@ -85,7 +86,7 @@ function executeBeforeSuiteHook(request) {
   var self = this;
   if (process.env.DEBUGGING) {
     var port = parseInt(process.env.DEBUG_PORT);
-    console.log(ATTACH_DEBUGGER_EVENT);
+    logger.info(ATTACH_DEBUGGER_EVENT);
     inspector.open(port, "127.0.0.1", true);
     var inspectorWaitTime = 1000;
     setTimeout(function () { startExecution(self, request); }, inspectorWaitTime);

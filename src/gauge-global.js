@@ -2,6 +2,7 @@ var hookRegistry = require("./hook-registry"),
   customMessageRegistry = require("./custom-message-registry"),
   dataStore = require("./data-store-factory"),
   stepRegistry = require("./step-registry"),
+  logger = require("./logger"),
   customScreenshotFactory = require("./custom-screenshot-registry");
 
 var gauge = { hooks: {}, dataStore: dataStore };
@@ -30,7 +31,7 @@ hookRegistry.types.forEach(function (type) {
     hookRegistry.add(type, fn, options);
   };
   gauge.hooks[type] = function (fn, options) {
-    console.warn("[DEPRECATED] gauge." + type + "() will be removed soon, use " + type + "() instead.");
+    logger.error("[DEPRECATED] gauge." + type + "() will be removed soon, use " + type + "() instead.");
     hooks[type](fn, options);
     this[type] = hooks[type];
   };
@@ -45,7 +46,7 @@ gauge.message = function (msg) {
 gauge.screenshotFn = null;
 
 gauge.step = function (stepName, options, stepFunction) {
-  console.warn("[DEPRECATED] gauge.step() will be removed soon, use step() instead.");
+  logger.error("[DEPRECATED] gauge.step() will be removed soon, use step() instead.");
   step(stepName, options, stepFunction);
   this.step = step;
 };

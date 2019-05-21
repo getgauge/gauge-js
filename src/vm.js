@@ -3,6 +3,7 @@ var vm = require("vm"),
   path = require("path"),
   reqman = require("./req-manager"),
   gaugeGlobal = require("./gauge-global");
+var logger = require("./logger");
 
 var VM = function () {
   var self = this;
@@ -55,10 +56,9 @@ VM.prototype.contextify = function (filePath, root) {
 VM.prototype.run = function (code) {
   try {
     vm.runInContext("(function () { process.chdir(gauge_project_root); })()", this.context, this.options);
-    vm.runInContext(code +  "\n//# sourceURL="+ this.options.filepath, this.context, this.options);
+    vm.runInContext(code + "\n//# sourceURL=" + this.options.filepath, this.context, this.options);
   } catch (e) {
-    console.error("Error executing " + this.options.filename);
-    console.trace(e.stack);
+    logger.error("Error executing " + this.options.filename + "\n" + e.stack);
   }
 };
 

@@ -6,7 +6,8 @@ var factory = require("./response-factory"),
   stepRegistry = require("./step-registry"),
   hookRegistry = require("./hook-registry"),
   customScreenshotRegistry = require("./custom-screenshot-registry"),
-  customMessageRegistry = require("./custom-message-registry");
+  customMessageRegistry = require("./custom-message-registry"),
+  logger = require("./logger");
 
 
 /* If test_timeout env variable is not available set the default to 1000ms */
@@ -71,7 +72,7 @@ var executeStep = function (request, message) {
             errorResponse.executionStatusResponse.executionResult.failureScreenshot = bytes;
             deferred.reject(errorResponse);
           }).catch(function(error){
-            console.error("\nFailed to capture screenshot on failure.\n" + error);
+            logger.error("\nFailed to capture screenshot on failure.\n" + error);
             deferred.reject(errorResponse);
           });
         }else{
@@ -120,7 +121,7 @@ var executeHook = function (request, message, hookLevel, currentExecutionInfo) {
         errorResponse.executionStatusResponse.executionResult.failureScreenshot = bytes;
         deferred.reject(errorResponse);
       }).catch(function(error){
-        console.error("\nFailed to capture screenshot on failure.\n" + error);
+        logger.error("\nFailed to capture screenshot on failure.\n" + error);
         deferred.reject(errorResponse);
       });
     }

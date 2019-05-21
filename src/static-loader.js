@@ -5,6 +5,7 @@ var estraverse = require("estraverse");
 var fileUtil = require("./file-util");
 var stepRegistry = require("./step-registry");
 var stepParser = require("./step-parser");
+var logger = require("./logger");
 
 function hasAliases(node) {
   return node.type === "ArrayExpression" && !!node.elements.length;
@@ -35,7 +36,7 @@ function processNode(node, filePath) {
       addStep(stepNode, { filePath: filePath, span: span });
     }
   } catch (e) {
-    console.log(e);
+    logger.info(e);
   }
 }
 
@@ -55,7 +56,7 @@ function createAst(content) {
   try {
     return esprima.parse(content, { loc: true });
   } catch (e) {
-    console.error(e.message);
+    logger.error(e.message);
     return "";
   }
 }

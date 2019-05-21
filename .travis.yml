@@ -25,4 +25,4 @@ script:
   - echo "gauge_repository_url = https://raw.githubusercontent.com/getgauge/gauge-nightly-repository/master/" >> ~/.gauge/config/gauge.properties
   - gauge install
   - gauge -v
-  - TAGS="js" ./starttests.sh js
+  - ./gradlew -q jsFT
