@@ -4,6 +4,7 @@ var protobuf = require("protobufjs");
 var stepRegistry = require("../src/step-registry");
 var loader = require("../src/static-loader");
 var MessageProcessor = require("../src/message-processor").MessageProcessor;
+var mock = require("mock-fs");
 var fs = require("fs");
 var path = require("path");
 
