@@ -16,7 +16,7 @@ environment:
 install:
    - git submodule init
    - git submodule update
-   - ps: Install-Product node 8
+   - ps: Install-Product node 10
    - npm install
 build_script:
 - ps: >- 
@@ -58,10 +58,4 @@ build_script:
 
     gauge -v
 
-    mvn -q clean install -Denv=ci-js -DinParallel=false -Dtags=js
-notifications:
-- provider: Webhook
-  url: https://webhooks.gitter.im/e/68b514dcb2c08a6a5809
-  method: POST
-  on_build_failure: true
-  on_build_status_changed: true
+- gradlew.bat clean jsFT
