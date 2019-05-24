@@ -285,7 +285,6 @@ describe("CacheFileRequest Processing", function () {
   });
 
   it("should unload file from disk on closed and file does not exists.", function () {
-    this.skip(); // Mock-fs is not supported in node 11+ . Need to remove this.
     var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CLOSED]);
     mock({
       "tests": {}

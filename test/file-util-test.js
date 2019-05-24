@@ -79,8 +79,7 @@ describe("File util functions", function () {
   });
 
 
-  describe.skip("getFileName", function () {
-    // Mock-fs is not supported in node 11+ . Need to remove this.
+  describe("getFileName", function () {
     afterEach(function () {
       mock.restore();
     });
