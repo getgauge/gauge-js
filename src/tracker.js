@@ -4,6 +4,7 @@ var fs = require("fs");
 var path = require("path");
 var version = require("../package.json").version;
 var os = require("os");
+var logger = require("./logger");
 const gaTestTrackingID = "UA-100778536-1",
   gaTrackingID = "UA-54838477-1";
 
@@ -62,7 +63,7 @@ var send = function (medium) {
     res.setEncoding("utf8");
   });
   req.on("error", (e) => {
-    console.error(`Connection Error: ${e.message}`);
+    logger.error(`Connection Error: ${e.message}`);
   });
   req.write(data);
   req.end();

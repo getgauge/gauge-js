@@ -26,3 +26,4 @@ script:
   - gauge install
   - gauge -v
   - ./gradlew clean jsFT
+

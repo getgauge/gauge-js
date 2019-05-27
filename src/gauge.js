@@ -4,27 +4,24 @@ var MessageProcessor = require("./message-processor").MessageProcessor;
 var protobuf = require("protobufjs");
 var path = require("path");
 var loader = require("./static-loader");
-var consoleStamp = require("console-stamp");
 var PROTO_PATH = __dirname + "/../gauge-proto/lsp.proto";
 var grpc = require("grpc");
 var lspProto = grpc.load(PROTO_PATH).gauge.messages;
 var LspServerHandler = require("./lsp-server");
 var tracker = require("./tracker.js");
+var logger = require("./logger");
 
 var GAUGE_INTERNAL_PORT = process.env.GAUGE_INTERNAL_PORT;
 
 function run() {
   global.gauge = gaugeGlobal.gauge;
-  if (process.env.IS_DAEMON) {
-    consoleStamp(console, { label: false, pattern: "HH:MM:ss.l", datePrefix: "", dateSuffix: "" });
-  }
   protobuf.load(path.resolve("gauge-proto/messages.proto")).then(function (root) {
     var message = root.lookupType("gauge.messages.Message");
     var errorType = root.lookupEnum("gauge.messages.StepValidateResponse.ErrorType");
     var fileStatus = root.lookupEnum("gauge.messages.CacheFileRequest.FileStatus");
     return { message: message, errorType: errorType, fileStatus: fileStatus };
   }).catch(function (e) {
-    console.error("Failed while loading runner.\n", e);
+    logger.error("Failed while loading runner.\n" + e);
     process.exit();
   }).then(function (types) {
     loader.load();
@@ -32,14 +29,14 @@ function run() {
       var server = new grpc.Server();
       server.addService(lspProto.lspService.service, new LspServerHandler(server, types));
       var p = server.bind("127.0.0.1:0", grpc.ServerCredentials.createInsecure());
-      console.log("Listening on port:" + p);
+      logger.info("Listening on port:" + p);
       server.start();
       tracker.trackLSP();
     } else {
       var portInfo = process.env.GAUGE_API_PORTS;
       if (portInfo !== undefined && portInfo !== null && portInfo.trim() !== "") {
         portInfo = portInfo.split(",");
-      }else{
+      } else {
         portInfo = [GAUGE_INTERNAL_PORT];
       }
       var socketsCount = portInfo.length;
@@ -59,14 +56,14 @@ function run() {
         processor.on("closeSocket", function () {
           socketsCount--;
           gaugeInternalConnection.closeSocket();
-          if (socketsCount === 0){
+          if (socketsCount === 0) {
             process.exit();
           }
         });
       });
     }
   }).catch(function (e) {
-    console.error(e);
+    logger.error(e);
   });
 }
 

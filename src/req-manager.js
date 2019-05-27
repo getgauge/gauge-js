@@ -1,5 +1,6 @@
 var mod = require("module"),
-  path = require("path");
+  path = require("path"),
+  logger = require("./logger");
 
 var Req = function (filepath, root) {
   this.Module = mod.Module;
@@ -32,8 +33,7 @@ Req.prototype.load = function (modname) {
     try {
       return modname === path.basename(modname) ?  m.require(modname) : m.require(path.join(path.dirname(self.filepath), modname));
     } catch (e) {
-      console.error("Unable to require module '" + modname + "' in " + self.filepath);
-      console.trace(e.stack);
+      logger.error("Unable to require module '" + modname + "' in " + self.filepath + "\n" + e.stack);
       return null;
     }
   })(self, mod, modname);

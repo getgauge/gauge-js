@@ -1,6 +1,7 @@
 var fs = require("fs");
 var path = require("path");
 var klawSync = require("klaw-sync");
+var logger = require("./logger");
 
 function isJSFile(file) {
   return path.extname(file) === ".js";
@@ -26,7 +27,7 @@ function getImplDirs() {
 function getListOfFiles() {
   var results = getImplDirs().reduce(function (files, dir) {
     if (!fs.existsSync(dir)) {
-      console.log("Failed to load implementations from " + dir);
+      logger.info("Failed to load implementations from " + dir);
       return files;
     }
     return files.concat(collectFilesIn(dir));
