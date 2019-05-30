@@ -25,7 +25,7 @@
   "lib": "libs",
   "multithreaded" : true,
   "gaugeVersionSupport": {
-    "minimum": "1.0.0",
+    "minimum": "1.0.6",
     "maximum": ""
   },
   "lspLangId" : "javascript"
