@@ -4,8 +4,8 @@ var ScreenshotFactory = function () {
   this.screenshots = [];
 };
 
-ScreenshotFactory.prototype.add = function () {
-  var bytePromise = screenshot.capture();
+ScreenshotFactory.prototype.add = function (...args) {
+  var bytePromise = screenshot.capture(...args);
   this.screenshots.push(bytePromise);
 };
 

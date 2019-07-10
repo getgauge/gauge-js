@@ -23,9 +23,9 @@ function hasCustumScreenGrabber() {
   return global.gauge && global.gauge.screenshotFn && typeof global.gauge.screenshotFn === "function";
 }
 
-function capture() {
+function capture(...args) {
   var screenshotFn = hasCustumScreenGrabber() ? global.gauge.screenshotFn : screenshot;
-  var res = screenshotFn();
+  var res = screenshotFn(...args);
   if (res instanceof Promise) {
     return res;
   }

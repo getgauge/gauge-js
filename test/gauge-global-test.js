@@ -2,10 +2,10 @@ var assert = require("chai").assert;
 var sinon  = require("sinon");
 var stepRegistry = require("../src/step-registry");
 var stepParser = require("../src/step-parser");
-var step = require("../src/gauge-global").step;
+var { step, gauge } = require("../src/gauge-global");
+var customScreenshotRegistry = require("../src/custom-screenshot-registry");
 
 describe("Calling global gauge.step()", function() {
-
   beforeEach(function() {
     stepRegistry.clear();
   });
@@ -65,4 +65,19 @@ describe("Calling global gauge.step()", function() {
     done();
   });
 
+});
+
+describe("Calling global gauge.screenshot()", function() {
+  sinon.spy(customScreenshotRegistry, "add");
+  beforeEach(function() {
+    customScreenshotRegistry.add.resetHistory();
+  });
+
+  it("should pass arguments to capture", () => {
+    gauge.screenshot(1, 2, 3);
+    assert(customScreenshotRegistry.add
+      .getCall(0)
+      .calledWithExactly(1, 2, 3)
+    , "passed correct arguments");
+  });
 });

@@ -1,9 +1,14 @@
 var assert = require("chai").assert;
+var spy = require("sinon").spy;
 var gauge = require("../src/gauge-global").gauge;
+var screenshot = require("../src/screenshot");
 var customScreenshotRegistry = require("../src/custom-screenshot-registry");
 
 describe("Custom Screenshot Registry", () => {
+  spy(screenshot, "capture");
+
   beforeEach(() => {
+    screenshot.capture.resetHistory();
     gauge.screenshotFn = function () {
       return "foo";
     };
@@ -20,6 +25,11 @@ describe("Custom Screenshot Registry", () => {
       assert.deepEqual(screenshots, ["foo"]);
       done();
     });
+  });
+
+  it("should pass arguments to capture", () => {
+    customScreenshotRegistry.add(1, 2, 3);
+    assert(screenshot.capture.getCall(0).calledWithExactly(1, 2, 3), "passed correct arguments");
   });
 
   it("should clear the screenshots", (done) => {

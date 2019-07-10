@@ -51,8 +51,8 @@ gauge.step = function (stepName, options, stepFunction) {
   this.step = step;
 };
 
-gauge.screenshot = function() {
-  customScreenshotFactory.add();
+gauge.screenshot = function(...args) {
+  customScreenshotFactory.add(...args);
 };
 
 module.exports = {
