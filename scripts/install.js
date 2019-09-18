@@ -32,13 +32,13 @@ var recreateDir = function (dirPath) {
 };
 var OFFLINE_PACKAGE_SUFFIX = "offline";
 var prepareOffLinePackageJSON = function () {
-  var offlinePackageJSON = require('../offline-package.json');
-  var packageJSON = require('../package.json');
+  var offlinePackageJSON = require("../offline-package.json");
+  var packageJSON = require("../package.json");
   offlinePackageJSON.version = packageJSON.version;
-  fs.writeFileSync(path.resolve("./offline-package.json"), JSON.stringify(offlinePackageJSON, null, 2), 'utf-8' );
+  fs.writeFileSync(path.resolve("./offline-package.json"), JSON.stringify(offlinePackageJSON, null, 2), "utf-8" );
   fs.copyFileSync(path.resolve("./package.json"), path.resolve("./package-backup.json"));
   fs.copyFileSync(path.resolve("./offline-package.json"), path.resolve("./package.json"));
-}
+};
 var prepareFiles = function (buildOffLinePakcage) {
   var buildDir = localPath("build"),
     copyList = ["gauge-proto", "src", "skel", "index.js", "index.bat", "debug.bat", "js.json", "package.json", "package-lock.json", ".node-inspectorrc", "README.md"];
@@ -91,7 +91,7 @@ var createPackage = function (buildOffLinePakcage, callback) {
     deployDir = localPath("deploy"),
     buildDir = localPath("build"),
     packageFile = buildOffLinePakcage ?
-     `gauge-${plugin.id}-${OFFLINE_PACKAGE_SUFFIX}-${plugin.version}.zip` :
+      `gauge-${plugin.id}-${OFFLINE_PACKAGE_SUFFIX}-${plugin.version}.zip` :
       `gauge-${plugin.id}-${plugin.version}.zip`;
 
   callback = callback || function () {};
