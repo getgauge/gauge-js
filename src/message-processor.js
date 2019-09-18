@@ -264,7 +264,7 @@ var cacheFileResponse = function (request) {
     return;
   }
   var CHANGED,OPENED,CLOSED, CREATED;
-  if(config.hasPureJsGrpc) {
+  if (config.hasPureJsGrpc) {
     CHANGED = this.options.fileStatus.values.CHANGED;
     OPENED = this.options.fileStatus.values.OPENED;
     CLOSED = this.options.fileStatus.values.CLOSED;

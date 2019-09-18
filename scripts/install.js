@@ -42,13 +42,13 @@ var prepareOffLinePackageJSON = function () {
 var prepareFiles = function (buildOffLinePakcage) {
   var buildDir = localPath("build"),
     copyList = ["gauge-proto", "src", "skel", "index.js", "index.bat", "debug.bat", "js.json", "package.json", "package-lock.json", ".node-inspectorrc", "README.md"];
-  if( buildOffLinePakcage) {
+  if ( buildOffLinePakcage) {
     prepareOffLinePackageJSON();
     try {
       console.log("Installing dependencies...");
       fs.removeSync("./node_modules");
       child_process.execSync("npm install --production", { cwd: localPath() });
-    } catch(err) {
+    } catch (err) {
       console.error("Error installing dependencies: %s", err.toString());
       console.error(err.stack);
     }
@@ -143,6 +143,6 @@ if (process.argv[2] === "--package") {
   createPackage(false);
 } else if (process.argv[2] === "--offline-package") {
   createPackage(true);
-}else {
+} else {
   installPluginFiles();
 }
