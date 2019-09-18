@@ -140,7 +140,7 @@ var installPluginFiles = function () {
 
 if (process.argv[2] === "--package") {
   createPackage(false);
-} else if (process.argv[2] === "--off-line-package") {
+} else if (process.argv[2] === "--offline-package") {
   createPackage(true);
 }else {
   installPluginFiles();

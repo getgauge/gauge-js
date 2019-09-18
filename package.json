@@ -8,7 +8,7 @@
     "test": "npm run lint && mocha --recursive",
     "installPlugin": "node scripts/install.js",
     "package": "node scripts/install.js --package",
-    "offLinePackage": "node scripts/install.js --off-line-package"
+    "offlinePackage": "node scripts/install.js --offline-package"
   },
   "repository": {
     "type": "git",
