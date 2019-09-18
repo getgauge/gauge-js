@@ -46,7 +46,8 @@ var prepareFiles = function (buildOffLinePakcage) {
     prepareOffLinePackageJSON();
     try {
       console.log("Installing dependencies...");
-      child_process.execSync("npm install", { cwd: localPath() });
+      fs.removeSync("./node_modules");
+      child_process.execSync("npm install --production", { cwd: localPath() });
     } catch(err) {
       console.error("Error installing dependencies: %s", err.toString());
       console.error(err.stack);
