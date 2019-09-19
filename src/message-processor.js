@@ -3,6 +3,7 @@ var EventEmitter = require("events").EventEmitter;
 var util = require("util");
 var path = require("path");
 
+var config = require("../package.json").config || {};
 var factory = require("./response-factory");
 var stepRegistry = require("./step-registry");
 var customMessageRegistry = require("./custom-message-registry");
@@ -262,14 +263,27 @@ var cacheFileResponse = function (request) {
   if (!fileUtil.isJSFile(filePath) || !fileUtil.isInImplDir(filePath)) {
     return;
   }
-  if (request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.CREATED]) {
+  var CHANGED,OPENED,CLOSED, CREATED;
+  if (config.hasPureJsGrpc) {
+    CHANGED = this.options.fileStatus.values.CHANGED;
+    OPENED = this.options.fileStatus.values.OPENED;
+    CLOSED = this.options.fileStatus.values.CLOSED;
+    CREATED = this.options.fileStatus.values.CREATED;
+  } else {
+    CHANGED = this.options.fileStatus.valuesById[this.options.fileStatus.values.CHANGED];
+    OPENED = this.options.fileStatus.valuesById[this.options.fileStatus.values.OPENED];
+    CLOSED = this.options.fileStatus.valuesById[this.options.fileStatus.values.CLOSED];
+    CREATED = this.options.fileStatus.valuesById[this.options.fileStatus.values.CREATED];
+  }
+  if (request.cacheFileRequest.status === CREATED) {
     if (!stepRegistry.isFileCached(filePath)) {
       loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
     }
-  } else if (request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.CHANGED] ||
-    request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.OPENED]) {
+  } else if ( request.cacheFileRequest.status === CHANGED || request.cacheFileRequest.status === OPENED || (
+    request.cacheFileRequest.status === undefined && config.hasPureJsGrpc
+  )) {
     loader.reloadFile(filePath, request.cacheFileRequest.content);
-  } else if (request.cacheFileRequest.status === this.options.fileStatus.valuesById[this.options.fileStatus.values.CLOSED] &&
+  } else if (request.cacheFileRequest.status === CLOSED &&
     fs.existsSync(filePath)) {
     loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
   } else {
