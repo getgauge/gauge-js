@@ -1,5 +1,6 @@
 var mod = require("module"),
   path = require("path"),
+  fs = require("fs"),
   logger = require("./logger");
 
 var Req = function (filepath, root) {
@@ -7,7 +8,7 @@ var Req = function (filepath, root) {
   this.root = root;
   this.filepath = filepath || null;
   this.nativeModules = [
-    "assert", "buffer", "child_process", "constants",  "crypto", "tls", "dgram", "dns", "http", "https",
+    "assert", "buffer", "child_process", "constants", "crypto", "tls", "dgram", "dns", "http", "https",
     "net", "querystring", "url", "domain", "events", "fs", "path", "os", "punycode", "stream", "string_decoder",
     "timers", "tty", "util", "sys", "vm", "zlib"
   ];
@@ -31,7 +32,14 @@ Req.prototype.load = function (modname) {
       path.join(self.root, "node_modules")
     ].concat(module.paths.filter(function (p) { return p.indexOf(".gauge") < 0; }));
     try {
-      return modname === path.basename(modname) ?  m.require(modname) : m.require(path.join(path.dirname(self.filepath), modname));
+      if (modname === path.basename(modname)) {
+        return m.require(modname);
+      }
+      let relativePath = path.join(path.dirname(self.filepath), modname);
+      if (fs.existsSync(relativePath)) {
+        return m.require(relativePath);
+      }
+      return m.require(modname);
     } catch (e) {
       logger.error("Unable to require module '" + modname + "' in " + self.filepath + "\n" + e.stack);
       return null;
