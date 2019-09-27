@@ -124,6 +124,8 @@ var executeHook = function (request, message, hookLevel, currentExecutionInfo) {
         logger.error("\nFailed to capture screenshot on failure.\n" + error);
         deferred.reject(errorResponse);
       });
+    } else {
+      deferred.reject(errorResponse);
     }
   };
 
