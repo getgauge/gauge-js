@@ -15,10 +15,10 @@ var skeldir = path.join(__dirname, "skel"),
   testCode = "step_implementation.js",
   jsPropertyFile = "js.properties";
 
-if(process.argv[2] === "--init") {
+if (process.argv[2] === "--init") {
 
   console.log("Initialising Gauge JavaScript project");
-  fs.mkdir(srcdir, 484, function(err) {
+  fs.mkdir(srcdir, 484, function (err) {
     if (err && err.code !== "EEXIST") {
       console.error(err);
     } else {
@@ -27,19 +27,25 @@ if(process.argv[2] === "--init") {
     }
   });
 
-  fs.mkdir(envdir, 484, function(err) {
+  fs.mkdir(path.dirname(envdir), 484, function (err) {
     if (err && err.code !== "EEXIST") {
       console.error(err);
     } else {
-      fs.createReadStream(path.join(skeldir, jsPropertyFile))
-        .pipe(fs.createWriteStream(path.join(envdir, jsPropertyFile)));
+      fs.mkdir(envdir, 484, function (err) {
+        if (err && err.code !== "EEXIST") {
+          console.error(err);
+        } else {
+          fs.createReadStream(path.join(skeldir, jsPropertyFile))
+            .pipe(fs.createWriteStream(path.join(envdir, jsPropertyFile)));
+        }
+      });
     }
   });
 }
 
-else if(process.argv[2] === "--start") {
+else if (process.argv[2] === "--start") {
   var args = ["./src/gauge.js", "--run"];
-  if(process.env.gauge_nodejs_args) {
+  if (process.env.gauge_nodejs_args) {
     args = process.env.gauge_nodejs_args.split(" ").concat(args);
   }
   var cmd = process.env.gauge_nodejs_bin || "node";
