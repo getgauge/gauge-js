@@ -1,0 +1,77 @@
+name: lsp-tests
+
+on: [push, pull_request]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    env:
+      TAGS: js
+      GAUGE_TELEMETRY_ENABLED: false
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+
+      - name: Init submodule
+        run: |
+          git submodule init
+      - name: Update submodule
+        run: |
+          git submodule update
+      - name: install
+        run: |
+          npm install
+      - name: Install gauge stable
+        run: |
+          mkdir ${HOME}/bin
+          curl https://raw.githubusercontent.com/getgauge/gauge/master/build/download.sh > install.sh
+          sh install.sh --location=${HOME}/bin
+          echo ::add-path::${HOME}/bin
+      - name: Install gauge-js
+        run: |
+          npm run installPlugin
+      - name: Run lsp tests
+        run: |
+          git clone https://github.com/getgauge/gauge-lsp-tests
+          cd gauge-lsp-tests
+          npm install
+          gauge install
+          gauge run --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=js-wd
+
+  windows:
+    runs-on: windows-latest
+    env:
+      TAGS: js
+      GAUGE_TELEMETRY_ENABLED: false
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+
+      - name: Init submodule
+        run: |
+          git submodule init
+      - name: Update submodule
+        run: |
+          git submodule update
+      - name: install
+        run: |
+          npm install
+      - name: Install gauge
+        run: |
+          choco install gauge
+      - name: Install gauge-js
+        run: |
+          set PATH="C:\\Program Files\\gauge\\bin";%PATH%
+          npm run installPlugin
+      - name: Run lsp tests
+        run: |
+          set PATH="C:\\Program Files\\gauge\\bin";%PATH%
+          git clone https://github.com/getgauge/gauge-lsp-tests
+          cd gauge-lsp-tests
+          npm install
+          gauge install
+          gauge run --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=js-wd

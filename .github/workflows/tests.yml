@@ -1,0 +1,33 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Node ${{ matrix.node_version }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node_version: [10, 12]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          version: ${{ matrix.node_version }}
+
+      - name: Init submodule
+        run: |
+          git submodule init
+      - name: Update submodule
+        run: |
+          git submodule update
+      - name: install
+        run: |
+          npm install
+      - name: unit-tests
+        run: |
+          npm test

@@ -1,7 +1,8 @@
 # Gauge-JS
 
-[![Build Status - Travis CI](https://travis-ci.org/getgauge/gauge-js.svg?branch=master)](https://travis-ci.org/getgauge/gauge-js)
-[![Build status](https://ci.appveyor.com/api/projects/status/bpxrbrexfeeff6r6/branch/master?svg=true)](https://ci.appveyor.com/project/getgauge/gauge-js/branch/master)
+[![Actions Status](https://github.com/bugdiver/gauge-ts/workflows/tests/badge.svg)](https://github.com/getgauge/gauge-js/actions)
+[![Actions Status](https://github.com/bugdiver/gauge-ts/workflows/functional-tests/badge.svg)](https://github.com/getgauge/gauge-js/actions)
+[![Actions Status](https://github.com/bugdiver/gauge-ts/workflows/lsp-tests/badge.svg)](https://github.com/getgauge/gauge-js/actions)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 This project adds Javascript [language plugin](https://docs.gauge.org/plugins.html#language-reporting-plugins) for [gauge](http://getgauge.io).
