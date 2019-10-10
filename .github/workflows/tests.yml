@@ -19,15 +19,12 @@ jobs:
         with:
           version: ${{ matrix.node_version }}
 
-      - name: Init submodule
+      - name: Setup submodule
         run: |
           git submodule init
-      - name: Update submodule
-        run: |
           git submodule update
-      - name: install
-        run: |
-          npm install
+
       - name: unit-tests
         run: |
+          npm install
           npm test
