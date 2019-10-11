@@ -28,3 +28,51 @@ jobs:
         run: |
           npm install
           npm test
+  functional-tests:
+    name: FTs ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      TAGS: js
+      GAUGE_TELEMETRY_ENABLED: false
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+
+      - name: Sutup submodule
+        run: |
+          git submodule init
+          git submodule update
+
+      - name: install
+        run: |
+          npm install
+
+      - name: Clone Fts
+        run: git clone https://github.com/getgauge/gauge-tests
+
+      - name: Install gauge and run Fts
+        if: matrix.os != 'windows-latest'
+        run: |
+          mkdir ${HOME}/bin
+          curl https://raw.githubusercontent.com/getgauge/gauge/master/build/download.sh > install.sh
+          sh install.sh --location=${HOME}/bin
+          echo ::add-path::${HOME}/bin
+          npm run installPlugin
+          cd gauge-tests
+          gauge install
+          ./gradlew clean jsFT
+
+      - name: Install gauge and run Fts
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install gauge
+          set PATH="C:\\Program Files\\gauge\\bin";%PATH%
+          npm run installPlugin
+          cd gauge-tests
+          gauge install
+          gradlew.bat clean jsFT
