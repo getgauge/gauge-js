@@ -1,8 +1,6 @@
 # Gauge-JS
 
-[![Actions Status](https://github.com/getgauge/gauge-js/workflows/tests/badge.svg)](https://github.com/getgauge/gauge-js/actions)
-[![Actions Status](https://github.com/getgauge/gauge-js/workflows/functional-tests/badge.svg)](https://github.com/getgauge/gauge-js/actions)
-[![Actions Status](https://github.com/getgauge/gauge-js/workflows/lsp-tests/badge.svg)](https://github.com/getgauge/gauge-js/actions)
+[![Actions Status](https://github.com/getgauge/gauge-js/workflows/build/badge.svg)](https://github.com/getgauge/gauge-js/actions)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 This project adds Javascript [language plugin](https://docs.gauge.org/plugins.html#language-reporting-plugins) for [gauge](http://getgauge.io).
