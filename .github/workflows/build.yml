@@ -138,26 +138,46 @@ jobs:
           go run build/make.go --verbose
           go run build/make.go --install
 
+<<<<<<< HEAD
       - name: Setup lsp tests
         run: |
           git clone https://github.com/getgauge/gauge-lsp-tests
           cd gauge-lsp-tests
           npm install
 
+=======
+>>>>>>> Refactor workflows.
       - name: Run LSP tests (linux)
         if: matrix.os != 'windows-latest'
         run: |
           export PATH=${PATH}:/tmp/gauge/bin
           npm run installPlugin
+<<<<<<< HEAD
           cd gauge-lsp-tests
+=======
+          git clone https://github.com/getgauge/gauge-lsp-tests
+          cd gauge-lsp-tests
+          npm install
+>>>>>>> Refactor workflows.
           gauge install
           gauge run --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=js-wd
 
       - name: Run LSP tests (windows)
         if: matrix.os == 'windows-latest'
         run: |
+<<<<<<< HEAD
           set PATH="C:\\Program Files\\gauge\\bin";%PATH%
           npm run installPlugin
           cd gauge-lsp-tests
           gauge install
           gauge run --tags="!knownIssue & (actions_on_project_load | actions_on_file_edit)" --env=js-wd
+=======
+          ${env:PATH} += ";C:\Program Files\gauge\bin"
+          npm run installPlugin
+          git clone https://github.com/getgauge/gauge-lsp-tests
+          cd gauge-lsp-tests
+          npm install
+          gauge install
+          gauge run --tags="!knownIssue & (actions_on_project_load | actions_on_file_edit)" --env=js-wd
+        shell: pwsh
+>>>>>>> Refactor workflows.
