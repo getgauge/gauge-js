@@ -68,14 +68,6 @@ gauge install js --version 2.1.0
 gauge install js --file gauge-js-2.1.0.zip
 ```
 
-#### Nightly installation
-To install js nightly, download the latest nightly from [here](https://bintray.com/gauge/gauge-js/Nightly).
-
-Once you have the downloaded nightly gauge-js-version.nightly-yyyy-mm-dd.zip, install using:
-
-    gauge install js -f gauge-js-version.nightly-yyyy-mm-dd.zip
-
-
 #### Build from Source
 The plugin is authored in [Javascript](https://en.wikipedia.org/wiki/JavaScript).
 Gauge is authored in golang. These are independent processes talking to each other over TCP on port GAUGE_INTERNAL_PORT (env variable) using [Protobuf](https://github.com/getgauge/gauge-proto).
