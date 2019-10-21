@@ -96,6 +96,11 @@ npm run installPlugin
 npm run package
 ```
 
+##### Create offline package
+```
+npm run offlinePackage
+```
+
 ## Copyright
 
 Copyright 2018 ThoughtWorks, Inc.
