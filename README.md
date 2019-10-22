@@ -62,7 +62,7 @@ $ gauge init js_webdriver
 gauge install js --version 2.1.0
 ```
 
-### Offline installation
+### Install from zip file
 * Download the plugin from [Releases](https://github.com/getgauge/gauge-js/releases)
 ```
 gauge install js --file gauge-js-2.1.0.zip
