@@ -59,13 +59,13 @@ $ gauge init js_webdriver
 
 #### Install specific version
 ```
-gauge install js --version 2.1.0
+gauge install js --version <version>
 ```
 
 ### Install from zip file
 * Download the plugin from [Releases](https://github.com/getgauge/gauge-js/releases)
 ```
-gauge install js --file gauge-js-2.1.0.zip
+gauge install js --file gauge-js-<version>.zip
 ```
 
 #### Build from Source
@@ -99,6 +99,11 @@ npm run package
 ##### Create offline package
 ```
 npm run offlinePackage
+```
+
+You can then install the offline zip archive created using 
+```
+gauge install js --file gauge-js-<version>.zip
 ```
 
 ## Copyright
