@@ -17,7 +17,6 @@ if (config.hasPureJsGrpc) {
   lspProto = grpc.load(PROTO_PATH).gauge.messages;
 }
 var LspServerHandler = require("./lsp-server");
-var tracker = require("./tracker.js");
 var logger = require("./logger");
 
 var GAUGE_INTERNAL_PORT = process.env.GAUGE_INTERNAL_PORT;
@@ -42,7 +41,6 @@ function run() {
           if (!err) {
             logger.info("Listening on port:" + port);
             server.start();
-            tracker.trackLSP();
           } else {
             logger.error(err);
             process.exit();
@@ -52,7 +50,6 @@ function run() {
         var p = server.bind("127.0.0.1:0", grpc.ServerCredentials.createInsecure());
         logger.info("Listening on port:" + p);
         server.start();
-        tracker.trackLSP();
       }
     } else {
       var portInfo = process.env.GAUGE_API_PORTS;
