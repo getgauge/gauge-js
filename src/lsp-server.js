@@ -98,8 +98,10 @@ LspServerHandler.prototype = {
 
   killProcess: function (call, callback) {
     callback(null, this.options.message.create({}));
-    this.server.forceShutdown();
-    process.exit(0);
+    setTimeout(100,function() {
+      this.server.forceShutdown();
+      process.exit(0);
+    });
   }
 };
 

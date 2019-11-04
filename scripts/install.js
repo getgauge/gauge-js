@@ -35,14 +35,14 @@ var prepareOffLinePackageJSON = function () {
   var offlinePackageJSON = require("../offline-package.json");
   var packageJSON = require("../package.json");
   offlinePackageJSON.version = packageJSON.version;
-  fs.writeFileSync(path.resolve("./offline-package.json"), JSON.stringify(offlinePackageJSON, null, 2), "utf-8" );
+  fs.writeFileSync(path.resolve("./offline-package.json"), JSON.stringify(offlinePackageJSON, null, 2), "utf-8");
   fs.copyFileSync(path.resolve("./package.json"), path.resolve("./package-backup.json"));
   fs.copyFileSync(path.resolve("./offline-package.json"), path.resolve("./package.json"));
 };
 var prepareFiles = function (buildOffLinePakcage) {
   var buildDir = localPath("build"),
     copyList = ["gauge-proto", "src", "skel", "index.js", "index.bat", "debug.bat", "js.json", "package.json", "package-lock.json", ".node-inspectorrc", "README.md"];
-  if ( buildOffLinePakcage) {
+  if (buildOffLinePakcage) {
     prepareOffLinePackageJSON();
     try {
       console.log("Installing dependencies...");
@@ -117,8 +117,8 @@ var createPackage = function (buildOffLinePakcage, callback) {
   zip.directory(buildDir, "/").finalize();
 };
 
-var installPluginFiles = function () {
-  createPackage(false, function (packageFilePath) {
+var installPluginFiles = function (buildOffLinePakcage) {
+  createPackage(buildOffLinePakcage, function (packageFilePath) {
     var log;
 
     try {
@@ -143,6 +143,8 @@ if (process.argv[2] === "--package") {
   createPackage(false);
 } else if (process.argv[2] === "--offline-package") {
   createPackage(true);
+} else if (process.argv[2] === "--install-offline-package") {
+  installPluginFiles(true);
 } else {
-  installPluginFiles();
+  installPluginFiles(false);
 }
