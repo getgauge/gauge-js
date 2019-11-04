@@ -30,7 +30,7 @@
     "escodegen": "^1.12.0",
     "esprima": "^4.0.1",
     "estraverse": "^4.3.0",
-    "grpc": "^1.24.1",
+    "grpc": "^1.24.2",
     "klaw-sync": "^3.0.2",
     "protobufjs": "^6.8.8",
     "q": "^1.5.0"
