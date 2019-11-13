@@ -9,15 +9,14 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node_version: [10, 12]
 
     steps:
       - uses: actions/checkout@v1
 
-      - name: Use Node.js
+      - name: Set up Nodejs
         uses: actions/setup-node@v1
         with:
-          version: ${{ matrix.node_version }}
+          node-version: '12.x'
 
       - name: Setup submodule
         run: |
