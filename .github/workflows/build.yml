@@ -28,3 +28,56 @@ jobs:
         run: |
           npm install
           npm test
+
+  functional-tests:
+    needs: tests
+    name: FTs ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      TAGS: js
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    steps:
+      - name: Set up Go 1.13
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: Build
+        run: go run build/make.go --verbose
+
+      - name: Install Gauge (windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          go run build/make.go --install  --verbose
+          echo "::add-path::C:\\Program Files\\gauge\\bin"
+
+      - name: Install Gauge (linux)
+        if: matrix.os != 'windows-latest'
+        run: |
+          go run build/make.go --install --prefix=/tmp/gauge --verbose
+          echo "::add-path::/tmp/gauge/bin"
+
+      - name: Prep FTs
+        run: |
+          git clone https://github.com/getgauge/gauge-tests
+          cd gauge-tests
+          gauge install
+
+      - name: Install gauge and Run FTs (windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd gauge-tests
+          .\gradlew.bat clean jsFT
+        shell: pwsh
+
+      - name: Install gauge and Run FTs (linux/osx)
+        if: matrix.os != 'windows-latest'
+        run: |
+          cd gauge-tests
+          ./gradlew clean jsFT
