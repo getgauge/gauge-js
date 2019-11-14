@@ -22,10 +22,14 @@ jobs:
           npm run package
 
       - name: Install hub
-        run: sudo snap install hub --classic
+        run: |
+          sudo apt update
+          sudo apt install hub
 
       - name: Install ruby
-        run: sudo apt install ruby-full
+        run: |
+          sudo apt install ruby-full
+          ruby --version.
 
       - name: update
         run: |
