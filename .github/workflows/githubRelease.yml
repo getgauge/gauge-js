@@ -31,7 +31,7 @@ jobs:
         run: |
           cd deploy
           if [ -z "$version" ]; then
-            version=$(ls gauge-js* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-//" | sed | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+            version=$(ls gauge-js* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
           fi
 
           artifacts=()
@@ -52,13 +52,13 @@ jobs:
           echo "$release_description" >> desc.txt
 
           echo "Creating new draft for release v$version"
-          hub release create -d -F ./desc.txt "v$version"
+          sudo hub release create -d -F ./desc.txt "v$version"
 
           rm -rf desc.txt
 
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
-              hub release edit -m "" -a $i "v$version"
+              sudo hub release edit -m "" -a $i "v$version"
               if [ $? -ne 0 ];then
                   exit 1
               fi
@@ -73,7 +73,7 @@ jobs:
         run: |
           cd deploy
           if [ -z "$version" ]; then
-            version=$(ls gauge-js-offline* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-offline-//" | sed | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+            version=$(ls gauge-js-offline* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-offline-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
           fi
 
           artifacts=()
@@ -85,7 +85,7 @@ jobs:
 
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
-              hub release edit -m "" -a $i "v$version"
+              sudo hub release edit -m "" -a $i "v$version"
               if [ $? -ne 0 ];then
                   exit 1
               fi
