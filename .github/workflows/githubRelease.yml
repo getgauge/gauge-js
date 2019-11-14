@@ -5,7 +5,7 @@ on: [deployment]
 jobs:
   deploy:
     name: Create Draft with assets
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
     steps:
@@ -22,7 +22,10 @@ jobs:
           npm run package
 
       - name: Install hub
-        run: brew install hub
+        run: sudo snap install hub --classic
+
+      - name: Install ruby
+        run: sudo apt install ruby-full
 
       - name: update
         run: |
