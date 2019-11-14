@@ -1,0 +1,104 @@
+name: Deploy
+
+on: [deployment]
+
+jobs:
+  deploy:
+    name: Create Draft with assets
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Nodejs
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Build artifacts
+        run: |
+          npm install
+          npm run package
+
+      - name: Install hub
+        run: brew install hub
+
+      - name: update
+        run: |
+          cd deploy
+          if [ -z "$version" ]; then
+            version=$(ls gauge-js* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-//" | sed | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+          fi
+
+          artifacts=()
+          dir=`pwd`
+          for i in `ls`; do
+              artifacts+="$dir/$i "
+          done
+          cd ..
+
+          echo "---------------------------"
+          echo "Updating release v$version"
+          echo "---------------------------"
+
+          echo -e "Gauge JS v$version\n\n" > desc.txt
+
+          release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" gauge-js getgauge)
+
+          echo "$release_description" >> desc.txt
+
+          echo "Creating new draft for release v$version"
+          hub release create -d -F ./desc.txt "v$version"
+
+          rm -rf desc.txt
+
+          echo "Start uploading assets..."
+          for i in `ls $artifacts`; do
+              hub release edit -m "" -a $i "v$version"
+              if [ $? -ne 0 ];then
+                  exit 1
+              fi
+          done
+
+      - name: Build offline artifacts
+        run: |
+          npm install
+          npm run offlinePackage
+
+      - name: update offline
+        run: |
+          cd deploy
+          if [ -z "$version" ]; then
+            version=$(ls gauge-js-offline* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-offline-//" | sed | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+          fi
+
+          artifacts=()
+          dir=`pwd`
+          for i in `ls`; do
+              artifacts+="$dir/$i "
+          done
+          cd ..
+
+          echo "Start uploading assets..."
+          for i in `ls $artifacts`; do
+              hub release edit -m "" -a $i "v$version"
+              if [ $? -ne 0 ];then
+                  exit 1
+              fi
+          done
+
+
+      - name: 'deployment success'
+        if: success()
+        uses: 'deliverybot/status@master'
+        with:
+          state: 'success'
+          token: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: 'deployment failure'
+        if: failure()
+        uses: 'deliverybot/status@master'
+        with:
+          state: 'failure'
+          token: '${{ secrets.GITHUB_TOKEN }}'
