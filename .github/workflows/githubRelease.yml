@@ -22,7 +22,7 @@ jobs:
           npm run package
 
       - name: Install hub
-        run: brew install hub
+        run: sudo snap install hub --classic
 
       - name: update
         run: |
