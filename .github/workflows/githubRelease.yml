@@ -24,11 +24,11 @@ jobs:
       - name: Install hub
         run: |
           sudo snap install hub --classic
-          which hub
+          hub --version
 
       - name: Install ruby
         run: |
-          sudo apt install ruby-full
+          sudo snap install ruby --classic
 
       - name: update
         run: |
@@ -55,14 +55,14 @@ jobs:
           echo "$release_description" >> desc.txt
 
           echo "Creating new draft for release v$version"
-          sudo chown root:root /
+
           hub release create -d -F ./desc.txt "v$version"
 
           rm -rf desc.txt
 
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
-              sudo hub release edit -m "" -a $i "v$version"
+              hub release edit -m "" -a $i "v$version"
               if [ $? -ne 0 ];then
                   exit 1
               fi
@@ -89,7 +89,7 @@ jobs:
 
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
-              sudo hub release edit -m "" -a $i "v$version"
+              hub release edit -m "" -a $i "v$version"
               if [ $? -ne 0 ];then
                   exit 1
               fi
