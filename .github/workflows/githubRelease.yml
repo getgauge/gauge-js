@@ -29,7 +29,6 @@ jobs:
       - name: Install ruby
         run: |
           sudo apt install ruby-full
-          ruby --version.
 
       - name: update
         run: |
