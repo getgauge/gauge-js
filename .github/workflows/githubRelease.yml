@@ -23,6 +23,7 @@ jobs:
 
       - name: Install hub
         run: |
+          sudo chown root:root /
           sudo snap install hub --classic
           hub --version
 
@@ -109,3 +110,4 @@ jobs:
         with:
           state: 'failure'
           token: '${{ secrets.GITHUB_TOKEN }}'
+
