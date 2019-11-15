@@ -55,6 +55,7 @@ jobs:
           echo "$release_description" >> desc.txt
 
           echo "Creating new draft for release v$version"
+          sudo chown root:root /
           sudo hub release create -d -F ./desc.txt "v$version"
 
           rm -rf desc.txt
