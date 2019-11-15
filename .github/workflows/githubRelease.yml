@@ -23,8 +23,8 @@ jobs:
 
       - name: Install hub
         run: |
-          sudo apt update
-          sudo apt install hub
+          sudo snap install hub --classic
+          which hub
 
       - name: Install ruby
         run: |
