@@ -5,7 +5,7 @@ on: [deployment]
 jobs:
   deploy:
     name: Create Draft with assets
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     env:
       GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
     steps:
@@ -22,14 +22,7 @@ jobs:
           npm run package
 
       - name: Install hub
-        run: |
-          sudo chown root:root /
-          sudo snap install hub --classic
-          hub --version
-
-      - name: Install ruby
-        run: |
-          sudo snap install ruby --classic
+        run: brew install hub
 
       - name: update
         run: |
@@ -56,7 +49,6 @@ jobs:
           echo "$release_description" >> desc.txt
 
           echo "Creating new draft for release v$version"
-
           hub release create -d -F ./desc.txt "v$version"
 
           rm -rf desc.txt
@@ -110,4 +102,3 @@ jobs:
         with:
           state: 'failure'
           token: '${{ secrets.GITHUB_TOKEN }}'
-
