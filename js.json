@@ -1,6 +1,6 @@
 {
   "id" : "js",
-  "version" : "2.3.6",
+  "version" : "2.3.7",
   "description": "Javascript support for gauge",
   "install": {
     "windows": [],
