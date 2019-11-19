@@ -39,6 +39,9 @@ Req.prototype.load = function (modname) {
       if (fs.existsSync(relativePath)) {
         return m.require(relativePath);
       }
+      if (fs.existsSync(relativePath.concat(".js"))) {
+        return m.require(relativePath.concat(".js"));
+      }
       return m.require(modname);
     } catch (e) {
       logger.error("Unable to require module '" + modname + "' in " + self.filepath + "\n" + e.stack);
