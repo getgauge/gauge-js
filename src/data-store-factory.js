@@ -7,7 +7,7 @@ DataStore.prototype.put = function (key, val) {
 };
 
 DataStore.prototype.get = function (key) {
-  return this.store[key] ? this.store[key] : null;
+  return this.store[key] !== undefined ? this.store[key] : null;
 };
 
 DataStore.prototype.clear = function () {
