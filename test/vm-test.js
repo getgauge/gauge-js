@@ -11,7 +11,7 @@ describe("VM", function () {
   var sandbox;
 
   before( function () {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub( fs, "readFileSync").callsFake(function () {
       return "var x = 'oh, my!';";

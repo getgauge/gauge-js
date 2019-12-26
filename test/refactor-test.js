@@ -14,7 +14,7 @@ describe("Refactor", function () {
   var message = null;
   this.timeout(10000);
   before(function (done) {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub(fs, "readFileSync").callsFake(function () {
       return contentInput;
