@@ -27,7 +27,7 @@
   "homepage": "https://github.com/getgauge/gauge-js",
   "dependencies": {
     "console-stamp": "^0.2.9",
-    "escodegen": "^1.12.0",
+    "escodegen": "^1.12.1",
     "esprima": "^4.0.1",
     "estraverse": "^4.3.0",
     "grpc": "^1.24.1",
