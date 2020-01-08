@@ -20,10 +20,9 @@ var logger = require("./logger");
 function run() {
   global.gauge = gaugeGlobal.gauge;
   protobuf.load(path.resolve("gauge-proto/messages.proto")).then(function (root) {
-    var message = root.lookupType("gauge.messages.Message");
     var errorType = root.lookupEnum("gauge.messages.StepValidateResponse.ErrorType");
     var fileStatus = root.lookupEnum("gauge.messages.CacheFileRequest.FileStatus");
-    return { message: message, errorType: errorType, fileStatus: fileStatus };
+    return { errorType: errorType, fileStatus: fileStatus };
   }).catch(function (e) {
     logger.error("Failed while loading runner.\n" + e);
     process.exit();

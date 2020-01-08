@@ -6,222 +6,117 @@ class ServiceHandlers {
     this.options = options;
   }
   initializeSuiteDataStore(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.SuiteDataStoreInitRequest,
-      suiteDataStoreInitRequest: call.request
-    });
-    var res = processors.successExecutionStatus.call(this, req);
-    callback(null, res.executionStatusResponse);
+    var res = processors.successExecutionStatus(call.request);
+    callback(null, res);
   }
   startExecution(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.ExecutionStartingRequest,
-      executionStartingRequest: call.request
-    });
     function responseCallback(response) {
-      callback(null, response.executionStatusResponse);
+      callback(null, response);
     }
-    processors.executeBeforeSuiteHook.call(this, req, responseCallback);
+    processors.executeBeforeSuiteHook(call.request, responseCallback);
   }
   initializeSpecDataStore(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.SpecDataStoreInitRequest,
-      specDataStoreInitRequest: call.request
-    });
-    var res = processors.successExecutionStatus.call(this, req);
-    callback(null, res.executionStatusResponse);
+    var res = processors.successExecutionStatus(call.request);
+    callback(null, res);
   }
   startSpecExecution(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.SpecExecutionStartingRequest,
-      specExecutionStartingRequest: call.request
-    });
     function responseCallback(response) {
-      callback(null, response.executionStatusResponse);
+      callback(null, response);
     }
-    processors.executeBeforeSpecHook.call(this, req, responseCallback);
+    processors.executeBeforeSpecHook(call.request, responseCallback);
   }
   initializeScenarioDataStore(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.ScenarioDataStoreInitRequest,
-      scenarioDataStoreInitRequest: call.request
-    });
-    var res = processors.successExecutionStatus.call(this, req);
-    callback(null, res.executionStatusResponse);
+    var res = processors.successExecutionStatus(call.request);
+    callback(null, res);
   }
   startScenarioExecution(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.ScenarioExecutionStartingRequest,
-      scenarioExecutionStartingRequest: call.request
-    });
     function responseCallback(response) {
-      callback(null, response.executionStatusResponse);
+      callback(null, response);
     }
-    processors.executeBeforeScenarioHook.call(this, req, responseCallback);
+    processors.executeBeforeScenarioHook(call.request, responseCallback);
   }
   startStepExecution(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.StepExecutionStartingRequest,
-      stepExecutionStartingRequest: call.request
-    });
     function responseCallback(response) {
-      callback(null, response.executionStatusResponse);
+      callback(null, response);
     }
-    processors.executeBeforeStepHook.call(this, req, responseCallback);
+    processors.executeBeforeStepHook(call.request, responseCallback);
   }
   executeStep(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.ExecuteStepRequest,
-      executeStepRequest: call.request
-    });
     function responseCallback(response) {
-      callback(null, response.executionStatusResponse);
+      callback(null, response);
     }
-    processors.executeStep.call(this, req, responseCallback);
+    processors.executeStep(call.request, responseCallback);
   }
   finishStepExecution(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.StepExecutionEndingRequest,
-      stepExecutionEndingRequest: call.request
-    });
     function responseCallback(response) {
-      callback(null, response.executionStatusResponse);
+      callback(null, response);
     }
-    processors.executeAfterStepHook.call(this, req, responseCallback);
+    processors.executeAfterStepHook(call.request, responseCallback);
   }
   finishScenarioExecution(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.ScenarioExecutionEndingRequest,
-      scenarioExecutionEndingRequest: call.request
-    });
     function responseCallback(response) {
-      callback(null, response.executionStatusResponse);
+      callback(null, response);
     }
-    processors.executeAfterScenarioHook.call(this, req, responseCallback);
+    processors.executeAfterScenarioHook(call.request, responseCallback);
   }
   finishSpecExecution(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.SpecExecutionEndingRequest,
-      specExecutionEndingRequest: call.request
-    });
     function responseCallback(response) {
-      callback(null, response.executionStatusResponse);
+      callback(null, response);
     }
-    processors.executeAfterSpecHook.call(this, req, responseCallback);
+    processors.executeAfterSpecHook(call.request, responseCallback);
   }
   finishExecution(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.ExecutionEndingRequest,
-      executionEndingRequest: call.request
-    });
     function responseCallback(response) {
-      callback(null, response.executionStatusResponse);
+      callback(null, response);
     }
-    processors.executeAfterSuiteHook.call(this, req, responseCallback);
+    processors.executeAfterSuiteHook(call.request, responseCallback);
   }
   getStepNames(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.StepNamesRequest,
-      stepNamesRequest: call.request
-    });
-    var res = processors.stepNamesResponse.call(this, req);
+    var res = processors.stepNamesResponse(call.request);
     callback(null, res.stepNamesResponse);
   }
 
   cacheFile(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.CacheFileRequest,
-      cacheFileRequest: call.request
-    });
-    processors.cacheFileResponse.call(this, req);
-    callback(null, this.options.message.create({}));
+    processors.cacheFileResponse(call.request, this.options.fileStatus);
+    callback(null, {});
   }
 
   getStepPositions(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.StepPositionsRequest,
-      stepPositionsRequest: call.request
-    });
-    var res = processors.stepPositions.call(this, req);
+    var res = processors.stepPositions(call.request);
     callback(null, res.stepPositionsResponse);
   }
 
   getImplementationFiles(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.ImplementationFileListRequest,
-      implementationFileListRequest: call.request
-    });
-    var res = processors.implementationFiles.call(this, req);
+    var res = processors.implementationFiles(call.request);
     callback(null, res.implementationFileListResponse);
   }
 
   implementStub(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.StubImplementationCodeRequest,
-      stubImplementationCodeRequest: call.request
-    });
-    var res = processors.implementStubResponse.call(this, req);
+    var res = processors.implementStubResponse(call.request);
     callback(null, res.fileDiff);
   }
 
   validateStep(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.StepValidateRequest,
-      stepValidateRequest: call.request
-    });
-    var res = processors.stepValidateResponse.call(this, req);
+    var res = processors.stepValidateResponse(call.request, this.options.errorType);
     callback(null, res.stepValidateResponse);
   }
 
   refactor(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.RefactorRequest,
-      refactorRequest: call.request
-    });
-    var res = processors.refactorResponse.call(this, req);
+    var res = processors.refactorResponse(call.request);
     callback(null, res.refactorResponse);
   }
 
   getStepName(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.StepNameRequest,
-      stepNameRequest: call.request
-    });
-    var res = processors.stepNameResponse.call(this, req);
+    var res = processors.stepNameResponse(call.request);
     callback(null, res.stepNameResponse);
   }
 
   getGlobPatterns(call, callback) {
-    var req = this.options.message.create({
-      messageId: 0,
-      messageType: this.options.message.MessageType.ImplementationFileGlobPatternRequest,
-      implementationFileGlobPatternRequest: call.request
-    });
-    var res = processors.implementationGlobPatternResponse.call(this, req);
+    var res = processors.implementationGlobPatternResponse(call.request);
     callback(null, res.implementationFileGlobPatternResponse);
   }
   kill(_call, callback) {
-    callback(null, this.options.message.create({}));
+    callback(null, {});
     setTimeout(() => {
       this.server.forceShutdown();
       process.exit(0);

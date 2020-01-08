@@ -113,12 +113,12 @@ var refactor_content = function (content, info, req) {
   return { content: escodegen.generate(ast), diffs: diffs };
 };
 
-var refactor = function (request, response) {
-  var info = stepRegistry.get(request.refactorRequest.oldStepValue.stepValue);
+var refactor = function (refactorRequest, response) {
+  var info = stepRegistry.get(refactorRequest.oldStepValue.stepValue);
   try {
     var content = fs.readFileSync(info.fileLocations[0].filePath).toString("utf-8");
-    var refactorInfo = refactor_content(content, info, request.refactorRequest);
-    if (request.refactorRequest.saveChanges) {
+    var refactorInfo = refactor_content(content, info, refactorRequest);
+    if (refactorRequest.saveChanges) {
       fs.writeFileSync(info.fileLocations[0].filePath, refactorInfo.content, "utf-8");
     }
     var change = {

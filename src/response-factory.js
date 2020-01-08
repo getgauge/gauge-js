@@ -1,22 +1,18 @@
 exports = module.exports;
 
-exports.createStepNamesResponse = function (message, messageId) {
+exports.createStepNamesResponse = function (steps) {
 
-  return message.create({
-    messageId: messageId,
-    messageType: message.MessageType.StepNamesResponse,
+  return {
     stepNamesResponse: {
-      steps: []
+      steps: steps
     }
-  });
+  };
 
 };
 
-exports.createStepNameResponse = function (message, messageId) {
+exports.createStepNameResponse = function () {
 
-  return message.create({
-    messageId: messageId,
-    messageType: message.MessageType.StepNameResponse,
+  return {
     stepNameResponse: {
       isStepPresent: false,
       stepName: [],
@@ -24,35 +20,31 @@ exports.createStepNameResponse = function (message, messageId) {
       fileName: "",
       span: {}
     }
-  });
+  };
 
 };
 
-exports.createRefactorResponse = function (message, messageId) {
+exports.createRefactorResponse = function () {
 
-  return message.create({
-    messageId: messageId,
-    messageType: message.MessageType.RefactorResponse,
+  return {
     refactorResponse: {
       success: false,
       error: "",
       filesChanged: [],
       fileChanges: []
     }
-  });
+  };
 
 };
 
-exports.createStepValidateResponse = function (message, messageId, errorType, validated, suggestion) {
+exports.createStepValidateResponse = function (errorType, validated, suggestion) {
 
   if (validated.valid) {
-    return message.create({
-      messageId: messageId,
-      messageType: message.MessageType.StepValidateResponse,
+    return {
       stepValidateResponse: {
         isValid: true
       }
-    });
+    };
   }
 
   var errortype,
@@ -68,81 +60,65 @@ exports.createStepValidateResponse = function (message, messageId, errorType, va
     break;
   }
 
-  return message.create({
-    messageId: messageId,
-    messageType: message.MessageType.StepValidateResponse,
+  return {
     stepValidateResponse: {
       isValid: false,
       errorType: errortype,
       errorMessage: errmsg,
       suggestion: suggestion
     }
-  });
-
+  };
 };
 
-exports.createExecutionStatusResponse = function (message, messageId, isFailed, executionTime, err, msg, screenShot, recoverable, screenshots) {
-  
-  return message.create({
-    messageId: messageId,
-    messageType: message.MessageType.ExecutionStatusResponse,
-    executionStatusResponse: {
-      executionResult: {
-        failed: isFailed,
-        recoverableError: recoverable,
-        executionTime: executionTime || 0,
-        stackTrace: err && err.stack ? err.stack : "",
-        errorMessage: err ? (err instanceof Error ? err.toString() : JSON.stringify(err)) : "",
-        message: msg || [],
-        screenShot: screenShot || "",
-        failureScreenshot: screenShot || "",
-        screenshots: screenshots || []
-      }
+exports.createExecutionStatusResponse = function (isFailed, executionTime, err, msg, screenShot, recoverable, screenshots) {
+  return {
+    executionResult: {
+      failed: isFailed,
+      recoverableError: recoverable,
+      executionTime: executionTime || 0,
+      stackTrace: err && err.stack ? err.stack : "",
+      errorMessage: err ? (err instanceof Error ? err.toString() : JSON.stringify(err)) : "",
+      message: msg || [],
+      screenShot: screenShot || "",
+      failureScreenshot: screenShot || "",
+      screenshots: screenshots || []
     }
-  });
+  };
 
 };
 
-exports.createStepPositionsResponse = function (message, messageId) {
+exports.createStepPositionsResponse = function (stepPositions) {
 
-  return message.create({
-    messageId: messageId,
-    messageType: message.MessageType.StepPositionsResponse,
+  return {
     stepPositionsResponse: {
-      stepPositions: [],
+      stepPositions: stepPositions,
       error: ""
     }
-  });
+  };
 
 };
 
 
 
-exports.createImplementationFileListResponse = function (message, messageId) {
-  return message.create({
-    messageId: messageId,
-    messageType: message.MessageType.ImplementationFileListResponse,
+exports.createImplementationFileListResponse = function (files) {
+  return {
     implementationFileListResponse: {
-      implementationFilePaths: []
+      implementationFilePaths: files
     }
-  });
+  };
 };
 
-exports.createImplementationFileGlobPatternResponse = function (message, messageId) {
-  return message.create({
-    messageId: messageId,
-    messageType: message.MessageType.ImplementationFileGlobPatternResponse,
+exports.createImplementationFileGlobPatternResponse = function (globPatterns) {
+  return {
     implementationFileGlobPatternResponse: {
-      globPatterns: []
+      globPatterns: globPatterns
     }
-  });
+  };
 };
 
-exports.createFileDiff = function (message, messageId) {
+exports.createFileDiff = function () {
 
-  return message.create({
-    messageId: messageId,
-    messageType: message.MessageType.FileDiff,
+  return {
     fileDiff: {}
-  });
+  };
 };
