@@ -42,93 +42,92 @@ function executionResponse(message, isFailed, executionTime, messageId) {
 
 function successExecutionStatus(request) {
   var response = executionResponse(this.options.message, false, 0, request.messageId);
-  this._emit(response);
+  return response;
 }
 
-function executeStep(request) {
+function executeStep(request, callback) {
   var self = this;
   var promise = executor.step(request, this.options.message);
   promise.then(
     function (value) {
-      self._emit(value);
+      callback(value);
     },
     function (reason) {
-      self._emit(reason);
+      callback(reason);
     }
   );
 }
 
-function executeHook(request, hookName, currentExecutionInfo) {
-  var self = this;
+function executeHook(request, hookName, currentExecutionInfo, callback) {
   var promise = executor.hook(request, this.options.message, hookName, currentExecutionInfo);
   promise.then(
     function (response) {
       processCustomMessages(response);
       processScreenshots(response).then(function () {
-        self._emit(response);
+        callback(response);
       });
     },
     function (reason) {
       processCustomMessages(reason);
       processScreenshots(reason).then(function () {
-        self._emit(reason);
+        callback(reason);
       });
     }
   );
 }
 
-function startExecution(self, request) {
+function startExecution(self, request, callback) {
   impl_loader.load(stepRegistry).then(() => {
-    executeHook.apply(self, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]); 
+    executeHook.apply(self, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo, callback]); 
   });
 }
 
-function executeBeforeSuiteHook(request) {
+function executeBeforeSuiteHook(request, callback) {
   var self = this;
   if (process.env.DEBUGGING) {
     var port = parseInt(process.env.DEBUG_PORT);
     logger.info(ATTACH_DEBUGGER_EVENT);
     inspector.open(port, "127.0.0.1", true);
     var inspectorWaitTime = 1000;
-    setTimeout(function () { startExecution(self, request); }, inspectorWaitTime);
+    setTimeout(function () { startExecution(self, request, callback); }, inspectorWaitTime);
   } else {
-    startExecution(self, request);
+    startExecution(self, request, callback);
   }
 }
 
-function executeBeforeSpecHook(request) {
-  executeHook.apply(this, [request, "beforeSpec", request.specExecutionStartingRequest.currentExecutionInfo]);
+function executeBeforeSpecHook(request, callback) {
+  executeHook.apply(this, [request, "beforeSpec", request.specExecutionStartingRequest.currentExecutionInfo, callback]);
 }
 
-function executeBeforeScenarioHook(request) {
-  executeHook.apply(this, [request, "beforeScenario", request.scenarioExecutionStartingRequest.currentExecutionInfo]);
+function executeBeforeScenarioHook(request, callback) {
+  executeHook.apply(this, [request, "beforeScenario", request.scenarioExecutionStartingRequest.currentExecutionInfo, callback]);
 }
 
-function executeBeforeStepHook(request) {
+function executeBeforeStepHook(request, callback) {
   customMessageRegistry.clear();
-  executeHook.apply(this, [request, "beforeStep", request.stepExecutionStartingRequest.currentExecutionInfo]);
+  executeHook.apply(this, [request, "beforeStep", request.stepExecutionStartingRequest.currentExecutionInfo, callback]);
 }
 
-function executeAfterSuiteHook(request) {
+function executeAfterSuiteHook(request, callback) {
   dataStore.suiteStore.clear();
-  executeHook.apply(this, [request, "afterSuite", request.executionEndingRequest.currentExecutionInfo]);
+  executeHook.apply(this, [request, "afterSuite", request.executionEndingRequest.currentExecutionInfo, callback]);
   if (process.env.DEBUGGING) {
     inspector.close();
   }
 }
 
-function executeAfterSpecHook(request) {
+function executeAfterSpecHook(request, callback) {
   dataStore.specStore.clear();
-  executeHook.apply(this, [request, "afterSpec", request.specExecutionEndingRequest.currentExecutionInfo]);
+  executeHook.apply(this, [request, "afterSpec", request.specExecutionEndingRequest.currentExecutionInfo, callback]);
 }
 
-function executeAfterScenarioHook(request) {
+function executeAfterScenarioHook(request, callback) {
   dataStore.scenarioStore.clear();
-  executeHook.apply(this, [request, "afterScenario", request.scenarioExecutionEndingRequest.currentExecutionInfo]);
+  executeHook.apply(this, [request, "afterScenario", request.scenarioExecutionEndingRequest.currentExecutionInfo, callback]);
 }
 
-function executeAfterStepHook(request) {
-  executeHook.apply(this, [request, "afterStep", request.stepExecutionEndingRequest.currentExecutionInfo]);
+function executeAfterStepHook(request, callback) {
+  executeHook.apply(this, [request, "afterStep", request.stepExecutionEndingRequest.currentExecutionInfo, callback]);
 }
 
 var getParamsList = function (params) {
@@ -360,5 +359,15 @@ module.exports = {
   stepValidateResponse: stepValidateResponse,
   refactorResponse: refactorResponse,
   stepNameResponse: stepNameResponse,
-  implementationGlobPatternResponse: implementationGlobPatternResponse
+  implementationGlobPatternResponse: implementationGlobPatternResponse,
+  successExecutionStatus,
+  executeBeforeSuiteHook,
+  executeAfterSuiteHook,
+  executeBeforeSpecHook,
+  executeAfterSpecHook,
+  executeBeforeScenarioHook,
+  executeAfterScenarioHook,
+  executeBeforeStepHook,
+  executeAfterStepHook,
+  executeStep
 };
