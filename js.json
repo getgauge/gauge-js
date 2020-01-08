@@ -28,5 +28,6 @@
     "minimum": "1.0.6",
     "maximum": ""
   },
-  "lspLangId" : "javascript"
+  "lspLangId" : "javascript",
+  "gRPCSupport": true
 }
