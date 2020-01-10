@@ -28,8 +28,8 @@ var processCustomMessages = function (response) {
 
 var processScreenshots = function (response) {
   var screenshotPromises = customScreenshotRegistry.get();
-  return screenshotPromises.then(function (screenshots) {
-    response.executionResult.screenshots = response.executionResult.screenshots.concat(screenshots);
+  return screenshotPromises.then(function (screenshotFiles) {
+    response.executionResult.screenshotFiles = response.executionResult.screenshotFiles.concat(screenshotFiles);
     customScreenshotRegistry.clear();
   });
 };
