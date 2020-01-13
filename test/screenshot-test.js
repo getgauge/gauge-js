@@ -2,6 +2,7 @@ const expect = require("chai").expect;
 const screenshot = require("../src/screenshot");
 const child_process = require("child_process");
 const fs = require("fs");
+const path = require("path");
 const sandbox = require("sinon").createSandbox();
 
 
@@ -14,17 +15,22 @@ function asyncScreenshotFunction() {
 }
 
 describe("screentshot.capture", function () {
+  const screenshotsDir =  path.join(".gauge", "screenshots");
+
+  this.beforeEach( () => {
+    process.env.gauge_screenshots_dir = screenshotsDir;
+  });
   afterEach(() => {
     sandbox.restore();
   });
   describe("with default screenshot writer", () => {
     it("should capture screentshot 5769768", function (done) {
-      process.env.gauge_screenshots_dir = ".gauge/screenshots";
       let screenShotFile = "screenshot-21432453.png";
       const spawnSyncStub = sandbox.stub(child_process, "spawnSync").returns({});
       sandbox.stub(process.hrtime, "bigint").returns(21432453);
       screenshot.capture().then(function (file) {
-        const expectedArgs = ["gauge_screenshot", [".gauge/screenshots/" + screenShotFile]];
+        const filePath = path.join(screenshotsDir, screenShotFile);
+        const expectedArgs = ["gauge_screenshot", [filePath]];
         const actualArgs = spawnSyncStub.getCall(0).args;
 
         expect(file).to.be.equal(screenShotFile);
@@ -45,7 +51,8 @@ describe("screentshot.capture", function () {
       const writeFileSyncStub = sandbox.stub(fs, "writeFileSync");
 
       screenshot.capture().then(function (file) {
-        const expectedArgs = [".gauge/screenshots/" + screenShotFile, Buffer.from("screentshot").toString("base64")];
+        const filePath = path.join(screenshotsDir, screenShotFile);
+        const expectedArgs = [filePath, Buffer.from("screentshot").toString("base64")];
         const actualArgs = writeFileSyncStub.getCall(0).args;
         expect(file).to.be.equal(screenShotFile);
         expect(actualArgs).to.be.deep.equal(expectedArgs);
@@ -60,7 +67,8 @@ describe("screentshot.capture", function () {
       const writeFileSyncStub = sandbox.stub(fs, "writeFileSync");
 
       screenshot.capture().then(function (file) {
-        const expectedArgs = [".gauge/screenshots/" + screenShotFile, Buffer.from("screentshot").toString("base64")];
+        const filePath = path.join(screenshotsDir, screenShotFile);
+        const expectedArgs = [filePath, Buffer.from("screentshot").toString("base64")];
         const actualArgs = writeFileSyncStub.getCall(0).args;
         expect(file).to.be.equal(screenShotFile);
         expect(actualArgs).to.be.deep.equal(expectedArgs);
