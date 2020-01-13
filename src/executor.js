@@ -67,9 +67,8 @@ var executeStep = function (executeStepRequest) {
       screenshotPromises.then(function (screenshots) {
         var errorResponse = factory.createExecutionStatusResponse(true, result.duration, result.exception, msgs, "", step.options.continueOnFailure, screenshots);
         if (process.env.screenshot_on_failure !== "false") {
-          screenshot.capture().then(function (bytes) {
-            errorResponse.executionResult.screenShot = bytes;
-            errorResponse.executionResult.failureScreenshot = bytes;
+          screenshot.capture().then(function (screenshotFile) {
+            errorResponse.executionResult.failureScreenshotFile = screenshotFile;
             deferred.reject(errorResponse);
           }).catch(function(error){
             logger.error("\nFailed to capture screenshot on failure.\n" + error);
@@ -116,9 +115,8 @@ var executeHook = function (hookLevel, currentExecutionInfo) {
   var onError = function (result) {
     var errorResponse = factory.createExecutionStatusResponse(true, result.duration, result.exception);
     if (process.env.screenshot_on_failure !== "false") {
-      screenshot.capture().then(function (bytes) {
-        errorResponse.executionResult.screenShot = bytes;
-        errorResponse.executionResult.failureScreenshot = bytes;
+      screenshot.capture().then(function (screenshotFile) {
+        errorResponse.executionResult.failureScreenshotFile = screenshotFile;
         deferred.reject(errorResponse);
       }).catch(function(error){
         logger.error("\nFailed to capture screenshot on failure.\n" + error);

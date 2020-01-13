@@ -8,6 +8,7 @@ describe("Executing steps", function () {
   var executeStepRequest = null;
   var executeStepFailingRequest = null;
   this.timeout(10000);
+  var originalGlobalGauge;
 
   before(function () {
     var opts = { continueOnFailure: false };
@@ -15,6 +16,7 @@ describe("Executing steps", function () {
     stepRegistry.add("Say <hi> to <me>", function () { }, "executor-test.js", 3, opts);
     stepRegistry.add("failing test", function () { throw new Error("error message"); }, "executor-test.js", 6, opts);
     sinon.spy(stepRegistry, "get");
+    originalGlobalGauge = global.gauge;
     global.gauge = {
       screenshotFn: function() {
         return Promise.resolve("screenshot");
@@ -37,6 +39,7 @@ describe("Executing steps", function () {
 
   after(function (done) {
     stepRegistry.get.restore();
+    global.gauge = originalGlobalGauge;
     done();
   });
 

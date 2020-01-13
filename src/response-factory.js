@@ -70,7 +70,7 @@ exports.createStepValidateResponse = function (errorType, validated, suggestion)
   };
 };
 
-exports.createExecutionStatusResponse = function (isFailed, executionTime, err, msg, screenShot, recoverable, screenshots) {
+exports.createExecutionStatusResponse = function (isFailed, executionTime, err, msg, failureScreenshotFile, recoverable, screenshotFiles) {
   return {
     executionResult: {
       failed: isFailed,
@@ -79,9 +79,8 @@ exports.createExecutionStatusResponse = function (isFailed, executionTime, err, 
       stackTrace: err && err.stack ? err.stack : "",
       errorMessage: err ? (err instanceof Error ? err.toString() : JSON.stringify(err)) : "",
       message: msg || [],
-      screenShot: screenShot || "",
-      failureScreenshot: screenShot || "",
-      screenshots: screenshots || []
+      failureScreenshotFile: failureScreenshotFile || "",
+      screenshotFiles: screenshotFiles || []
     }
   };
 
