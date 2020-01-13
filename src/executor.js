@@ -38,12 +38,12 @@ var filterHooks = function (hooks, tags) {
 };
 
 
-var executeStep = function (request, message) {
+var executeStep = function (executeStepRequest) {
   var deferred = Q.defer();
 
-  var parsedStepText = request.executeStepRequest.parsedStepText;
+  var parsedStepText = executeStepRequest.parsedStepText;
 
-  var parameters = request.executeStepRequest.parameters.map(function (item) {
+  var parameters = executeStepRequest.parameters.map(function (item) {
     return item.value ? item.value : item.table;
   });
   var step = stepRegistry.get(parsedStepText);
@@ -54,7 +54,7 @@ var executeStep = function (request, message) {
       customScreenshotRegistry.clear();
       customMessageRegistry.clear();
       screenshotPromises.then(function (screenshots) {
-        var response = factory.createExecutionStatusResponse(message, request.messageId, false, result.duration, false, msgs, "", step.options.continueOnFailure, screenshots);
+        var response = factory.createExecutionStatusResponse(false, result.duration, false, msgs, "", step.options.continueOnFailure, screenshots);
         deferred.resolve(response);
       });
     },
@@ -65,11 +65,10 @@ var executeStep = function (request, message) {
       customScreenshotRegistry.clear();
       customMessageRegistry.clear();
       screenshotPromises.then(function (screenshots) {
-        var errorResponse = factory.createExecutionStatusResponse(message, request.messageId, true, result.duration, result.exception, msgs, "", step.options.continueOnFailure, screenshots);
+        var errorResponse = factory.createExecutionStatusResponse(true, result.duration, result.exception, msgs, "", step.options.continueOnFailure, screenshots);
         if (process.env.screenshot_on_failure !== "false") {
-          screenshot.capture().then(function (bytes) {
-            errorResponse.executionStatusResponse.executionResult.screenShot = bytes;
-            errorResponse.executionStatusResponse.executionResult.failureScreenshot = bytes;
+          screenshot.capture().then(function (screenshotFile) {
+            errorResponse.executionResult.failureScreenshotFile = screenshotFile;
             deferred.reject(errorResponse);
           }).catch(function(error){
             logger.error("\nFailed to capture screenshot on failure.\n" + error);
@@ -85,7 +84,7 @@ var executeStep = function (request, message) {
   return deferred.promise;
 };
 
-var executeHook = function (request, message, hookLevel, currentExecutionInfo) {
+var executeHook = function (hookLevel, currentExecutionInfo) {
   var deferred = Q.defer(),
     tags = [],
     timestamp = Date.now();
@@ -100,25 +99,24 @@ var executeHook = function (request, message, hookLevel, currentExecutionInfo) {
   var filteredHooks = hooks.length ? filterHooks(hooks, tags) : [];
 
   if (!filteredHooks.length) {
-    deferred.resolve(factory.createExecutionStatusResponse(message, request.messageId, false, Date.now() - timestamp));
+    deferred.resolve(factory.createExecutionStatusResponse(false, Date.now() - timestamp));
     return deferred.promise;
   }
 
   var number = 0;
   var onPass = function (result) {
     if (number === filteredHooks.length - 1) {
-      var response = factory.createExecutionStatusResponse(message, request.messageId, false, result.duration);
+      var response = factory.createExecutionStatusResponse(false, result.duration);
       deferred.resolve(response);
     }
     number++;
   };
 
   var onError = function (result) {
-    var errorResponse = factory.createExecutionStatusResponse(message, request.messageId, true, result.duration, result.exception);
+    var errorResponse = factory.createExecutionStatusResponse(true, result.duration, result.exception);
     if (process.env.screenshot_on_failure !== "false") {
-      screenshot.capture().then(function (bytes) {
-        errorResponse.executionStatusResponse.executionResult.screenShot = bytes;
-        errorResponse.executionStatusResponse.executionResult.failureScreenshot = bytes;
+      screenshot.capture().then(function (screenshotFile) {
+        errorResponse.executionResult.failureScreenshotFile = screenshotFile;
         deferred.reject(errorResponse);
       }).catch(function(error){
         logger.error("\nFailed to capture screenshot on failure.\n" + error);
