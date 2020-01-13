@@ -3,11 +3,11 @@ var protobuf = require("protobufjs");
 var mock = require("mock-fs");
 var assert = require("chai").assert;
 
-var LspServerHandler = require("../src/lsp-server");
+var ServiceHandlers = require("../src/serviceHandlers");
 var registry = require("../src/step-registry");
 var loader = require("../src/static-loader");
 
-describe("LspServerHandler", function () {
+describe("ServiceHandlers", function () {
   var options = null;
   before(function (done) {
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
@@ -22,7 +22,7 @@ describe("LspServerHandler", function () {
 
   it(".getGlobPatterns should give the file glob patters", function (done) {
     process.env.GAUGE_PROJECT_ROOT = "";
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
     handler.getGlobPatterns({ request: {} }, function (err, res) {
       assert.isNull(err);
       assert.ok(res.globPatterns.includes("tests/**/*.js"));
@@ -37,7 +37,7 @@ describe("LspServerHandler", function () {
       },
     });
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
     handler.getImplementationFiles({ request: {} }, function (err, res) {
       assert.isNull(err);
       var files = res.implementationFilePaths;
@@ -49,7 +49,7 @@ describe("LspServerHandler", function () {
 
   it(".getStepName should get step info", function (done) {
     registry.add("foo <bar>", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
     handler.getStepName({ request: { stepValue: "foo {}" } }, function (err, res) {
       assert.isNull(err);
       assert.ok(res.isStepPresent);
@@ -62,7 +62,7 @@ describe("LspServerHandler", function () {
     registry.add("foo <bar>", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
     registry.add("foo", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
     registry.add("bar", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
     handler.getStepNames({ request: {} }, function (err, res) {
       assert.isNull(err);
       assert.ok(res.steps.length, 3);
@@ -78,7 +78,7 @@ describe("LspServerHandler", function () {
     registry.add("foo <bar>", null, "nothing.js", { start: 1, end: 2, statCahr: 0, endChar: 0 }, {});
     registry.add("foo", null, "example.js", { start: 1, end: 3, statCahr: 0, endChar: 0 }, {});
     registry.add("bar", null, "example.js", { start: 4, end: 6, statCahr: 0, endChar: 0 }, {});
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
     process.env.GAUGE_PROJECT_ROOT = "";
     handler.getStepPositions({ request: { filePath: "nothing.js" } }, function (err, res) {
       assert.isNull(err);
@@ -94,7 +94,7 @@ describe("LspServerHandler", function () {
 
   it(".implementStub should add stub in file when does not exists", function () {
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
     const req = { request: { implementationFilePath: "New File", codes: ["foo", "bar"] } };
     handler.implementStub(req, function (err, res) {
       assert.isNull(err);
@@ -110,7 +110,7 @@ describe("LspServerHandler", function () {
       }
     });
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
     const req = { request: { implementationFilePath: path.join(process.cwd(), "tests", "example.js"), codes: ["foo", "bar"] } };
     handler.implementStub(req, function (err, res) {
       assert.isNull(err);
@@ -124,7 +124,7 @@ describe("LspServerHandler", function () {
     mock({ "tests": { "example.js": content } });
     loader.reloadFile(path.join(process.cwd(), "tests", "example.js"), content);
 
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
     const req = {
       request: {
         saveChanges: false,
@@ -149,7 +149,7 @@ describe("LspServerHandler", function () {
 
   it(".validateStep should validate a step", function () {
     registry.add("foo", null, "example.js", { start: 1, end: 3, statCahr: 0, endChar: 0 }, {});
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
     const req = {
       request: {
         stepText: "foo",
@@ -171,7 +171,7 @@ describe("LspServerHandler", function () {
     var filePath = path.join(process.cwd(), "tests", "example.js");
     var fileContent = "step('shhh',function(){\n\tconsole.log('hello')\n})";
     loader.reloadFile(filePath, fileContent);
-    var handler = new LspServerHandler(null, options);
+    var handler = new ServiceHandlers(null, options);
 
     const req = {
       request: {
