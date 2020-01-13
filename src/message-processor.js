@@ -1,6 +1,4 @@
 var fs = require("fs");
-var EventEmitter = require("events").EventEmitter;
-var util = require("util");
 var path = require("path");
 
 var config = require("../package.json").config || {};
@@ -23,112 +21,109 @@ var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT;
 
 var processCustomMessages = function (response) {
   var msgs = customMessageRegistry.get();
-  response.executionStatusResponse.executionResult.message = response.executionStatusResponse.executionResult.message.concat(msgs);
+  response.executionResult.message = response.executionResult.message.concat(msgs);
   customMessageRegistry.clear();
   return response;
 };
 
 var processScreenshots = function (response) {
   var screenshotPromises = customScreenshotRegistry.get();
-  return screenshotPromises.then(function (screenshots) {
-    response.executionStatusResponse.executionResult.screenshots = response.executionStatusResponse.executionResult.screenshots.concat(screenshots);
+  return screenshotPromises.then(function (screenshotFiles) {
+    response.executionResult.screenshotFiles = response.executionResult.screenshotFiles.concat(screenshotFiles);
     customScreenshotRegistry.clear();
   });
 };
 
-function executionResponse(message, isFailed, executionTime, messageId) {
-  return factory.createExecutionStatusResponse(message, messageId, isFailed, executionTime);
+function executionResponse(isFailed, executionTime) {
+  return factory.createExecutionStatusResponse(isFailed, executionTime);
 }
 
-function successExecutionStatus(request) {
-  var response = executionResponse(this.options.message, false, 0, request.messageId);
-  this._emit(response);
+function successExecutionStatus() {
+  var response = executionResponse(false, 0);
+  return response;
 }
 
-function executeStep(request) {
-  var self = this;
-  var promise = executor.step(request, this.options.message);
+function executeStep(request, callback) {
+  var promise = executor.step(request);
   promise.then(
     function (value) {
-      self._emit(value);
+      callback(value);
     },
     function (reason) {
-      self._emit(reason);
+      callback(reason);
     }
   );
 }
 
-function executeHook(request, hookName, currentExecutionInfo) {
-  var self = this;
-  var promise = executor.hook(request, this.options.message, hookName, currentExecutionInfo);
+function executeHook(hookName, currentExecutionInfo, callback) {
+  var promise = executor.hook(hookName, currentExecutionInfo);
   promise.then(
     function (response) {
       processCustomMessages(response);
       processScreenshots(response).then(function () {
-        self._emit(response);
+        callback(response);
       });
     },
     function (reason) {
       processCustomMessages(reason);
       processScreenshots(reason).then(function () {
-        self._emit(reason);
+        callback(reason);
       });
     }
   );
 }
 
-function startExecution(self, request) {
+function startExecution(executionStartingRequest, callback) {
   impl_loader.load(stepRegistry).then(() => {
-    executeHook.apply(self, [request, "beforeSuite", request.executionStartingRequest.currentExecutionInfo]); 
+    executeHook("beforeSuite", executionStartingRequest.currentExecutionInfo, callback);
   });
 }
 
-function executeBeforeSuiteHook(request) {
-  var self = this;
+function executeBeforeSuiteHook(executionStartingRequest, callback) {
   if (process.env.DEBUGGING) {
     var port = parseInt(process.env.DEBUG_PORT);
     logger.info(ATTACH_DEBUGGER_EVENT);
     inspector.open(port, "127.0.0.1", true);
     var inspectorWaitTime = 1000;
-    setTimeout(function () { startExecution(self, request); }, inspectorWaitTime);
+    setTimeout(function () { startExecution(executionStartingRequest, callback); }, inspectorWaitTime);
   } else {
-    startExecution(self, request);
+    startExecution(executionStartingRequest, callback);
   }
 }
 
-function executeBeforeSpecHook(request) {
-  executeHook.apply(this, [request, "beforeSpec", request.specExecutionStartingRequest.currentExecutionInfo]);
+function executeBeforeSpecHook(specExecutionStartingRequest, callback) {
+  executeHook("beforeSpec", specExecutionStartingRequest.currentExecutionInfo, callback);
 }
 
-function executeBeforeScenarioHook(request) {
-  executeHook.apply(this, [request, "beforeScenario", request.scenarioExecutionStartingRequest.currentExecutionInfo]);
+function executeBeforeScenarioHook(scenarioExecutionStartingRequest, callback) {
+  executeHook("beforeScenario", scenarioExecutionStartingRequest.currentExecutionInfo, callback);
 }
 
-function executeBeforeStepHook(request) {
+function executeBeforeStepHook(stepExecutionStartingRequest, callback) {
   customMessageRegistry.clear();
-  executeHook.apply(this, [request, "beforeStep", request.stepExecutionStartingRequest.currentExecutionInfo]);
+  executeHook("beforeStep",stepExecutionStartingRequest.currentExecutionInfo, callback);
 }
 
-function executeAfterSuiteHook(request) {
+function executeAfterSuiteHook(executionEndingRequest, callback) {
   dataStore.suiteStore.clear();
-  executeHook.apply(this, [request, "afterSuite", request.executionEndingRequest.currentExecutionInfo]);
+  executeHook("afterSuite", executionEndingRequest.currentExecutionInfo, callback);
   if (process.env.DEBUGGING) {
     inspector.close();
   }
 }
 
-function executeAfterSpecHook(request) {
+function executeAfterSpecHook(specExecutionEndingRequest, callback) {
   dataStore.specStore.clear();
-  executeHook.apply(this, [request, "afterSpec", request.specExecutionEndingRequest.currentExecutionInfo]);
+  executeHook("afterSpec", specExecutionEndingRequest.currentExecutionInfo, callback);
 }
 
-function executeAfterScenarioHook(request) {
+function executeAfterScenarioHook(scenarioExecutionEndingRequest, callback) {
   dataStore.scenarioStore.clear();
-  executeHook.apply(this, [request, "afterScenario", request.scenarioExecutionEndingRequest.currentExecutionInfo]);
+  executeHook("afterScenario", scenarioExecutionEndingRequest.currentExecutionInfo, callback);
 }
 
-function executeAfterStepHook(request) {
-  executeHook.apply(this, [request, "afterStep", request.stepExecutionEndingRequest.currentExecutionInfo]);
+function executeAfterStepHook(stepExecutionEndingRequest, callback) {
+  executeHook("afterStep", stepExecutionEndingRequest.currentExecutionInfo, callback);
 }
 
 var getParamsList = function (params) {
@@ -152,30 +147,20 @@ var getSuggestionFor = function (request, validated) {
   return generateImplStub(request.stepValue);
 };
 
-var stepValidateResponse = function (request) {
-  var validated = stepRegistry.validate(request.stepValidateRequest.stepText);
-  var suggestion = getSuggestionFor(request.stepValidateRequest, validated);
-  var response = factory.createStepValidateResponse(this.options.message, request.messageId, this.options.errorType, validated, suggestion);
+var stepValidateResponse = function (stepValidateRequest, errorType) {
+  var validated = stepRegistry.validate(stepValidateRequest.stepText);
+  var suggestion = getSuggestionFor(stepValidateRequest, validated);
+  var response = factory.createStepValidateResponse(errorType, validated, suggestion);
   return response;
 };
 
-var validateStep = function (request) {
-  this._emit(stepValidateResponse.call(this, request));
+var stepNamesResponse = function () {
+  return factory.createStepNamesResponse(stepRegistry.getStepTexts());
 };
 
-var stepNamesResponse = function (request) {
-  var response = factory.createStepNamesResponse(this.options.message, request.messageId);
-  response.stepNamesResponse.steps = response.stepNamesResponse.steps.concat(stepRegistry.getStepTexts());
-  return response;
-};
-
-var executeStepNamesRequest = function (request) {
-  this._emit(stepNamesResponse.call(this, request));
-};
-
-var stepNameResponse = function (request) {
-  var stepValue = request.stepNameRequest.stepValue;
-  var response = factory.createStepNameResponse(this.options.message, request.messageId);
+var stepNameResponse = function (stepNameRequest) {
+  var stepValue = stepNameRequest.stepValue;
+  var response = factory.createStepNameResponse();
   var step = stepRegistry.get(stepValue);
   if (step) {
     response.stepNameResponse.stepName = step.aliases;
@@ -187,36 +172,21 @@ var stepNameResponse = function (request) {
   return response;
 };
 
-var executeStepNameRequest = function (request) {
-  this._emit(stepNameResponse.call(this, request));
-};
-
-var stepPositions = function (request) {
-  var response = factory.createStepPositionsResponse(this.options.message, request.messageId);
-  var filepath = request.stepPositionsRequest.filePath;
-  response.stepPositionsResponse.stepPositions = stepRegistry.getStepPositions(filepath);
+var stepPositions = function (stepPositionsRequest) {
+  var filepath = stepPositionsRequest.filePath;
+  var response = factory.createStepPositionsResponse(stepRegistry.getStepPositions(filepath));
   return response;
 };
 
-var executeStepPositionsRequest = function (request) {
-  this._emit(stepPositions.call(this, request));
-};
-
-var implementationFiles = function (request) {
-  var response = factory.createImplementationFileListResponse(this.options.message, request.messageId);
-  var files = fileUtil.getListOfFiles();
-  response.implementationFileListResponse.implementationFilePaths = files;
+var implementationFiles = function () {
+  var response = factory.createImplementationFileListResponse(fileUtil.getListOfFiles());
   return response;
 };
 
-var getImplementationFiles = function (request) {
-  this._emit(implementationFiles.call(this, request));
-};
-
-var implementStubResponse = function (request) {
-  var response = factory.createFileDiff(this.options.message, request.messageId);
-  var filePath = request.stubImplementationCodeRequest.implementationFilePath;
-  var codes = request.stubImplementationCodeRequest.codes;
+var implementStubResponse = function (stubImplementationCodeRequest) {
+  var response = factory.createFileDiff();
+  var filePath = stubImplementationCodeRequest.implementationFilePath;
+  var codes = stubImplementationCodeRequest.codes;
 
   var reducer = function (accumulator, currentValue) {
     return accumulator + "\n" + currentValue;
@@ -244,46 +214,38 @@ var implementStubResponse = function (request) {
   return response;
 };
 
-var putStubImplementationCode = function (request) {
-  this._emit(implementStubResponse.call(this, request));
-};
-
 var refactorResponse = function (request) {
-  var response = factory.createRefactorResponse(this.options.message, request.messageId);
+  var response = factory.createRefactorResponse();
   response = refactor(request, response);
   return response;
 };
 
-var executeRefactor = function (request) {
-  this._emit(refactorResponse.call(this, request));
-};
-
-var cacheFileResponse = function (request) {
-  const filePath = request.cacheFileRequest.filePath;
+var cacheFileResponse = function (cacheFileRequest, fileStatus) {
+  const filePath = cacheFileRequest.filePath;
   if (!fileUtil.isJSFile(filePath) || !fileUtil.isInImplDir(filePath)) {
     return;
   }
   var CHANGED,OPENED,CLOSED, CREATED;
   if (config.hasPureJsGrpc) {
-    CHANGED = this.options.fileStatus.values.CHANGED;
-    OPENED = this.options.fileStatus.values.OPENED;
-    CLOSED = this.options.fileStatus.values.CLOSED;
-    CREATED = this.options.fileStatus.values.CREATED;
+    CHANGED = fileStatus.values.CHANGED;
+    OPENED = fileStatus.values.OPENED;
+    CLOSED = fileStatus.values.CLOSED;
+    CREATED = fileStatus.values.CREATED;
   } else {
-    CHANGED = this.options.fileStatus.valuesById[this.options.fileStatus.values.CHANGED];
-    OPENED = this.options.fileStatus.valuesById[this.options.fileStatus.values.OPENED];
-    CLOSED = this.options.fileStatus.valuesById[this.options.fileStatus.values.CLOSED];
-    CREATED = this.options.fileStatus.valuesById[this.options.fileStatus.values.CREATED];
+    CHANGED = fileStatus.valuesById[fileStatus.values.CHANGED];
+    OPENED = fileStatus.valuesById[fileStatus.values.OPENED];
+    CLOSED = fileStatus.valuesById[fileStatus.values.CLOSED];
+    CREATED = fileStatus.valuesById[fileStatus.values.CREATED];
   }
-  if (request.cacheFileRequest.status === CREATED) {
+  if (cacheFileRequest.status === CREATED) {
     if (!stepRegistry.isFileCached(filePath)) {
       loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
     }
-  } else if ( request.cacheFileRequest.status === CHANGED || request.cacheFileRequest.status === OPENED || (
-    request.cacheFileRequest.status === undefined && config.hasPureJsGrpc
+  } else if ( cacheFileRequest.status === CHANGED || cacheFileRequest.status === OPENED || (
+    cacheFileRequest.status === undefined && config.hasPureJsGrpc
   )) {
-    loader.reloadFile(filePath, request.cacheFileRequest.content);
-  } else if (request.cacheFileRequest.status === CLOSED &&
+    loader.reloadFile(filePath, cacheFileRequest.content);
+  } else if (cacheFileRequest.status === CLOSED &&
     fs.existsSync(filePath)) {
     loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
   } else {
@@ -291,67 +253,16 @@ var cacheFileResponse = function (request) {
   }
 };
 
-var executeCacheFileRequest = function (request) {
-  cacheFileResponse.call(this, request);
-};
-
-var implementationGlobPatternResponse = function (request) {
-  var response = factory.createImplementationFileGlobPatternResponse(this.options.message, request.messageId);
+var implementationGlobPatternResponse = function () {
   var globPatterns = [];
   fileUtil.getImplDirs().forEach((dir) => {
     globPatterns.push(dir.split(path.sep).join("/") + "/**/*.js");
   });
-  response.implementationFileGlobPatternResponse.globPatterns = globPatterns;
+  var response = factory.createImplementationFileGlobPatternResponse(globPatterns);
   return response;
 };
 
-var getImplementationFileGlobPatterns = function (request) {
-  this._emit(implementationGlobPatternResponse.call(this, request));
-};
-
-function killProcess() {
-  this.emit("closeSocket");
-}
-
-var MessageProcessor = function (protoOptions) {
-  EventEmitter.call(this);
-  util.inherits(MessageProcessor, EventEmitter);
-  this.processors = {};
-  this.options = protoOptions;
-  this.processors[this.options.message.MessageType.StepNamesRequest] = executeStepNamesRequest;
-  this.processors[this.options.message.MessageType.StepNameRequest] = executeStepNameRequest;
-  this.processors[this.options.message.MessageType.RefactorRequest] = executeRefactor;
-  this.processors[this.options.message.MessageType.StepValidateRequest] = validateStep;
-  this.processors[this.options.message.MessageType.SuiteDataStoreInit] = successExecutionStatus;
-  this.processors[this.options.message.MessageType.SpecDataStoreInit] = successExecutionStatus;
-  this.processors[this.options.message.MessageType.SpecExecutionStarting] = executeBeforeSpecHook;
-  this.processors[this.options.message.MessageType.ScenarioDataStoreInit] = successExecutionStatus;
-  this.processors[this.options.message.MessageType.ScenarioExecutionStarting] = executeBeforeScenarioHook;
-  this.processors[this.options.message.MessageType.StepExecutionStarting] = executeBeforeStepHook;
-  this.processors[this.options.message.MessageType.StepExecutionEnding] = executeAfterStepHook;
-  this.processors[this.options.message.MessageType.ScenarioExecutionEnding] = executeAfterScenarioHook;
-  this.processors[this.options.message.MessageType.SpecExecutionEnding] = executeAfterSpecHook;
-  this.processors[this.options.message.MessageType.ExecutionStarting] = executeBeforeSuiteHook;
-  this.processors[this.options.message.MessageType.ExecutionEnding] = executeAfterSuiteHook;
-  this.processors[this.options.message.MessageType.ExecuteStep] = executeStep;
-  this.processors[this.options.message.MessageType.CacheFileRequest] = executeCacheFileRequest;
-  this.processors[this.options.message.MessageType.StepPositionsRequest] = executeStepPositionsRequest;
-  this.processors[this.options.message.MessageType.KillProcessRequest] = killProcess;
-  this.processors[this.options.message.MessageType.ImplementationFileListRequest] = getImplementationFiles;
-  this.processors[this.options.message.MessageType.ImplementationFileGlobPatternRequest] = getImplementationFileGlobPatterns;
-  this.processors[this.options.message.MessageType.StubImplementationCodeRequest] = putStubImplementationCode;
-};
-
-MessageProcessor.prototype.getResponseFor = function (request) {
-  this.processors[request.messageType].call(this, request);
-};
-
-MessageProcessor.prototype._emit = function (data) {
-  this.emit("messageProcessed", data);
-};
-
 module.exports = {
-  MessageProcessor: MessageProcessor,
   stepNamesResponse: stepNamesResponse,
   cacheFileResponse: cacheFileResponse,
   stepPositions: stepPositions,
@@ -360,5 +271,15 @@ module.exports = {
   stepValidateResponse: stepValidateResponse,
   refactorResponse: refactorResponse,
   stepNameResponse: stepNameResponse,
-  implementationGlobPatternResponse: implementationGlobPatternResponse
+  implementationGlobPatternResponse: implementationGlobPatternResponse,
+  successExecutionStatus,
+  executeBeforeSuiteHook,
+  executeAfterSuiteHook,
+  executeBeforeSpecHook,
+  executeAfterSpecHook,
+  executeBeforeScenarioHook,
+  executeAfterScenarioHook,
+  executeBeforeStepHook,
+  executeAfterStepHook,
+  executeStep
 };

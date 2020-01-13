@@ -44,6 +44,7 @@ gauge.message = function (msg) {
 };
 
 gauge.screenshotFn = null;
+gauge.customScreenshotWriter = null;
 
 gauge.step = function (stepName, options, stepFunction) {
   logger.error("[DEPRECATED] gauge.step() will be removed soon, use step() instead.");

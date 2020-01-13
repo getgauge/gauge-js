@@ -1,23 +1,23 @@
 var assert = require("chai").assert;
-var gauge = require("../src/gauge-global").gauge;
+var sandbox = require("sinon").createSandbox();
+var screenshot = require("../src/screenshot");
 var customScreenshotRegistry = require("../src/custom-screenshot-registry");
 
 describe("Custom Screenshot Registry", () => {
   beforeEach(() => {
-    gauge.screenshotFn = function () {
-      return "foo";
-    };
-    global.gauge = gauge;
+    sandbox.stub(screenshot, "capture")
+      .returns(Promise.resolve("screenshot-file.png"));
   });
 
   afterEach(() => {
+    sandbox.restore();
     customScreenshotRegistry.clear();
   });
 
   it("should add a screenshot", (done) => {
     customScreenshotRegistry.add();
     customScreenshotRegistry.get().then((screenshots) => {
-      assert.deepEqual(screenshots, ["foo"]);
+      assert.deepEqual(screenshots, ["screenshot-file.png"]);
       done();
     });
   });

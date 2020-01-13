@@ -1,5 +1,4 @@
 var assert = require("chai").assert;
-var protobuf = require("protobufjs");
 var stepRegistry = require("../src/step-registry");
 
 var refactor = require("../src/refactor");
@@ -11,9 +10,8 @@ var sandbox, request, response;
 var contentInput, contentOutput, info;
 
 describe("Refactor", function () {
-  var message = null;
   this.timeout(10000);
-  before(function (done) {
+  before(function () {
     sandbox = sinon.createSandbox();
 
     sandbox.stub(fs, "readFileSync").callsFake(function () {
@@ -27,15 +25,11 @@ describe("Refactor", function () {
     sandbox.stub(stepRegistry, "get").callsFake(function () {
       return info;
     });
-    protobuf.load("gauge-proto/messages.proto").then(function (root) {
-      message = root.lookupType("gauge.messages.Message");
-      done();
-    });
   });
 
   beforeEach(function () {
     contentOutput = contentInput = info = request = response = null;
-    response = factory.createRefactorResponse(message, 123);
+    response = factory.createRefactorResponse();
   });
 
   after(function () {
@@ -52,26 +46,24 @@ describe("Refactor", function () {
     contentInput = output.join("\n");
 
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 0
-        }, {
-          oldPosition: 1,
-          newPosition: 1
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 0
+      }, {
+        oldPosition: 1,
+        newPosition: 1
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -120,26 +112,24 @@ describe("Refactor", function () {
     contentInput = output.join("\n");
 
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 0
-        }, {
-          oldPosition: 1,
-          newPosition: 1
-        }],
-        saveChanges: false
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 0
+      }, {
+        oldPosition: 1,
+        newPosition: 1
+      }],
+      saveChanges: false
     };
 
     info = {
@@ -149,7 +139,7 @@ describe("Refactor", function () {
       fileLocations: [{ filePath: "test/data/refactor-output.js" }]
     };
 
-    response = refactor(request, response, fs);
+    response = refactor(request, response);
     assert.strictEqual(response.refactorResponse.error, "");
     assert.strictEqual(response.refactorResponse.success, true);
     assert.strictEqual(response.refactorResponse.filesChanged.length, 1);
@@ -188,26 +178,24 @@ describe("Refactor", function () {
     contentInput = output.join("\n");
 
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 0
-        }, {
-          oldPosition: 1,
-          newPosition: 1
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 0
+      }, {
+        oldPosition: 1,
+        newPosition: 1
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -244,26 +232,24 @@ describe("Refactor", function () {
   it("Should perform refactoring when param names are changed", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word <word_en> has <numbers> vowels.",
-          parameters: ["word_en", "numbers"]
-        },
-        paramPositions: [{
-          oldPosition: -1,
-          newPosition: 0
-        }, {
-          oldPosition: -1,
-          newPosition: 1
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word <word_en> has <numbers> vowels.",
+        parameters: ["word_en", "numbers"]
+      },
+      paramPositions: [{
+        oldPosition: -1,
+        newPosition: 0
+      }, {
+        oldPosition: -1,
+        newPosition: 1
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -299,26 +285,24 @@ describe("Refactor", function () {
   it("Should perform refactoring for global step when param names are changed", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word <word_en> has <numbers> vowels.",
-          parameters: ["word_en", "numbers"]
-        },
-        paramPositions: [{
-          oldPosition: -1,
-          newPosition: 0
-        }, {
-          oldPosition: -1,
-          newPosition: 1
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word <word_en> has <numbers> vowels.",
+        parameters: ["word_en", "numbers"]
+      },
+      paramPositions: [{
+        oldPosition: -1,
+        newPosition: 0
+      }, {
+        oldPosition: -1,
+        newPosition: 1
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -354,23 +338,21 @@ describe("Refactor", function () {
   it("Should perform refactoring when params are removed", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word has <numbers> vowels.",
-          parameters: ["numbers"]
-        },
-        paramPositions: [{
-          oldPosition: -1,
-          newPosition: 0
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word has <numbers> vowels.",
+        parameters: ["numbers"]
+      },
+      paramPositions: [{
+        oldPosition: -1,
+        newPosition: 0
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -406,23 +388,21 @@ describe("Refactor", function () {
   it("Should perform refactoring for global when params are removed", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word has <numbers> vowels.",
-          parameters: ["numbers"]
-        },
-        paramPositions: [{
-          oldPosition: -1,
-          newPosition: 0
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word has <numbers> vowels.",
+        parameters: ["numbers"]
+      },
+      paramPositions: [{
+        oldPosition: -1,
+        newPosition: 0
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -458,26 +438,24 @@ describe("Refactor", function () {
   it("Should perform refactoring when params are reordered", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "There are {} vowels in the word {}",
-          parameterizedStepValue: "There are <number> vowels in the word <word>.",
-          parameters: ["number", "word"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 1
-        }, {
-          oldPosition: 1,
-          newPosition: 0
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "There are {} vowels in the word {}",
+        parameterizedStepValue: "There are <number> vowels in the word <word>.",
+        parameters: ["number", "word"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 1
+      }, {
+        oldPosition: 1,
+        newPosition: 0
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -513,26 +491,24 @@ describe("Refactor", function () {
   it("Should perform refactoring for global step when params are reordered", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "There are {} vowels in the word {}",
-          parameterizedStepValue: "There are <number> vowels in the word <word>.",
-          parameters: ["number", "word"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 1
-        }, {
-          oldPosition: 1,
-          newPosition: 0
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "There are {} vowels in the word {}",
+        parameterizedStepValue: "There are <number> vowels in the word <word>.",
+        parameters: ["number", "word"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 1
+      }, {
+        oldPosition: 1,
+        newPosition: 0
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -568,29 +544,27 @@ describe("Refactor", function () {
   it("Should perform refactoring when new params are added", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "The word {} has {} vowels and ends with {}.",
-          parameterizedStepValue: "The word <word> has <number> vowels and ends with <end_letter>.",
-          parameters: ["word", "number", "end_letter"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 0
-        }, {
-          oldPosition: 1,
-          newPosition: 1
-        }, {
-          oldPosition: -1,
-          newPosition: 2
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "The word {} has {} vowels and ends with {}.",
+        parameterizedStepValue: "The word <word> has <number> vowels and ends with <end_letter>.",
+        parameters: ["word", "number", "end_letter"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 0
+      }, {
+        oldPosition: 1,
+        newPosition: 1
+      }, {
+        oldPosition: -1,
+        newPosition: 2
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -626,29 +600,27 @@ describe("Refactor", function () {
   it("Should perform refactoring for global step when new params are added", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "The word {} has {} vowels and ends with {}.",
-          parameterizedStepValue: "The word <word> has <number> vowels and ends with <end_letter>.",
-          parameters: ["word", "number", "end_letter"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 0
-        }, {
-          oldPosition: 1,
-          newPosition: 1
-        }, {
-          oldPosition: -1,
-          newPosition: 2
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "The word {} has {} vowels and ends with {}.",
+        parameterizedStepValue: "The word <word> has <number> vowels and ends with <end_letter>.",
+        parameters: ["word", "number", "end_letter"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 0
+      }, {
+        oldPosition: 1,
+        newPosition: 1
+      }, {
+        oldPosition: -1,
+        newPosition: 2
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -684,26 +656,24 @@ describe("Refactor", function () {
   it("Should perform refactoring while retaining callbacks for async step implementation calls", function () {
     contentInput = "gauge.step('The word <word> has <number> vowels.', function (word, number, done) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word <word> has <numbers> vowels.",
-          parameters: ["word", "numbers"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 0
-        }, {
-          oldPosition: -1,
-          newPosition: 1
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word <word> has <numbers> vowels.",
+        parameters: ["word", "numbers"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 0
+      }, {
+        oldPosition: -1,
+        newPosition: 1
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -739,26 +709,24 @@ describe("Refactor", function () {
   it("Should perform refactoring while retaining callbacks for async for global step implementation calls", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number, done) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "This English word {} has {} vowels.",
-          parameterizedStepValue: "This English word <word> has <numbers> vowels.",
-          parameters: ["word", "numbers"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 0
-        }, {
-          oldPosition: -1,
-          newPosition: 1
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word <word> has <numbers> vowels.",
+        parameters: ["word", "numbers"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 0
+      }, {
+        oldPosition: -1,
+        newPosition: 1
+      }],
+      saveChanges: true
     };
 
     info = {
@@ -794,26 +762,24 @@ describe("Refactor", function () {
   it("Should perform refactoring when new params are interchanged", function () {
     contentInput = "step('The word <word> has <number> vowels.', function (word, number) {\n});";
     request = {
-      refactorRequest: {
-        oldStepValue: {
-          stepValue: "The word {} has {} vowels.",
-          parameterizedStepValue: "The word <word> has <number> vowels.",
-          parameters: ["word", "number"]
-        },
-        newStepValue: {
-          stepValue: "There are {} of vowels in {}.",
-          parameterizedStepValue: "There are <number> of vowels in <word>.",
-          parameters: ["number", "word"]
-        },
-        paramPositions: [{
-          oldPosition: 0,
-          newPosition: 1
-        }, {
-          oldPosition: 1,
-          newPosition: 0
-        }],
-        saveChanges: true
-      }
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "There are {} of vowels in {}.",
+        parameterizedStepValue: "There are <number> of vowels in <word>.",
+        parameters: ["number", "word"]
+      },
+      paramPositions: [{
+        oldPosition: 0,
+        newPosition: 1
+      }, {
+        oldPosition: 1,
+        newPosition: 0
+      }],
+      saveChanges: true
     };
 
     info = {
