@@ -45,16 +45,10 @@ function getScreenshotFunc() {
         const screenshotFile = getScreenshotFileName();
         if (res.constructor.name == "Promise") {
           res.then((data) => {
-            errorHandling( () => {
-              fs.writeFileSync(screenshotFile, data);
-              resolve(path.basename(screenshotFile));
-            });
+            writeScreenshotWithErrorHandling(data, screenshotFile, resolve);
           });
         } else {
-          errorHandling( () => {
-            fs.writeFileSync(screenshotFile, res);
-            resolve(path.basename(screenshotFile));
-          });
+          writeScreenshotWithErrorHandling(res, screenshotFile, resolve);
         }
       });
     };
@@ -62,9 +56,14 @@ function getScreenshotFunc() {
   return defaultScreenshotWriter;
 }
 
-function errorHandling(action) {
+function writeScreenshotWithErrorHandling(data, screenshotFile, resolver) {
   try {
-    action();
+    let options = typeof data === "string" ?
+      [screenshotFile, data, "base64"] :
+      [screenshotFile, data];
+
+    fs.writeFileSync.apply(null, options);
+    resolver(path.basename(screenshotFile));
   } catch(e) {
     logger.error(e);
   }
