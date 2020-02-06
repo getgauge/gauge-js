@@ -45,10 +45,10 @@ function getScreenshotFunc() {
         const screenshotFile = getScreenshotFileName();
         if (res.constructor.name == "Promise") {
           res.then((data) => {
-            writeScreenshotWithErrorHandling(data, screenshotFile, resolve);
+            writeScreenshotToFile(data, screenshotFile, resolve);
           });
         } else {
-          writeScreenshotWithErrorHandling(res, screenshotFile, resolve);
+          writeScreenshotToFile(res, screenshotFile, resolve);
         }
       });
     };
@@ -56,7 +56,7 @@ function getScreenshotFunc() {
   return defaultScreenshotWriter;
 }
 
-function writeScreenshotWithErrorHandling(data, screenshotFile, resolver) {
+function writeScreenshotToFile(data, screenshotFile, resolver) {
   try {
     let options = typeof data === "string" ?
       [screenshotFile, data, "base64"] :

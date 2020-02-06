@@ -78,7 +78,7 @@ describe("screentshot.capture", function () {
       });
 
       describe("when data is in bytes", () => {
-        it("Should capture screentshot with async function", function (done) {
+        it("Should capture screentshot with function returning a promise", function (done) {
           sandbox.stub(process.hrtime, "bigint").returns(6767787989089);
           const screenShotFile = "screenshot-6767787989089.png";
           global.gauge = { screenshotFn: () => Promise.resolve(Buffer.from("screentshot")) };
@@ -94,7 +94,7 @@ describe("screentshot.capture", function () {
           });
         });
 
-        it("Should capture screentshot with sync function", function (done) {
+        it("Should capture screentshot with function returning screenshot data", function (done) {
           sandbox.stub(process.hrtime, "bigint").returns(6767787989089);
           const screenShotFile = "screenshot-6767787989089.png";
           global.gauge = { screenshotFn: ()=> Buffer.from("screentshot") };
@@ -116,7 +116,7 @@ describe("screentshot.capture", function () {
       afterEach(() => {
         global.gauge = { customScreenshotWriter: null };
       });
-      it("Should capture screentshot with async function", function (done) {
+      it("Should capture screentshot with function returning a promise", function (done) {
         const screenShotFile = "screenshot-file-1.png";
         global.gauge = {
           customScreenshotWriter: function () {
@@ -130,7 +130,7 @@ describe("screentshot.capture", function () {
         });
       });
 
-      it("Should capture screentshot with sync function", function (done) {
+      it("Should capture screentshot with function returning screenshot file name", function (done) {
         const screenShotFile = "screenshot-file-2.png";
         global.gauge = {
           customScreenshotWriter: function () {
