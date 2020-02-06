@@ -23,7 +23,6 @@
     "darwin": ["npm", "install", "--production", "--silent"]
   },
   "lib": "libs",
-  "multithreaded" : false,
   "gaugeVersionSupport": {
     "minimum": "1.0.7",
     "maximum": ""
