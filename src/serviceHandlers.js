@@ -1,4 +1,4 @@
-var processors = require("./message-processor").default;
+var processors = require("./message-processor");
 
 class ServiceHandlers {
   constructor(server, options) {
