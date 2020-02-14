@@ -84,6 +84,7 @@ var prepareFiles = function (buildOffLinePakcage) {
   }
   if( buildOffLinePakcage) {
     fs.copyFileSync(path.resolve("./package-backup.json"), path.resolve("./package.json"));
+    fs.removeSync(path.resolve("./package-backup.json"));
   }
 };
 
