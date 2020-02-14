@@ -12,8 +12,18 @@ if (config.hasPureJsGrpc) {
   servicesProto = grpc.loadPackageDefinition(packageDefinition).gauge.messages;
 } else {
   grpc = require("grpc");
-  servicesProto = grpc.load(PROTO_PATH).gauge.messages;
+  const protoLoader = require("@grpc/proto-loader");
+  // These options approximates the existing behavior of grpc.load
+  const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true
+  });
+  servicesProto = grpc.loadPackageDefinition(packageDefinition).gauge.messages;
 }
+
 var ServiceHandlers = require("./serviceHandlers");
 var logger = require("./logger");
 
