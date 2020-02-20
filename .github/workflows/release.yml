@@ -26,87 +26,86 @@ jobs:
           git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
           git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
 
-      - name: Build artifacts
-        run: |
-          npm install
-          npm run package
+      # - name: Build artifacts
+      #   run: |
+      #     npm install
+      #     npm run package
 
-      - name: Install hub
-        run: brew install hub
+      # - name: Install hub
+      #   run: brew install hub
 
-      - name: update
-        run: |
-          cd deploy
-          if [ -z "$version" ]; then
-            version=$(ls gauge-js* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
-          fi
-          echo "::set-env name=VERSION::$version"
-          artifacts=()
-          dir=$(pwd)
-          for i in $(ls); do
-              artifacts+="$dir/$i "
-          done
-          cd ..
-          echo "---------------------------"
-          echo "Updating release v$version"
-          echo "---------------------------"
-          echo -e "Gauge JS v$version\n\n" > desc.txt
-          release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" gauge-js getgauge)
-          echo "::set-env name=RELEASE_DESCRIPTION::$release_description"
-          echo "$release_description" >> desc.txt
-          echo "Creating new draft for release v$version"
-          hub release create -F ./desc.txt "v$version"
-          rm -rf desc.txt
-          echo "Start uploading assets..."
-          for i in $(ls $artifacts); do
-              echo $i
-              hub release edit -m "" -a $i "v$version"
-              if [ $? -ne 0 ]; then
-                  exit 1
-              fi
-          done
+      # - name: update
+      #   run: |
+      #     cd deploy
+      #     if [ -z "$version" ]; then
+      #       version=$(ls gauge-js* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+      #     fi
+      #     echo "::set-env name=VERSION::$version"
+      #     artifacts=()
+      #     dir=$(pwd)
+      #     for i in $(ls); do
+      #         artifacts+="$dir/$i "
+      #     done
+      #     cd ..
+      #     echo "---------------------------"
+      #     echo "Updating release v$version"
+      #     echo "---------------------------"
+      #     echo -e "Gauge JS v$version\n\n" > desc.txt
+      #     release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" gauge-js getgauge)
+      #     echo "$release_description" >> desc.txt
+      #     echo "Creating new draft for release v$version"
+      #     hub release create -F ./desc.txt "v$version"
+      #     rm -rf desc.txt
+      #     echo "Start uploading assets..."
+      #     for i in $(ls $artifacts); do
+      #         echo $i
+      #         hub release edit -m "" -a $i "v$version"
+      #         if [ $? -ne 0 ]; then
+      #             exit 1
+      #         fi
+      #     done
 
-      - name: Build offline artifacts
-        run: |
-          npm install
-          npm run offlinePackage
+      # - name: Build offline artifacts
+      #   run: |
+      #     npm install
+      #     npm run offlinePackage
 
-      - name: update offline
-        run: |
-          cd deploy
-          if [ -z "$version" ]; then
-            version=$(ls gauge-js-offline* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-offline-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
-          fi
+      # - name: update offline
+      #   run: |
+      #     cd deploy
+      #     if [ -z "$version" ]; then
+      #       version=$(ls gauge-js-offline* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-offline-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+      #     fi
 
-          artifacts=()
-          dir=`pwd`
-          for i in `ls`; do
-              artifacts+="$dir/$i "
-          done
-          cd ..
+      #     artifacts=()
+      #     dir=`pwd`
+      #     for i in `ls`; do
+      #         artifacts+="$dir/$i "
+      #     done
+      #     cd ..
 
-          echo "Start uploading assets..."
-          for i in `ls $artifacts`; do
-              hub release edit -m "" -a $i "v$version"
-              if [ $? -ne 0 ];then
-                  exit 1
-              fi
-          done
+      #     echo "Start uploading assets..."
+      #     for i in `ls $artifacts`; do
+      #         hub release edit -m "" -a $i "v$version"
+      #         if [ $? -ne 0 ];then
+      #             exit 1
+      #         fi
+      #     done
 
-      - name: Update metadata in gauge-repository
-        run: |
-          git clone https://github.com/getgauge/gauge-repository.git
-          cd gauge-repository
-          python update_metadata.py js $VERSION
-          commit_message=$(echo -e "Update js to v$VERSION \n\n$RELEASE_DESCRIPTION")
-          git commit -am "$commit_message"
-          git push "https://$GITHUB_ACTOR:$GAUGE_CI_TOKEN@github.com/getgauge/gauge-repository.git" master
+      # - name: Update metadata in gauge-repository
+      #   run: |
+      #     git clone https://github.com/getgauge/gauge-repository.git
+      #     cd gauge-repository
+      #     python update_metadata.py js $VERSION
+      #     commit_message=$(echo -e "Update js to v$VERSION")
+      #     git commit -am "$commit_message"
+      #     git push "https://$GITHUB_ACTOR:$GAUGE_CI_TOKEN@github.com/getgauge/gauge-repository.git" master
 
 
       - name: Bump up version
         run: |
           git clean -dfx
-          git checkout master && git pull --rebase
+          git checkout master && git checkout . && git pull --rebase
           version=$(python update_version.py)
           git commit -am "Bumping up -> $version"
           git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
