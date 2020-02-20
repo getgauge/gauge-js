@@ -5,36 +5,43 @@ class ServiceHandlers {
     this.server = server;
     this.options = options;
   }
+
   initializeSuiteDataStore(call, callback) {
     var res = processors.successExecutionStatus(call.request);
     callback(null, res);
   }
+
   startExecution(call, callback) {
     function responseCallback(response) {
       callback(null, response);
     }
     processors.executeBeforeSuiteHook(call.request, responseCallback);
   }
+
   initializeSpecDataStore(call, callback) {
     var res = processors.successExecutionStatus(call.request);
     callback(null, res);
   }
+
   startSpecExecution(call, callback) {
     function responseCallback(response) {
       callback(null, response);
     }
     processors.executeBeforeSpecHook(call.request, responseCallback);
   }
+
   initializeScenarioDataStore(call, callback) {
     var res = processors.successExecutionStatus(call.request);
     callback(null, res);
   }
+
   startScenarioExecution(call, callback) {
     function responseCallback(response) {
       callback(null, response);
     }
     processors.executeBeforeScenarioHook(call.request, responseCallback);
   }
+
   startStepExecution(call, callback) {
     function responseCallback(response) {
       callback(null, response);
@@ -47,30 +54,35 @@ class ServiceHandlers {
     }
     processors.executeStep(call.request, responseCallback);
   }
+
   finishStepExecution(call, callback) {
     function responseCallback(response) {
       callback(null, response);
     }
     processors.executeAfterStepHook(call.request, responseCallback);
   }
+
   finishScenarioExecution(call, callback) {
     function responseCallback(response) {
       callback(null, response);
     }
     processors.executeAfterScenarioHook(call.request, responseCallback);
   }
+
   finishSpecExecution(call, callback) {
     function responseCallback(response) {
       callback(null, response);
     }
     processors.executeAfterSpecHook(call.request, responseCallback);
   }
+
   finishExecution(call, callback) {
     function responseCallback(response) {
       callback(null, response);
     }
     processors.executeAfterSuiteHook(call.request, responseCallback);
   }
+
   getStepNames(call, callback) {
     var res = processors.stepNamesResponse(call.request);
     callback(null, res.stepNamesResponse);
@@ -115,6 +127,7 @@ class ServiceHandlers {
     var res = processors.implementationGlobPatternResponse(call.request);
     callback(null, res.implementationFileGlobPatternResponse);
   }
+
   kill(_call, callback) {
     callback(null, {});
     setTimeout(() => {

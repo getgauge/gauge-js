@@ -1,19 +1,29 @@
 var gaugeGlobal = require("./gauge-global");
 var protobuf = require("protobufjs");
+const protoLoader = require("@grpc/proto-loader");
 var path = require("path");
 var loader = require("./static-loader");
 var PROTO_PATH = __dirname + "/../gauge-proto/services.proto";
-var grpc, servicesProto;
+var grpc;
 var config = require("../package.json").config || {};
+
+
 if (config.hasPureJsGrpc) {
   grpc = require("@grpc/grpc-js");
-  const protoLoader = require("@grpc/proto-loader");
-  const packageDefinition = protoLoader.loadSync(PROTO_PATH);
-  servicesProto = grpc.loadPackageDefinition(packageDefinition).gauge.messages;
 } else {
   grpc = require("grpc");
-  servicesProto = grpc.load(PROTO_PATH).gauge.messages;
 }
+// These options approximates the existing behavior of grpc.load
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
+
+const servicesProto = grpc.loadPackageDefinition(packageDefinition).gauge.messages;
+
 var ServiceHandlers = require("./serviceHandlers");
 var logger = require("./logger");
 
