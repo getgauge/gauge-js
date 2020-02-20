@@ -1,32 +1,65 @@
 {
-  "id" : "js",
-  "version" : "2.3.8",
-  "description": "Javascript support for gauge",
-  "install": {
-    "windows": [],
-    "linux": [],
-    "darwin": []
-  },
-  "run": {
-    "windows": ["index.bat", "--start"],
-    "linux": ["./index.js", "--start"],
-    "darwin": ["./index.js", "--start"]
-  },
-  "init": {
-    "windows": ["index.bat", "--init"],
-    "linux": ["./index.js", "--init"],
-    "darwin": ["./index.js", "--init"]
-  },
-  "postInstall": {
-    "windows": ["npm", "install", "--production", "--silent"],
-    "linux": ["npm", "install", "--production", "--silent"],
-    "darwin": ["npm", "install", "--production", "--silent"]
-  },
-  "lib": "libs",
-  "gaugeVersionSupport": {
-    "minimum": "1.0.7",
-    "maximum": ""
-  },
-  "lspLangId" : "javascript",
-  "gRPCSupport": true
+    "run": {
+        "windows": [
+            "index.bat", 
+            "--start"
+        ], 
+        "darwin": [
+            "./index.js", 
+            "--start"
+        ], 
+        "linux": [
+            "./index.js", 
+            "--start"
+        ]
+    }, 
+    "description": "Javascript support for gauge", 
+    "lib": "libs", 
+    "postInstall": {
+        "windows": [
+            "npm", 
+            "install", 
+            "--production", 
+            "--silent"
+        ], 
+        "darwin": [
+            "npm", 
+            "install", 
+            "--production", 
+            "--silent"
+        ], 
+        "linux": [
+            "npm", 
+            "install", 
+            "--production", 
+            "--silent"
+        ]
+    }, 
+    "gRPCSupport": true, 
+    "lspLangId": "javascript", 
+    "init": {
+        "windows": [
+            "index.bat", 
+            "--init"
+        ], 
+        "darwin": [
+            "./index.js", 
+            "--init"
+        ], 
+        "linux": [
+            "./index.js", 
+            "--init"
+        ]
+    }, 
+    "version": "2.3.9", 
+    "gaugeVersionSupport": {
+        "minimum": "1.0.7", 
+        "maximum": ""
+    }, 
+    "install": {
+        "windows": [], 
+        "darwin": [], 
+        "linux": []
+    }, 
+    "id": "js"
 }
