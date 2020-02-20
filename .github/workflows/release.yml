@@ -1,8 +1,9 @@
 name: Release on PR Merge
 
-on:
-  pull_request:
-    types: [closed]
+# on:
+#   pull_request:
+#     types: [closed]
+on: [repository_dispatch]
 
 jobs:
   release-and-bump-version:
@@ -54,7 +55,7 @@ jobs:
           echo "::set-env name=RELEASE_DESCRIPTION::$release_description"
           echo "$release_description" >> desc.txt
           echo "Creating new draft for release v$version"
-          hub release create -d -F ./desc.txt "v$version"
+          hub release create -F ./desc.txt "v$version"
           rm -rf desc.txt
           echo "Start uploading assets..."
           for i in $(ls $artifacts); do
