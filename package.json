@@ -28,7 +28,7 @@
   "dependencies": {
     "@grpc/proto-loader": "^0.5.3",
     "console-stamp": "^0.2.9",
-    "escodegen": "^1.12.1",
+    "escodegen": "^1.14.1",
     "esprima": "^4.0.1",
     "estraverse": "^4.3.0",
     "grpc": "^1.24.1",
