@@ -1,65 +1,65 @@
 {
     "run": {
         "windows": [
-            "index.bat", 
+            "index.bat",
             "--start"
-        ], 
+        ],
         "darwin": [
-            "./index.js", 
+            "./index.js",
             "--start"
-        ], 
+        ],
         "linux": [
-            "./index.js", 
+            "./index.js",
             "--start"
         ]
-    }, 
-    "description": "Javascript support for gauge", 
-    "lib": "libs", 
+    },
+    "description": "Javascript support for gauge",
+    "lib": "libs",
     "postInstall": {
         "windows": [
-            "npm", 
-            "install", 
-            "--production", 
+            "npm",
+            "install",
+            "--production",
             "--silent"
-        ], 
+        ],
         "darwin": [
-            "npm", 
-            "install", 
-            "--production", 
+            "npm",
+            "install",
+            "--production",
             "--silent"
-        ], 
+        ],
         "linux": [
-            "npm", 
-            "install", 
-            "--production", 
+            "npm",
+            "install",
+            "--production",
             "--silent"
         ]
-    }, 
-    "gRPCSupport": true, 
-    "lspLangId": "javascript", 
+    },
+    "gRPCSupport": true,
+    "lspLangId": "javascript",
     "init": {
         "windows": [
-            "index.bat", 
+            "index.bat",
             "--init"
-        ], 
+        ],
         "darwin": [
-            "./index.js", 
+            "./index.js",
             "--init"
-        ], 
+        ],
         "linux": [
-            "./index.js", 
+            "./index.js",
             "--init"
         ]
-    }, 
-    "version": "2.3.9", 
+    },
+    "version": "2.3.10",
     "gaugeVersionSupport": {
-        "minimum": "1.0.7", 
+        "minimum": "1.0.7",
         "maximum": ""
-    }, 
+    },
     "install": {
-        "windows": [], 
-        "darwin": [], 
+        "windows": [],
+        "darwin": [],
         "linux": []
-    }, 
+    },
     "id": "js"
 }
