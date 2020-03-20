@@ -48,3 +48,25 @@ $ npm run installPlugin
 
 - Indent: 2 spaces
 - Line ending: LF
+
+
+## Bump up gauge-js version
+
+* Update the value `version` property in`js.json` file.
+
+Ex:
+```diff
+     },
+-    "version": "2.3.9",
++    "version": "2.3.10",
+     "gaugeVersionSupport": {
+```
+
+* Update the value of `version` property in `package.json`.
+
+Ex:
+```diff
+   "name": "gauge-js",
+-  "version": "2.3.9",
++  "version": "2.3.10",
+```

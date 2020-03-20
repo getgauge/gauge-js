@@ -1,21 +1,18 @@
 name: Release on PR Merge
 
-on:
-  pull_request:
-    types: [closed]
-
+on: deployment
 
 jobs:
-  release-and-bump-version:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'ReleaseCandidate')
-    runs-on: macos-latest
+  deploy:
+    if: github.event.deployment.environment == 'production'
+    runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      GAUGE_CI_TOKEN: '${{ secrets.GAUGE_CI_TOKEN }}'
+      GITHUB_TOKEN: '${{ secrets.GAUGEBOT_GITHUB_TOKEN }}'
       CI: true
 
     steps:
       - uses: actions/checkout@v1
+      - uses: geertvdc/setup-hub@master
       - name: Set up Nodejs
         uses: actions/setup-node@v1
         with:
@@ -30,9 +27,6 @@ jobs:
         run: |
           npm install
           npm run package
-
-      - name: Install hub
-        run: brew install hub
 
       - name: update
         run: |
@@ -51,7 +45,7 @@ jobs:
           echo "Updating release v$version"
           echo "---------------------------"
           echo -e "Gauge JS v$version\n\n" > desc.txt
-          release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" gauge-js getgauge)
+          release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" getgauge gauge-js)
           echo "$release_description" >> desc.txt
           echo "Creating new draft for release v$version"
           hub release create -F ./desc.txt "v$version"
@@ -99,13 +93,4 @@ jobs:
           python update_metadata.py js $VERSION
           commit_message=$(echo -e "Update js to v$VERSION")
           git commit -am "$commit_message"
-          git push "https://$GITHUB_ACTOR:$GAUGE_CI_TOKEN@github.com/getgauge/gauge-repository.git" master
-
-
-      - name: Bump up version
-        run: |
-          git clean -dfx
-          git checkout master && git checkout . && git pull --rebase
-          version=$(python update_version.py)
-          git commit -am "Bumping up -> $version"
-          git push "https://$GITHUB_ACTOR:$GAUGE_CI_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/getgauge/gauge-repository.git" master
