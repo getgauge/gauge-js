@@ -11,7 +11,7 @@ gauge-js supports tagged [execution hooks](http://getgauge.io/documentation/user
 
 **"After" hooks:**
 
-- **`gauge.hooks.afterSuite(fn, [opts]) { ... }`** - Executed after the test suite begins
+- **`gauge.hooks.afterSuite(fn, [opts]) { ... }`** - Executed after the test suite ends
 - **`gauge.hooks.afterSpec(fn, [opts]) { ... }`** - Executed after each specification
 - **`gauge.hooks.afterScenario(fn, [opts]) { ... }`** - Executed after each scenario
 - **`gauge.hooks.afterStep(fn, [opts]) { ... }`**- Execute after each step
