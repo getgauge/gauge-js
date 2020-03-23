@@ -33,7 +33,7 @@
     "estraverse": "^5.0.0",
     "grpc": "^1.24.1",
     "klaw-sync": "^3.0.2",
-    "protobufjs": "^6.8.8",
+    "protobufjs": "^6.8.9",
     "q": "^1.5.0"
   },
   "devDependencies": {
@@ -43,8 +43,8 @@
     "eslint": "^6.8.0",
     "eslint-plugin-mocha": "^6.3.0",
     "fs-extra": "^9.0.0",
-    "mocha": "^7.1.0",
+    "mocha": "^7.1.1",
     "mock-fs": "^4.11.0",
-    "sinon": "^8.0.4"
+    "sinon": "^9.0.1"
   }
 }
