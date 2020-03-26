@@ -96,11 +96,6 @@ npm run installPlugin
 npm run package
 ```
 
-##### Create offline package
-```
-npm run offlinePackage
-```
-
 You can then install the offline zip archive created using 
 ```
 gauge install js --file gauge-js-<version>.zip

@@ -59,33 +59,6 @@ jobs:
               fi
           done
 
-      - name: Build offline artifacts
-        run: |
-          npm install
-          npm run offlinePackage
-
-      - name: update offline
-        run: |
-          cd deploy
-          if [ -z "$version" ]; then
-            version=$(ls gauge-js-offline* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-js-offline-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
-          fi
-
-          artifacts=()
-          dir=`pwd`
-          for i in `ls`; do
-              artifacts+="$dir/$i "
-          done
-          cd ..
-
-          echo "Start uploading assets..."
-          for i in `ls $artifacts`; do
-              hub release edit -m "" -a $i "v$version"
-              if [ $? -ne 0 ];then
-                  exit 1
-              fi
-          done
-
       - name: Update metadata in gauge-repository
         run: |
           git clone https://github.com/getgauge/gauge-repository.git
