@@ -1,19 +1,11 @@
-var gaugeGlobal = require("./gauge-global");
-var protobuf = require("protobufjs");
+const gaugeGlobal = require("./gauge-global");
+const protobuf = require("protobufjs");
 const protoLoader = require("@grpc/proto-loader");
-var path = require("path");
-var loader = require("./static-loader");
-var PROTO_PATH = __dirname + "/../gauge-proto/services.proto";
-var grpc;
-var config = require("../package.json").config || {};
+const path = require("path");
+const loader = require("./static-loader");
+const PROTO_PATH = __dirname + "/../gauge-proto/services.proto";
+const grpc = require("@grpc/grpc-js");
 
-
-if (config.hasPureJsGrpc) {
-  grpc = require("@grpc/grpc-js");
-} else {
-  grpc = require("grpc");
-}
-// These options approximates the existing behavior of grpc.load
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
@@ -40,21 +32,15 @@ function run() {
     loader.load();
     var server = new grpc.Server();
     server.addService(servicesProto.Runner.service, new ServiceHandlers(server, types));
-    if (config.hasPureJsGrpc) {
-      server.bindAsync("127.0.0.1:0", grpc.ServerCredentials.createInsecure(), (err, port) => {
-        if (!err) {
-          logger.info("Listening on port:" + port);
-          server.start();
-        } else {
-          logger.error(err);
-          process.exit();
-        }
-      });
-    } else {
-      var p = server.bind("127.0.0.1:0", grpc.ServerCredentials.createInsecure());
-      logger.info("Listening on port:" + p);
-      server.start();
-    }
+    server.bindAsync("127.0.0.1:0", grpc.ServerCredentials.createInsecure(), (err, port) => {
+      if (!err) {
+        logger.info("Listening on port:" + port);
+        server.start();
+      } else {
+        logger.error(err);
+        process.exit();
+      }
+    });
   }).catch(function (e) {
     logger.error(`${e.message}\n${e.stack}`);
   });

@@ -30,30 +30,19 @@ var recreateDir = function (dirPath) {
   cleanDir(dirPath);
   createDir(dirPath);
 };
-var OFFLINE_PACKAGE_SUFFIX = "offline";
-var prepareOffLinePackageJSON = function () {
-  var offlinePackageJSON = require("../offline-package.json");
-  var packageJSON = require("../package.json");
-  offlinePackageJSON.version = packageJSON.version;
-  fs.writeFileSync(path.resolve("./offline-package.json"), JSON.stringify(offlinePackageJSON, null, 2), "utf-8");
-  fs.copyFileSync(path.resolve("./package.json"), path.resolve("./package-backup.json"));
-  fs.copyFileSync(path.resolve("./offline-package.json"), path.resolve("./package.json"));
-};
-var prepareFiles = function (buildOffLinePakcage) {
+
+var prepareFiles = function () {
   var buildDir = localPath("build"),
     copyList = ["gauge-proto", "src", "skel", "index.js", "index.bat", "debug.bat", "js.json", "package.json", "package-lock.json", ".node-inspectorrc", "README.md"];
-  if (buildOffLinePakcage) {
-    prepareOffLinePackageJSON();
-    try {
-      console.log("Installing dependencies...");
-      fs.removeSync("./node_modules");
-      child_process.execSync("npm install --production", { cwd: localPath() });
-    } catch (err) {
-      console.error("Error installing dependencies: %s", err.toString());
-      console.error(err.stack);
-    }
-    copyList.push("node_modules");
+  try {
+    console.log("Installing dependencies...");
+    fs.removeSync("./node_modules");
+    child_process.execSync("npm install --production", { cwd: localPath() });
+  } catch (err) {
+    console.error("Error installing dependencies: %s", err.toString());
+    console.error(err.stack);
   }
+  copyList.push("node_modules");
 
   recreateDir(buildDir);
 
@@ -82,24 +71,18 @@ var prepareFiles = function (buildOffLinePakcage) {
     console.error("Failed to remove .git in gauge-proto: %s", err.message);
     console.error(err.stack);
   }
-  if( buildOffLinePakcage) {
-    fs.copyFileSync(path.resolve("./package-backup.json"), path.resolve("./package.json"));
-    fs.removeSync(path.resolve("./package-backup.json"));
-  }
 };
 
-var createPackage = function (buildOffLinePakcage, callback) {
+var createPackage = function (callback) {
   var zip = archiver("zip"),
     deployDir = localPath("deploy"),
     buildDir = localPath("build"),
-    packageFile = buildOffLinePakcage ?
-      `gauge-${plugin.id}-${OFFLINE_PACKAGE_SUFFIX}-${plugin.version}.zip` :
-      `gauge-${plugin.id}-${plugin.version}.zip`;
+    packageFile = `gauge-${plugin.id}-${plugin.version}.zip`;
 
   callback = callback || function () {};
 
   recreateDir(deployDir);
-  prepareFiles(buildOffLinePakcage);
+  prepareFiles();
 
   var package = fs.createWriteStream(path.join(deployDir, packageFile));
 
@@ -118,8 +101,8 @@ var createPackage = function (buildOffLinePakcage, callback) {
   zip.directory(buildDir, "/").finalize();
 };
 
-var installPluginFiles = function (buildOffLinePakcage) {
-  createPackage(buildOffLinePakcage, function (packageFilePath) {
+var installPluginFiles = function () {
+  createPackage(function (packageFilePath) {
     var log;
 
     try {
@@ -142,10 +125,6 @@ var installPluginFiles = function (buildOffLinePakcage) {
 
 if (process.argv[2] === "--package") {
   createPackage(false);
-} else if (process.argv[2] === "--offline-package") {
-  createPackage(true);
-} else if (process.argv[2] === "--install-offline-package") {
-  installPluginFiles(true);
 } else {
   installPluginFiles(false);
 }
