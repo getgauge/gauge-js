@@ -49,6 +49,11 @@ jobs:
         with:
           node-version: '12.x'
 
+      - name: Setup java 12.x.x
+        uses: actions/setup-java@v1
+        with:
+          java-version: 12.x.x     
+
       - name: Clone gauge
         run: |
           git clone https://github.com/getgauge/gauge
