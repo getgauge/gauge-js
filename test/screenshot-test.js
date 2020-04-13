@@ -44,6 +44,18 @@ describe("screentshot.capture", function () {
     afterEach(function () {
       global.gauge = { screenshotFn: null };
     });
+    it("Should handle rejected promise", function (done) {
+      global.gauge = {
+        screenshotFn: function () {
+          return Promise.reject("Failed to take screenshot");
+        }
+      };
+
+      screenshot.capture().catch(function (file) {
+        expect(file).to.be.equal("Failed to take screenshot");
+        done();
+      });
+    });
     describe("when data is in base64 string", () => {
       it("Should capture screentshot with async function", function (done) {
         sandbox.stub(process.hrtime, "bigint").returns(6767787989089);
@@ -140,6 +152,19 @@ describe("screentshot.capture", function () {
 
         screenshot.capture().then(function (file) {
           expect(file).to.be.equal(screenShotFile);
+          done();
+        });
+      });
+
+      it("Should handle rejected promise", function (done) {
+        global.gauge = {
+          customScreenshotWriter: function () {
+            return Promise.reject("Failed to take screenshot");
+          }
+        };
+
+        screenshot.capture().catch(function (file) {
+          expect(file).to.be.equal("Failed to take screenshot");
           done();
         });
       });

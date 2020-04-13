@@ -26,12 +26,12 @@ function isCustumScreenshotFun(funcName) {
 function getScreenshotFunc() {
   if (isCustumScreenshotFun("customScreenshotWriter")) {
     return () => {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         const screenshotFile = global.gauge.customScreenshotWriter();
         if (screenshotFile.constructor.name === "Promise") {
           screenshotFile.then((file) => {
             resolve(path.basename(file));
-          });
+          }).catch(reject);
         } else {
           resolve(path.basename(screenshotFile));
         }
@@ -39,14 +39,15 @@ function getScreenshotFunc() {
     };
   } else if (isCustumScreenshotFun("screenshotFn")) {
     return () => {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         logger.error("[DEPRECATED] gauge.screenshotFn will be removed soon, use gauge.customScreenshotWriter instead.");
         const res = global.gauge.screenshotFn();
         const screenshotFile = getScreenshotFileName();
         if (res.constructor.name == "Promise") {
           res.then((data) => {
             writeScreenshotToFile(data, screenshotFile, resolve);
-          });
+          })
+            .catch(reject);
         } else {
           writeScreenshotToFile(res, screenshotFile, resolve);
         }
