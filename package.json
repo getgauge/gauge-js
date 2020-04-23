@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/getgauge/gauge-js",
   "dependencies": {
-    "@grpc/grpc-js": "^1.0.1",
+    "@grpc/grpc-js": "^1.0.2",
     "@grpc/proto-loader": "^0.5.4",
     "escodegen": "^1.14.1",
     "esprima": "^4.0.1",
