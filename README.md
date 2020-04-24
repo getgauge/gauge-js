@@ -34,26 +34,20 @@ For other details refer the documentation [here](https://docs.gauge.org)
 
 ### Plain Javascript
 
-Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js) gauge template
+Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_simple) gauge template
+
+```
+$ gauge init js_simple
+```
+
+### Taiko
+
+Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_puppeteer) [Taiko](https://github.com/getgauge/taiko) template 
 
 ```
 $ gauge init js
 ```
 
-### Puppeteer
-
-Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_puppeteer) [Puppeteer](https://github.com/GoogleChrome/puppeteer) template 
-
-```
-$ gauge init js_puppeteer
-```
-
-### WebDriver
-
-Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_webdriver) [WebDriver](http://webdriver.io/) template
-```
-$ gauge init js_webdriver
-```
 
 ### Alternate Installation options
 
