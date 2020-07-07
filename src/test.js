@@ -56,7 +56,8 @@ var chopStackTrace = function (stack, pattern) {
   var limit = stack.findIndex(function (frame) {
     return frame.match(pattern);
   });
-  return absoluteToRelativePath(stack.slice(0, limit)).join("\n");
+  stack = limit > 0 ? stack.slice(0, limit) : stack;
+  return absoluteToRelativePath(stack).join("\n");
 };
 
 var runFn = function () {
