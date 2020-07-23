@@ -101,25 +101,31 @@ function executeBeforeScenarioHook(scenarioExecutionStartingRequest, callback) {
 
 function executeBeforeStepHook(stepExecutionStartingRequest, callback) {
   customMessageRegistry.clear();
-  executeHook("beforeStep",stepExecutionStartingRequest.currentExecutionInfo, callback);
+  executeHook("beforeStep", stepExecutionStartingRequest.currentExecutionInfo, callback);
 }
 
 function executeAfterSuiteHook(executionEndingRequest, callback) {
-  dataStore.suiteStore.clear();
-  executeHook("afterSuite", executionEndingRequest.currentExecutionInfo, callback);
+  executeHook("afterSuite", executionEndingRequest.currentExecutionInfo, function (data) {
+    dataStore.suiteStore.clear();
+    callback(data);
+  });
   if (process.env.DEBUGGING) {
     inspector.close();
   }
 }
 
 function executeAfterSpecHook(specExecutionEndingRequest, callback) {
-  dataStore.specStore.clear();
-  executeHook("afterSpec", specExecutionEndingRequest.currentExecutionInfo, callback);
+  executeHook("afterSpec", specExecutionEndingRequest.currentExecutionInfo, function (data) {
+    dataStore.specStore.clear();
+    callback(data);
+  });
 }
 
 function executeAfterScenarioHook(scenarioExecutionEndingRequest, callback) {
-  dataStore.scenarioStore.clear();
-  executeHook("afterScenario", scenarioExecutionEndingRequest.currentExecutionInfo, callback);
+  executeHook("afterScenario", scenarioExecutionEndingRequest.currentExecutionInfo, function (data) {
+    dataStore.scenarioStore.clear();
+    callback(data);
+  });
 }
 
 function executeAfterStepHook(stepExecutionEndingRequest, callback) {
@@ -225,7 +231,7 @@ var cacheFileResponse = function (cacheFileRequest, fileStatus) {
   if (!fileUtil.isJSFile(filePath) || !fileUtil.isInImplDir(filePath)) {
     return;
   }
-  var CHANGED,OPENED,CLOSED, CREATED;
+  var CHANGED, OPENED, CLOSED, CREATED;
   if (config.hasPureJsGrpc) {
     CHANGED = fileStatus.values.CHANGED;
     OPENED = fileStatus.values.OPENED;
@@ -241,7 +247,7 @@ var cacheFileResponse = function (cacheFileRequest, fileStatus) {
     if (!stepRegistry.isFileCached(filePath)) {
       loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
     }
-  } else if ( cacheFileRequest.status === CHANGED || cacheFileRequest.status === OPENED || (
+  } else if (cacheFileRequest.status === CHANGED || cacheFileRequest.status === OPENED || (
     cacheFileRequest.status === undefined && config.hasPureJsGrpc
   )) {
     loader.reloadFile(filePath, cacheFileRequest.content);
