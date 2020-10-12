@@ -40,7 +40,7 @@ var resetTimeout = function () {
     clearTimeout(self.timer);
   }
   self.timer = setTimeout(function () {
-    const errorMsg = self.async ? "Timed out. Argument length mismatch between step text and function, Ensure done callback is called to mark completion of step." : "Timed out";
+    const errorMsg = self.async ? "Timed out. Number of parameters in the step do not match the number of arguments in the step definition." : "Timed out";
     done.apply(self, [new Error(errorMsg)]);
     self.timedOut = true;
   }, self.ms);
