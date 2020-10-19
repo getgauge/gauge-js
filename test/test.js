@@ -33,7 +33,7 @@ describe("Test function execution", function () {
 
   it("should pass the done function when additional param is present", function () {
     var testFunction = sinon.spy(function (arg1, arg2, done) {
-      done(arg1 + arg2);
+      done();
     });
     var params = [1, 2];
 
