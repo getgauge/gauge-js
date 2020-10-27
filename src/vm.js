@@ -58,7 +58,7 @@ VM.prototype.run = function (code) {
     vm.runInContext("(function () { process.chdir(gauge_project_root); })()", this.context, this.options);
     vm.runInContext(code + "\n//# sourceURL=" + this.options.filepath, this.context, this.options);
   } catch (e) {
-    logger.error("Error executing " + this.options.filename + "\n" + e.stack);
+    logger.fatal("Error executing " + this.options.filename + "\n" + e.stack);
   }
 };
 
