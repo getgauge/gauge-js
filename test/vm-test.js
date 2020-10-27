@@ -51,11 +51,11 @@ describe("VM", function () {
 
     it("__dirname", function () {
       var vm = new VM();
-      vm.contextify(path.join("/", "some", "file.js"));
+      vm.contextify(path.join(process.cwd(), "some", "file.js"));
       assert.doesNotThrow(function () {
         vm.run(`
           var path = require('path');
-          var expected = path.join('/', 'some');
+          var expected = path.join(process.cwd(), 'some');
           if (__dirname !== expected) {
             throw new Error('__dirname "' + __dirname + '" did not match "' + expected + '"');
           }
@@ -65,11 +65,11 @@ describe("VM", function () {
 
     it("__filename", function () {
       var vm = new VM();
-      vm.contextify(path.join("/", "some", "file.js"));
+      vm.contextify(path.join(process.cwd(), "some", "file.js"));
       assert.doesNotThrow(function () {
         vm.run(`
           var path = require('path');
-          var expected = path.join('/', 'some', 'file.js');
+          var expected = path.join(process.cwd(), 'some', 'file.js');
           if (__filename !== expected) {
             throw new Error('__filename "' + __filename + '" did not match "' + expected + '"');
           }
