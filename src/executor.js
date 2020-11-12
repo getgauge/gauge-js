@@ -1,4 +1,5 @@
 var Q = require("q");
+var Table = require("./table");
 
 var factory = require("./response-factory"),
   Test = require("./test"),
@@ -44,8 +45,9 @@ var executeStep = function (executeStepRequest) {
   var parsedStepText = executeStepRequest.parsedStepText;
 
   var parameters = executeStepRequest.parameters.map(function (item) {
-    return item.value ? item.value : item.table;
+    return item.value ? item.value : new Table(item.table);
   });
+
   var step = stepRegistry.get(parsedStepText);
   new Test(step.fn, parameters, timeout).run().then(
     function (result) {
