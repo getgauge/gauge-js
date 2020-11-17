@@ -15,14 +15,32 @@ describe("ProtoTable parsing", function() {
     ]
   };
 
-  it("Should get headers", function() {
-    var table = new Table(protoTable);
-    expect(table.headers).to.deep.equal(["Product", "Description"]);
+  var table = new Table(protoTable);
+
+  it("Should get headers", function () {
+    expect(table.headers).to.deep.equal(protoTable.headers);
   });
 
-  it("Should get rows", function() {
-    var table = new Table(protoTable);
-    expect(table.rows[0]).to.deep.equal(["Gauge", "Test automation with ease"]);
+  it("Should get rows", function () {
+    expect(table.rows).to.deep.equal(protoTable.rows);
+  });
+
+  describe("Table entries", function () {
+
+    it("Should have correct number of entries", function () {
+      var result = [];
+      table.entries(entry => result.push(entry));
+      expect(result.length).to.equal(4);
+    });
+
+    it("Should have correct entry object", function () {
+      var result = [];
+      table.entries(entry => result.push(entry));
+      expect(result[1]).to.deep.equal({
+        "Product": "Mingle",
+        "Description": "Agile project management"
+      });
+    });
   });
 
 });
