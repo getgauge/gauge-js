@@ -12,7 +12,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - uses: geertvdc/setup-hub@master
       - name: Set up Nodejs
         uses: actions/setup-node@v1
         with:
