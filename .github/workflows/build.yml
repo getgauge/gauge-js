@@ -150,16 +150,9 @@ jobs:
           echo "/tmp/gauge/bin" >> $GITHUB_PATH
 
 
-      - name: Prep gauge-js
+      - name: Install JS
         run: |
-          git clone https://github.com/getgauge/gauge-js.git
-          cd gauge-js
           npm install
-        shell: bash
-
-      - name: Install gauge-js
-        run: |
-          cd gauge-js
           npm run installPlugin
 
       - name: Prep LSP tests

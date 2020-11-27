@@ -45,7 +45,7 @@ var executeStep = function (executeStepRequest) {
   var parsedStepText = executeStepRequest.parsedStepText;
 
   var parameters = executeStepRequest.parameters.map(function (item) {
-    return item.value ? item.value : new Table(item.table);
+    return item.value ? item.value : item.table? new Table(item.table) : "";
   });
 
   var step = stepRegistry.get(parsedStepText);
