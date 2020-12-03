@@ -58,13 +58,6 @@ jobs:
         with:
           gauge-version: master
 
-      - name: Install html report
-        run: |
-          git clone --depth=1 https://github.com/getgauge/html-report
-          cd html-report
-          go run build/make.go
-          go run build/make.go --install
-
       - name: Install JS
         run: |
           npm install
