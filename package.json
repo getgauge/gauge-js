@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "archiver": "^5.2.0",
-    "chai": "^4.3.1",
+    "chai": "^4.3.3",
     "check-if-windows": "^1.0.0",
     "eslint": "^7.21.0",
     "eslint-plugin-mocha": "^8.0.0",
