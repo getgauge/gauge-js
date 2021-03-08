@@ -38,7 +38,7 @@
     "chai": "^4.3.3",
     "check-if-windows": "^1.0.0",
     "eslint": "^7.21.0",
-    "eslint-plugin-mocha": "^8.0.0",
+    "eslint-plugin-mocha": "^8.1.0",
     "fs-extra": "^9.1.0",
     "mocha": "^8.3.0",
     "mock-fs": "^4.13.0",
