@@ -23,7 +23,7 @@ Req.prototype.load = function (modname) {
   }
 
   return (function (self, mod, modname) {
-    if (!modname.startsWith('./') && self.nativeModules.indexOf(modname) < 0) {
+    if (!modname.startsWith("./") && self.nativeModules.indexOf(modname) < 0) {
       modname = path.normalize(modname);
     }
     var m = new mod.Module(self.filepath, mod.Module);
