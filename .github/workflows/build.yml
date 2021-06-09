@@ -1,7 +1,12 @@
 name: build
 
-on: [push, pull_request]
-
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 jobs:
   tests:
     name: Node ${{ matrix.node_version }} ${{ matrix.os }}
