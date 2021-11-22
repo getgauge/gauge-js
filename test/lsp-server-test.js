@@ -17,10 +17,10 @@ describe("ServiceHandlers", function () {
         errorType: root.lookupEnum("gauge.messages.StepValidateResponse.ErrorType")
       };
       done();
-    });
+    }).catch(e => console.log(e));
   });
 
-  it(".getGlobPatterns should give the file glob patters", function (done) {
+  it(".getGlobPatterns should give the file glob patterns", function (done) {
     process.env.GAUGE_PROJECT_ROOT = "";
     var handler = new ServiceHandlers(null, options);
     handler.getGlobPatterns({ request: {} }, function (err, res) {
