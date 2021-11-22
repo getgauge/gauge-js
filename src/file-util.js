@@ -8,7 +8,7 @@ function isJSFile(file) {
 }
 
 function collectFilesIn(dir) {
-  return klawSync(dir, { filter: function (item) { return isJSFile(item.path); } }).map(function (item) {
+  return klawSync(dir, { nodir:true, filter: function (item) { return item.stats.isDirectory() || isJSFile(item.path); } }).map(function (item) {
     return item.path;
   });
 }
