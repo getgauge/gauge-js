@@ -8,6 +8,14 @@ var Table = function (protoTable) {
       callback(entry);
     }
   };
+
+  this.asyncEntries = async function (callback) {
+    for (let row of this.rows) {
+      let entry = {};
+      row.cells.forEach((cell, index) => entry[this.headers.cells[index]] = cell);
+      await callback(entry);
+    }
+  };
 };
 
 module.exports = Table;

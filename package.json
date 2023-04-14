@@ -1,6 +1,6 @@
 {
   "name": "gauge-js",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "JavaScript runner for Gauge",
   "main": "index.js",
   "scripts": {
