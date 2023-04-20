@@ -52,25 +52,13 @@ describe("ProtoTable parsing", function() {
       });
     });
 
-    it("Should process asynchronous callback action using asyncEntries", async function () {
+    it("Should process an asynchronous callback action", async function () {
       let data = [];
 
-      await table.asyncEntries(async function (entry) {
-        data.push(await getRowData(entry));
-      });
+      await table.entries(async (entry) => data.push(await getRowData(entry)));
 
       expect(data).to.deep.equal(protoTable.rows);
     }).timeout(10000);
-
-    it("Should not process asynchronous callback action using entries", async function () {
-      let data = [];
-
-      await table.entries(async function (entry) {
-        data.push(await getRowData(entry));
-      });
-
-      expect(data).to.be.empty;
-    });
 
   });
 
