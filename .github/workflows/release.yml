@@ -11,11 +11,11 @@ jobs:
       CI: true
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Set up Nodejs
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: '12.x'
+          node-version: 16
 
       - name: Setup git
         run: |
@@ -49,6 +49,9 @@ jobs:
           echo "Creating new draft for release v$version"
           hub release create -F ./desc.txt "v$version"
           rm -rf desc.txt
+
+          sleep 10
+
           echo "Start uploading assets..."
           for i in $(ls $artifacts); do
               echo $i
