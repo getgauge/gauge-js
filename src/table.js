@@ -2,12 +2,12 @@ var Table = function (protoTable) {
   Object.assign(this, protoTable);
 
   this.entries = async function (callback) {
-    const AsyncFunction = (async () => {}).constructor;
-
     for (const row of this.rows) {
       let entry = {};
-      row.cells.forEach((cell, index) => entry[this.headers.cells[index]] = cell);
-      if(callback instanceof AsyncFunction) {
+      row.cells.forEach(
+        (cell, index) => (entry[this.headers.cells[index]] = cell)
+      );
+      if (callback.constructor.name === "AsyncFunction") {
         await callback(entry);
       } else {
         callback(entry);
