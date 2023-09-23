@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint index.js src/ skel/ test/ scripts/",
-    "test": "npm run lint && mocha --recursive",
+    "test": "npm run lint && patch-package && mocha --recursive",
     "installPlugin": "node scripts/install.js",
     "package": "node scripts/install.js --package"
   },
@@ -42,6 +42,7 @@
     "fs-extra": "^11.1.1",
     "mocha": "^10.2.0",
     "mock-fs": "^5.1.2",
+    "patch-package": "^8.0.0",
     "sinon": "^16.0.0"
   }
 }
