@@ -37,7 +37,7 @@ var prepareFiles = function () {
   try {
     console.log("Installing dependencies...");
     fs.removeSync("./node_modules");
-    child_process.execSync("npm install --production", { cwd: localPath() });
+    child_process.execSync("npm install --omit=dev", { cwd: localPath() });
   } catch (err) {
     console.error("Error installing dependencies: %s", err.toString());
     console.error(err.stack);
