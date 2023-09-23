@@ -70,7 +70,7 @@ VM.prototype.setFile = function (filePath) {
 
 VM.prototype.runFile = function (filePath) {
   this.setFile(filePath);
-  this.run(fs.readFileSync(filePath).toString("utf-8"));
+  this.run(fs.readFileSync(filePath, "utf8"));
 };
 
 module.exports = VM;

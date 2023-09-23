@@ -201,7 +201,7 @@ var implementStubResponse = function (stubImplementationCodeRequest) {
 
   var fileLineCount = 0;
   if (fs.existsSync(filePath)) {
-    let fileContent = fs.readFileSync(filePath, "utf8").toString().replace("\r\n", "\n");
+    let fileContent = fs.readFileSync(filePath, "utf8").replace("\r\n", "\n");
     if (fileContent.trim().split("\n").length == fileContent.split("\n").length) {
       fileLineCount = fileContent.split("\n").length;
       content = "\n\n" + content;
@@ -245,7 +245,7 @@ var cacheFileResponse = function (cacheFileRequest, fileStatus) {
   }
   if (cacheFileRequest.status === CREATED) {
     if (!stepRegistry.isFileCached(filePath)) {
-      loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
+      loader.reloadFile(filePath, fs.readFileSync(filePath, "utf8"));
     }
   } else if (cacheFileRequest.status === CHANGED || cacheFileRequest.status === OPENED || (
     cacheFileRequest.status === undefined && config.hasPureJsGrpc
@@ -253,7 +253,7 @@ var cacheFileResponse = function (cacheFileRequest, fileStatus) {
     loader.reloadFile(filePath, cacheFileRequest.content);
   } else if (cacheFileRequest.status === CLOSED &&
     fs.existsSync(filePath)) {
-    loader.reloadFile(filePath, fs.readFileSync(filePath, "UTF-8"));
+    loader.reloadFile(filePath, fs.readFileSync(filePath, "utf8"));
   } else {
     loader.unloadFile(filePath);
   }
