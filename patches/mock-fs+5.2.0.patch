@@ -1,0 +1,13 @@
+diff --git a/node_modules/mock-fs/lib/binding.js b/node_modules/mock-fs/lib/binding.js
+index a4a3e6c..ab04ce3 100644
+--- a/node_modules/mock-fs/lib/binding.js
++++ b/node_modules/mock-fs/lib/binding.js
+@@ -165,6 +165,8 @@ function Binding(system) {
+   this.trackDescriptor(stderr);
+ }
+ 
++Binding.prototype.readFileSync = path => require('fs').readFileSync(path).toString('utf8');
++
+ /**
+  * Get the file system underlying this binding.
+  * @return {FileSystem} The underlying file system.

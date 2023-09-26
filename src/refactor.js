@@ -116,10 +116,10 @@ var refactor_content = function (content, info, req) {
 var refactor = function (refactorRequest, response) {
   var info = stepRegistry.get(refactorRequest.oldStepValue.stepValue);
   try {
-    var content = fs.readFileSync(info.fileLocations[0].filePath).toString("utf-8");
+    var content = fs.readFileSync(info.fileLocations[0].filePath, "utf8");
     var refactorInfo = refactor_content(content, info, refactorRequest);
     if (refactorRequest.saveChanges) {
-      fs.writeFileSync(info.fileLocations[0].filePath, refactorInfo.content, "utf-8");
+      fs.writeFileSync(info.fileLocations[0].filePath, refactorInfo.content, "utf8");
     }
     var change = {
       "fileName": info.fileLocations[0].filePath,
