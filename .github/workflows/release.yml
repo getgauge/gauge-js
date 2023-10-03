@@ -15,7 +15,7 @@ jobs:
       - name: Set up Nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 20.7.0
 
       - name: Setup git
         run: |
