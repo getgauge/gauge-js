@@ -1,6 +1,6 @@
 var path = require("path");
 var protobuf = require("protobufjs");
-var mock = require("mock-fs");
+var mock = require("mock-tmp");
 var assert = require("chai").assert;
 
 var ServiceHandlers = require("../src/serviceHandlers");
@@ -31,12 +31,11 @@ describe("ServiceHandlers", function () {
   });
 
   it(".getImplementationFiles should get implementation files", function (done) {
-    mock({
+    process.env.GAUGE_PROJECT_ROOT = mock({
       "tests": {
         "example.js": "file content"
       },
     });
-    process.env.GAUGE_PROJECT_ROOT = process.cwd();
     var handler = new ServiceHandlers(null, options);
     handler.getImplementationFiles({ request: {} }, function (err, res) {
       assert.isNull(err);
@@ -104,14 +103,13 @@ describe("ServiceHandlers", function () {
   });
 
   it(".implementStub should add stub in existing file", function () {
-    mock({
+    process.env.GAUGE_PROJECT_ROOT = mock({
       "tests": {
         "example.js": "something is here"
       }
     });
-    process.env.GAUGE_PROJECT_ROOT = process.cwd();
     var handler = new ServiceHandlers(null, options);
-    const req = { request: { implementationFilePath: path.join(process.cwd(), "tests", "example.js"), codes: ["foo", "bar"] } };
+    const req = { request: { implementationFilePath: path.join(process.env.GAUGE_PROJECT_ROOT, "tests", "example.js"), codes: ["foo", "bar"] } };
     handler.implementStub(req, function (err, res) {
       assert.isNull(err);
       assert.equal(path.basename(res.filePath), "example.js");
@@ -121,8 +119,8 @@ describe("ServiceHandlers", function () {
 
   it(".refactor should refactor step", function () {
     var content = "step('shhh',function(){\n\tconsole.log('hello')\n})";
-    mock({ "tests": { "example.js": content } });
-    loader.reloadFile(path.join(process.cwd(), "tests", "example.js"), content);
+    process.env.GAUGE_PROJECT_ROOT = mock({ "tests": { "example.js": content } });
+    loader.reloadFile(path.join(process.env.GAUGE_PROJECT_ROOT, "tests", "example.js"), content);
 
     var handler = new ServiceHandlers(null, options);
     const req = {
@@ -189,6 +187,6 @@ describe("ServiceHandlers", function () {
 
   afterEach(function () {
     registry.clear();
-    mock.restore();
+    mock.reset();
   });
 });
