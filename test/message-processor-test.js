@@ -6,12 +6,12 @@ var hookRegistry = require("../src/hook-registry");
 var loader = require("../src/static-loader");
 var dataStore = require("../src/data-store-factory");
 var  { executeBeforeSuiteHook, executeBeforeSpecHook, executeBeforeScenarioHook, stepValidateResponse, stepNameResponse, stepPositions, cacheFileResponse, implementationGlobPatternResponse } = require("../src/message-processor");
-var mock = require("mock-fs");
+var mock = require("mock-tmp");
 var path = require("path");
 
 describe("Step Validate Request Processing", function () {
-  var stepValidateRequests = [];
-  var errorType = null;
+  let stepValidateRequests = [];
+  let errorType = null;
   this.timeout(10000);
   before(function (done) {
     stepRegistry.clear();
@@ -81,12 +81,12 @@ describe("Step Validate Request Processing", function () {
 });
 
 describe("StepNameRequest Processing", function () {
-  var stepNameRequest = [];
+  let stepNameRequest = [];
   this.timeout(10000);
   before(function () {
-    var filePath = "example.js";
+    const filePath = "example.js";
     stepRegistry.clear();
-    var content = "\"use strict\";\n" +
+    const content = "\"use strict\";\n" +
       "var assert = require(\"assert\");\n" +
       "var vowels = require(\"./vowels\");\n" +
       "step([\"A context step which gets executed before every scenario\", \"A context step.\"], function() {\n" +
@@ -121,12 +121,12 @@ describe("StepNameRequest Processing", function () {
 });
 
 describe("StepPositionsRequest Processing", function () {
-  var filePath = "example.js";
+  const filePath = "example.js";
   this.timeout(10000);
 
   before(function () {
     stepRegistry.clear();
-    var content = "\"use strict\";\n" +
+    const content = "\"use strict\";\n" +
       "var assert = require(\"assert\");\n" +
       "var vowels = require(\"./vowels\");\n" +
       "step(\"Vowels in English language are <vowels>.\", function(vowelsGiven) {\n" +
@@ -140,7 +140,7 @@ describe("StepPositionsRequest Processing", function () {
   });
 
   it("StepPositionsRequest should get back StepPositionsResponse with stepValue and lineNumber", function () {
-    var stepPositionsRequest = {
+    const stepPositionsRequest = {
       filePath: filePath
     };
     const response = stepPositions(stepPositionsRequest);
@@ -157,9 +157,9 @@ describe("StepPositionsRequest Processing", function () {
 });
 
 describe("CacheFileRequest Processing", function () {
-  var fileStatus = null;
-  var filePath = path.join(process.cwd(), "tests", "example.js");
-  var fileContent = "\"use strict\";\n" +
+  let fileStatus = null;
+  let filePath;
+  const fileContent = "\"use strict\";\n" +
     "var assert = require(\"assert\");\n" +
     "var vowels = require(\"./vowels\");\n" +
     "step(\"Vowels in English language are <vowels>.\", function(vowelsGiven) {\n" +
@@ -167,7 +167,7 @@ describe("CacheFileRequest Processing", function () {
     "});";
   this.timeout(10000);
 
-  var getCacheFileRequestMessage = function (filePath, status) {
+  const getCacheFileRequestMessage = function (filePath, status) {
     return {
       filePath: filePath,
       status: status
@@ -175,36 +175,42 @@ describe("CacheFileRequest Processing", function () {
   };
 
   before(function (done) {
-    process.env.GAUGE_PROJECT_ROOT = process.cwd();
-    stepRegistry.clear();
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
       fileStatus = root.lookupEnum("gauge.messages.CacheFileRequest.FileStatus");
       done();
     });
   });
 
+  beforeEach(function() {
+    process.env.GAUGE_PROJECT_ROOT = mock({ "dummy" : {}});
+    filePath = path.join(process.env.GAUGE_PROJECT_ROOT, "tests", "example.js");
+  });
+
   afterEach(function () {
-    mock.restore();
+    process.env.GAUGE_PROJECT_ROOT = process.cwd();
+    mock.reset();
+    stepRegistry.clear();
   });
 
   it("should reload files on create", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CREATED]);
-    mock({
+    process.env.GAUGE_PROJECT_ROOT = mock({
       "tests": {
         "example.js": fileContent
       }
     });
+    const cacheFileRequest = getCacheFileRequestMessage(path.join(process.env.GAUGE_PROJECT_ROOT, "tests", "example.js"), fileStatus.valuesById[fileStatus.values.CREATED]);
     cacheFileResponse(cacheFileRequest, fileStatus);
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
   });
 
   it("should not reload files on create if file is cached already", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CREATED]);
-    mock({
+    const tmp = mock({
       "tests": {
         "example.js": ""
       }
     });
+    const filePath = path.join(tmp, "tests", "example.js");
+    const cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CREATED]);
     loader.reloadFile(filePath, fileContent);
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
 
@@ -213,7 +219,7 @@ describe("CacheFileRequest Processing", function () {
   });
 
   it("should unload file on delete.", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.DELETED]);
+    const cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.DELETED]);
     loader.reloadFile(filePath, fileContent);
     assert.isNotEmpty(stepRegistry.get("Vowels in English language are {}."));
 
@@ -222,12 +228,13 @@ describe("CacheFileRequest Processing", function () {
   });
 
   it("should reload file from disk on closed.", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CLOSED]);
-    mock({
+    const tmp = mock({
       "tests": {
         "example.js": fileContent
       }
     });
+    const filePath = path.join(tmp, "tests", "example.js");
+    const cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CLOSED]);
     loader.reloadFile(filePath, fileContent);
 
     cacheFileResponse(cacheFileRequest, fileStatus);
@@ -235,10 +242,12 @@ describe("CacheFileRequest Processing", function () {
   });
 
   it("should unload file from disk on closed and file does not exists.", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CLOSED]);
-    mock({
+    const tmp = mock({
       "tests": {}
     });
+    process.env.GAUGE_PROJECT_ROOT = tmp;
+    const filePath = path.join(tmp, "tests", "example.js");
+    const cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.CLOSED]);
     loader.reloadFile(filePath, fileContent);
 
     cacheFileResponse(cacheFileRequest, fileStatus);
@@ -246,7 +255,7 @@ describe("CacheFileRequest Processing", function () {
   });
 
   it("should load changed content on file opened", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.OPENED]);
+    const cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.OPENED]);
     cacheFileRequest.content = fileContent;
 
     cacheFileResponse(cacheFileRequest, fileStatus);
@@ -254,7 +263,7 @@ describe("CacheFileRequest Processing", function () {
   });
 
   it("should load changed content on file changed", function () {
-    var cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.OPENED]);
+    const cacheFileRequest = getCacheFileRequestMessage(filePath, fileStatus.valuesById[fileStatus.values.OPENED]);
     cacheFileRequest.content = fileContent;
 
     cacheFileResponse(cacheFileRequest, fileStatus);
@@ -264,14 +273,13 @@ describe("CacheFileRequest Processing", function () {
 
 describe("ImplementationFileGlobPatternRequest Processing", function () {
   this.timeout(10000);
-  var implementationFileGlobPatternRequest;
-  var projectRoot = "exampleProject";
+  let implementationFileGlobPatternRequest;
+  const projectRoot = "exampleProject";
 
   before(function () {
     process.env.GAUGE_PROJECT_ROOT = projectRoot;
     stepRegistry.clear();
     implementationFileGlobPatternRequest = {};
-
   });
 
   after(function () {
@@ -281,50 +289,50 @@ describe("ImplementationFileGlobPatternRequest Processing", function () {
 
   it("should return glob pattern for default test directory", function () {
     const response = implementationGlobPatternResponse(implementationFileGlobPatternRequest);
-    var expectedGlobPattern = [projectRoot + "/tests/**/*.js"];
+    const expectedGlobPattern = [projectRoot + "/tests/**/*.js"];
     assert.deepEqual(response.implementationFileGlobPatternResponse.globPatterns, expectedGlobPattern);
   });
 
   it("should return glob patterns when multiple test directories present", function () {
     process.env.STEP_IMPL_DIR = "test1, test2";
     const response = implementationGlobPatternResponse(implementationFileGlobPatternRequest);
-    var expectedGlobPatterns = [projectRoot + "/test1/**/*.js", projectRoot + "/test2/**/*.js"];
+    const expectedGlobPatterns = [projectRoot + "/test1/**/*.js", projectRoot + "/test2/**/*.js"];
     assert.deepEqual(response.implementationFileGlobPatternResponse.globPatterns, expectedGlobPatterns);
   });
 });
 
 describe("BeforeSpecHook", function () {
   this.timeout(10000);
-  var projectRoot = "exampleProject";
+  var beforeDir;
 
   before(function () {
-    process.env.GAUGE_PROJECT_ROOT = projectRoot;
     stepRegistry.clear();
     hookRegistry.clear();
     dataStore.suiteStore.clear();
     process.env.STEP_IMPL_DIR = "test1";
-    mock( {
-      exampleProject: {
-        test1: {
-          "example.js":`
-            beforeSuite( () => {
-              gauge.dataStore.suiteStore.put("executedBeforeSuiteHook", true);
-            });
-            beforeSpec( () => {
-              gauge.dataStore.specStore.put("executedBeforeSpecHook", true);
-            })
-            beforeScenario( () => {
-              gauge.dataStore.scenarioStore.put("executedBeforeScenarioHook", true);
-            })
-        `
-        }
+    beforeDir = process.cwd();
+    process.env.GAUGE_PROJECT_ROOT = mock( {
+      test1: {
+        "example.js":`
+          beforeSuite( () => {
+            gauge.dataStore.suiteStore.put("executedBeforeSuiteHook", true);
+          });
+          beforeSpec( () => {
+            gauge.dataStore.specStore.put("executedBeforeSpecHook", true);
+          })
+          beforeScenario( () => {
+            gauge.dataStore.scenarioStore.put("executedBeforeScenarioHook", true);
+          })
+      `
       }
     });
   });
 
   after(function () {
+    process.chdir(beforeDir); // Go back to where we were; vm.js changes the process working directory.
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
     process.env.STEP_IMPL_DIR = "";
+    mock.reset();
   });
 
   it("should execute before suite hook and return a success response", function (done) {

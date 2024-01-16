@@ -2,7 +2,7 @@ var assert = require("chai").assert;
 var path = require("path");
 var fileUtil = require("../src/file-util");
 var isWindows = require("check-if-windows");
-var mock = require("mock-fs");
+var mock = require("mock-tmp");
 
 describe("File util functions", function () {
   describe("isSameFilePath", function () {
@@ -81,79 +81,80 @@ describe("File util functions", function () {
 
   describe("getFileName", function () {
     afterEach(function () {
-      mock.restore();
+      mock.reset();
     });
 
     it("should give default file name does not exist", function () {
-      mock({
+      const tmp = mock({
         "tests": {},
       });
 
-      var file = fileUtil.getFileName(path.join(process.cwd(), "tests"));
+      var file = fileUtil.getFileName(path.join(tmp, "tests"));
       assert.equal(path.basename(file), "step_implementation.js");
     });
 
     it("should give file name with increment if default exists", function () {
-      mock({
+      var tmp = mock({
         "tests": {
           "step_implementation.js": "foo"
         },
       });
 
-      var file = fileUtil.getFileName(path.join(process.cwd(), "tests"));
+      var file = fileUtil.getFileName(path.join(tmp, "tests"));
       assert.equal(path.basename(file), "step_implementation_1.js");
 
-      mock.restore();
+      mock.reset();
 
-      mock({
+      tmp = mock({
         "tests": {
           "step_implementation.js": "foo",
           "step_implementation_1.js": "something",
         },
       });
 
-      file = fileUtil.getFileName(path.join(process.cwd(), "tests"));
+      file = fileUtil.getFileName(path.join(tmp, "tests"));
       assert.equal(path.basename(file), "step_implementation_2.js");
     });
   });
 
   describe("isInImplDir", function () {
     afterEach(function () {
-      mock.restore();
+      process.env.GAUGE_PROJECT_ROOT = process.cwd();
+      mock.reset();
     });
 
     it("should be true if file is under implementation dir", function () {
-      mock({
+      const tmp = mock({
         "tests": {
           "step_impl.js": "file content"
         },
       });
-      process.env.GAUGE_PROJECT_ROOT = process.cwd();
-      assert.isTrue(fileUtil.isInImplDir(path.join(process.cwd(), "tests", "step_impl.js")));
+      process.env.GAUGE_PROJECT_ROOT = tmp;
+      assert.isTrue(fileUtil.isInImplDir(path.join(tmp, "tests", "step_impl.js")));
     });
 
     it("should be true if file in nested dir under implementation dir", function () {
-      mock({
+      const tmp = mock({
         "tests": {
           "inner-dir": {
             "step_impl.js": "file content",
           }
         },
       });
-      process.env.GAUGE_PROJECT_ROOT = process.cwd();
-      assert.isTrue(fileUtil.isInImplDir(path.join(process.cwd(), "tests", "inner-dir", "step_impl.js")));
+      process.env.GAUGE_PROJECT_ROOT = tmp;
+      assert.isTrue(fileUtil.isInImplDir(path.join(tmp, "tests", "inner-dir", "step_impl.js")));
     });
 
     it("should be false if file is not under implementation dir", function () {
-      mock({
+      const tmp = mock({
         "tests": {
           "inner-dir": {
             "step_impl.js": "file content",
           }
         },
       });
-      process.env.GAUGE_PROJECT_ROOT = process.cwd();
-      assert.isFalse(fileUtil.isInImplDir(path.join(process.cwd(), "step_impl.js")));
+      process.env.GAUGE_PROJECT_ROOT = tmp;
+      assert.isFalse(fileUtil.isInImplDir(path.join(tmp, "step_impl.js")));
     });
   });
 
