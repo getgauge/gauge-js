@@ -40,7 +40,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-mocha": "^10.2.0",
     "fs-extra": "^11.2.0",
-    "mocha": "^10.2.0",
+    "mocha": "^10.3.0",
     "mock-tmp": "^0.0.2",
     "sinon": "^17.0.1"
   }
