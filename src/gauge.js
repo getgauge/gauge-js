@@ -1,10 +1,10 @@
-const gaugeGlobal = require("./gauge-global");
-const protobuf = require("protobufjs");
-const protoLoader = require("@grpc/proto-loader");
-const path = require("path");
-const loader = require("./static-loader");
+import gaugeGlobal from "./gauge-global.js";
+import protobuf from "protobufjs";
+import protoLoader from "@grpc/proto-loader";
+import path from "path";
+import loader from "./static-loader.js";
 const PROTO_PATH = __dirname + "/../gauge-proto/services.proto";
-const grpc = require("@grpc/grpc-js");
+import grpc from "@grpc/grpc-js";
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -16,8 +16,8 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 
 const servicesProto = grpc.loadPackageDefinition(packageDefinition).gauge.messages;
 
-var ServiceHandlers = require("./serviceHandlers");
-var logger = require("./logger");
+import ServiceHandlers from "./serviceHandlers.js";
+import logger from "./logger.js";
 
 function run() {
   global.gauge = gaugeGlobal.gauge;
@@ -50,6 +50,6 @@ if (process.argv[2] === "--run") {
   run();
 }
 
-module.exports = {
+export default {
   run: run
 };

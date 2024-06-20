@@ -1,4 +1,4 @@
-var processors = require("./message-processor");
+import processors from "./message-processor.js";
 
 class ServiceHandlers {
   constructor(server, options) {
@@ -137,4 +137,4 @@ class ServiceHandlers {
   }
 }
 
-module.exports = ServiceHandlers;
+export default ServiceHandlers;

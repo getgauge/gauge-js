@@ -1,15 +1,15 @@
-#! /usr/bin/env node
+#! /usr/bin/env nod
 
-var version = process.versions.node.split(".");
+const version = process.versions.node.split(".");
 if (parseInt(version[0]) < 16) {
   throw new Error("gauge-js requires Node.js version 16+. Current version: " + process.versions.node);
 }
 
-var fs = require("fs"),
-  path = require("path"),
-  child_process = require("child_process");
+import fs from "fs";
+import path from "path";
+import child_process from "child_process";
 
-var skeldir = path.join(__dirname, "skel"),
+const skeldir = path.join(__dirname, "skel"),
   srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, "tests"),
   envdir = path.join(process.env.GAUGE_PROJECT_ROOT, "env", "default"),
   testCode = "step_implementation.js",
@@ -44,12 +44,12 @@ if (process.argv[2] === "--init") {
 }
 
 else if (process.argv[2] === "--start") {
-  var args = ["./src/gauge.js", "--run"];
+  let args = ["./src/gauge.js", "--run"];
   if (process.env.gauge_nodejs_args) {
     args = process.env.gauge_nodejs_args.split(" ").concat(args);
   }
-  var cmd = process.env.gauge_nodejs_bin || "node";
-  var runner = child_process.spawn(cmd, args, { env: process.env, silent: false, stdio: "inherit" });
+  const cmd = process.env.gauge_nodejs_bin || "node";
+  const runner = child_process.spawn(cmd, args, {env: process.env, silent: false, stdio: "inherit"});
   process.on("beforeExit", (code) => {
     try {
       if (!runner.killed) { runner.kill("SIGINT"); }

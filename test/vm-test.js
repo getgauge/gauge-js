@@ -1,10 +1,10 @@
-var assert = require("chai").assert,
-  nodevm = require("vm"),
-  sinon = require("sinon"),
-  fs = require("fs"),
-  VM = require("../src/vm"),
-  path = require("path"),
-  hookRegistry = require("../src/hook-registry");
+import { assert } from "chai";
+import nodevm from "vm";
+import sinon from "sinon";
+import fs from "fs";
+import VM from "../src/vm.js";
+import path from "path";
+import hookRegistry from "../src/hook-registry.js";
 
 describe("VM", function () {
 

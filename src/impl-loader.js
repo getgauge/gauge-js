@@ -1,5 +1,5 @@
-var fileUtil = require("./file-util"),
-  VM = require("./vm");
+import fileUtil from "./file-util.js";
+import VM from "./vm.js";
 var loaded = false;
 
 function loadImpl(stepRegistry) {
@@ -17,6 +17,6 @@ function loadImpl(stepRegistry) {
   });
 }
 
-module.exports= {
+export default {
   load: loadImpl
 };

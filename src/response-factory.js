@@ -1,6 +1,4 @@
-exports = module.exports;
-
-exports.createStepNamesResponse = function (steps) {
+export const createStepNamesResponse = function (steps) {
 
   return {
     stepNamesResponse: {
@@ -10,7 +8,7 @@ exports.createStepNamesResponse = function (steps) {
 
 };
 
-exports.createStepNameResponse = function () {
+export const createStepNameResponse = function () {
 
   return {
     stepNameResponse: {
@@ -24,7 +22,7 @@ exports.createStepNameResponse = function () {
 
 };
 
-exports.createRefactorResponse = function () {
+export const createRefactorResponse = function () {
 
   return {
     refactorResponse: {
@@ -37,7 +35,7 @@ exports.createRefactorResponse = function () {
 
 };
 
-exports.createStepValidateResponse = function (errorType, validated, suggestion) {
+export const createStepValidateResponse = function (errorType, validated, suggestion) {
 
   if (validated.valid) {
     return {
@@ -70,7 +68,7 @@ exports.createStepValidateResponse = function (errorType, validated, suggestion)
   };
 };
 
-exports.createExecutionStatusResponse = function (isFailed, executionTime, err, msg, failureScreenshotFile, recoverable, screenshotFiles) {
+export const createExecutionStatusResponse = function (isFailed, executionTime, err, msg, failureScreenshotFile, recoverable, screenshotFiles) {
   return {
     executionResult: {
       failed: isFailed,
@@ -86,7 +84,7 @@ exports.createExecutionStatusResponse = function (isFailed, executionTime, err, 
 
 };
 
-exports.createStepPositionsResponse = function (stepPositions) {
+export const createStepPositionsResponse = function (stepPositions) {
 
   return {
     stepPositionsResponse: {
@@ -97,9 +95,7 @@ exports.createStepPositionsResponse = function (stepPositions) {
 
 };
 
-
-
-exports.createImplementationFileListResponse = function (files) {
+export const createImplementationFileListResponse = function (files) {
   return {
     implementationFileListResponse: {
       implementationFilePaths: files
@@ -107,7 +103,7 @@ exports.createImplementationFileListResponse = function (files) {
   };
 };
 
-exports.createImplementationFileGlobPatternResponse = function (globPatterns) {
+export const createImplementationFileGlobPatternResponse = function (globPatterns) {
   return {
     implementationFileGlobPatternResponse: {
       globPatterns: globPatterns
@@ -115,9 +111,11 @@ exports.createImplementationFileGlobPatternResponse = function (globPatterns) {
   };
 };
 
-exports.createFileDiff = function () {
+export const createFileDiff = function () {
 
   return {
     fileDiff: {}
   };
 };
+
+export default { createStepNamesResponse, createStepNameResponse, createRefactorResponse, createStepValidateResponse, createExecutionStatusResponse, createStepPositionsResponse, createImplementationFileListResponse, createImplementationFileGlobPatternResponse, createFileDiff };

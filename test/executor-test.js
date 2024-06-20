@@ -1,7 +1,7 @@
-var expect = require("chai").expect;
-var sinon = require("sinon");
-var executor = require("../src/executor");
-var stepRegistry = require("../src/step-registry");
+import { expect } from "chai";
+import sinon from "sinon";
+import executor from "../src/executor.js";
+import stepRegistry from "../src/step-registry.js";
 
 
 describe("Executing steps", function () {

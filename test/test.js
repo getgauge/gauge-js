@@ -1,6 +1,6 @@
-var Test = require("../src/test");
-var expect = require("chai").expect;
-var sinon = require("sinon");
+import Test from "../src/test.js";
+import { expect } from "chai";
+import sinon from "sinon";
 
 describe("Test function execution", function () {
 

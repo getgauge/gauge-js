@@ -1,9 +1,9 @@
-var vm = require("vm"),
-  fs = require("fs"),
-  path = require("path"),
-  reqman = require("./req-manager"),
-  gaugeGlobal = require("./gauge-global");
-var logger = require("./logger");
+import vm from "vm";
+import fs from "fs";
+import path from "path";
+import reqman from "./req-manager.js";
+import gaugeGlobal from "./gauge-global.js";
+import logger from "./logger.js";
 
 var VM = function () {
   var self = this;
@@ -73,4 +73,4 @@ VM.prototype.runFile = function (filePath) {
   this.run(fs.readFileSync(filePath, "utf8"));
 };
 
-module.exports = VM;
+export default VM;

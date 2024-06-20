@@ -16,4 +16,4 @@ var Table = function (protoTable) {
   };
 };
 
-module.exports = Table;
+export default Table;

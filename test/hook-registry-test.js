@@ -1,6 +1,6 @@
-var assert = require("chai").assert;
-var hookRegistry = require("../src/hook-registry");
-var sinon  = require("sinon");
+import { assert } from "chai";
+import hookRegistry from "../src/hook-registry.js";
+import sinon from "sinon";
 
 describe("Hook registry", function () {
 

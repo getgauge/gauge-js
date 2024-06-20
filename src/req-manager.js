@@ -1,7 +1,7 @@
-var mod = require("module"),
-  path = require("path"),
-  fs = require("fs"),
-  logger = require("./logger");
+import mod from "module";
+import path from "path";
+import fs from "fs";
+import logger from "./logger.js";
 
 var Req = function (filepath, root) {
   this.Module = mod.Module;
@@ -64,4 +64,4 @@ var reqman = function (filepath, root) {
   };
 };
 
-module.exports = reqman;
+export default reqman;

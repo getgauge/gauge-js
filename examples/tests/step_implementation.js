@@ -5,13 +5,12 @@
 /**
  * Loads the `assert` module provided by NodeJS
  */
-var assert = require("assert");
-
+import assert from "assert";
 
 /**
  * Loads the local `vowels.js` module present in this directory
  */
-var vowels = require("./vowels");
+import vowels from "./vowels.js";
 
 
 // --------------------------

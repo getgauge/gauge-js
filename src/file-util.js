@@ -1,7 +1,7 @@
-var fs = require("fs");
-var path = require("path");
-var klawSync = require("klaw-sync");
-var logger = require("./logger");
+import fs from "fs";
+import path from "path";
+import klawSync from "klaw-sync";
+import logger from "./logger.js";
 
 function isJSFile(file) {
   return path.extname(file) === ".js";
@@ -56,7 +56,7 @@ function isInImplDir(filePath) {
   }) !== -1;
 }
 
-module.exports = {
+export default {
   getImplDirs: getImplDirs,
   getListOfFiles: getListOfFiles,
   isSameFilePath: isSameFilePath,

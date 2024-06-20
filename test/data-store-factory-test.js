@@ -1,5 +1,5 @@
-var assert = require("chai").assert;
-var dataStoreFactory = require("../src/data-store-factory");
+import { assert } from "chai";
+import dataStoreFactory from "../src/data-store-factory.js";
 
 describe("DataStoreFactory", function () {
   describe("get data from datastore", function () {

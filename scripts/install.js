@@ -1,13 +1,14 @@
-var fs = require("fs-extra"),
-  path = require("path"),
-  archiver = require("archiver"),
-  child_process = require("child_process"),
-  CWD = process.cwd();
+import { readFileSync } from "fs";
+import fs from "fs-extra";
+import path from "path";
+import archiver from "archiver";
+import child_process from "child_process";
+const CWD = process.cwd();
 
 var localPath = (relativePath) =>
   relativePath ? path.resolve(CWD, relativePath) : path.resolve(CWD);
 
-var plugin = require(localPath("./js.json"));
+var plugin = JSON.parse(readFileSync(localPath("./js.json")));
 
 var cleanDir = (dirPath) => {
   try {

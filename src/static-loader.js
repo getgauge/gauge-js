@@ -1,11 +1,10 @@
-var fs = require("fs");
-var esprima = require("esprima");
-var estraverse = require("estraverse");
-
-var fileUtil = require("./file-util");
-var stepRegistry = require("./step-registry");
-var stepParser = require("./step-parser");
-var logger = require("./logger");
+import fs from "fs";
+import esprima from "esprima";
+import estraverse from "estraverse";
+import fileUtil from "./file-util.js";
+import stepRegistry from "./step-registry.js";
+import stepParser from "./step-parser.js";
+import logger from "./logger.js";
 
 function hasAliases(node) {
   return node.type === "ArrayExpression" && !!node.elements.length;
@@ -82,7 +81,7 @@ function reloadFile(filePath, content) {
   }
 }
 
-module.exports = {
+export default {
   load: loadFiles,
   reloadFile: reloadFile,
   unloadFile: unloadFile

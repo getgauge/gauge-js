@@ -1,5 +1,5 @@
-var assert = require("chai").assert;
-var stepRegistry = require("../src/step-registry");
+import { assert } from "chai";
+import stepRegistry from "../src/step-registry.js";
 
 describe("Store and retrieve steps", function () {
   var sampleFunction;

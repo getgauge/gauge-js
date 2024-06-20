@@ -1,7 +1,8 @@
-const path = require("path"),
-  fs = require("fs"),
-  child_process = require("child_process");
-var logger = require("./logger");
+import path from "path";
+import fs from "fs";
+import child_process from "child_process";
+import logger from "./logger.js";
+
 const SCREENSHOTS_DIR_ENV = "gauge_screenshots_dir";
 
 var defaultScreenshotWriter = function () {
@@ -74,4 +75,4 @@ function capture() {
   return screenshotFn();
 }
 
-module.exports = { capture: capture };
+export default { capture: capture };

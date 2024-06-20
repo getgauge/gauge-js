@@ -1,8 +1,8 @@
-var assert = require("chai").assert;
-var path = require("path");
-var fileUtil = require("../src/file-util");
-var isWindows = require("check-if-windows");
-var mock = require("mock-tmp");
+import { assert } from "chai";
+import path from "path";
+import fileUtil from "../src/file-util.js";
+import isWindows from "check-if-windows";
+import mock from "mock-tmp";
 
 describe("File util functions", function () {
   describe("isSameFilePath", function () {

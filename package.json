@@ -1,6 +1,7 @@
 {
   "name": "gauge-js",
-  "version": "4.0.1",
+  "version": "5.0.0",
+  "type": "module",
   "description": "JavaScript runner for Gauge",
   "main": "index.js",
   "scripts": {
@@ -35,7 +36,7 @@
   },
   "devDependencies": {
     "archiver": "^7.0.1",
-    "chai": "^4.4.1",
+    "chai": "^5.1.1",
     "check-if-windows": "^1.0.0",
     "eslint": "^9.5.0",
     "eslint-plugin-mocha": "^10.4.3",

@@ -1,13 +1,24 @@
-var assert = require("chai").assert;
-var sinon = require("sinon");
-var protobuf = require("protobufjs");
-var stepRegistry = require("../src/step-registry");
-var hookRegistry = require("../src/hook-registry");
-var loader = require("../src/static-loader");
-var dataStore = require("../src/data-store-factory");
-var  { executeBeforeSuiteHook, executeBeforeSpecHook, executeBeforeScenarioHook, stepValidateResponse, stepNameResponse, stepPositions, cacheFileResponse, implementationGlobPatternResponse } = require("../src/message-processor");
-var mock = require("mock-tmp");
-var path = require("path");
+import { assert } from "chai";
+import sinon from "sinon";
+import protobuf from "protobufjs";
+import stepRegistry from "../src/step-registry.js";
+import hookRegistry from "../src/hook-registry.js";
+import loader from "../src/static-loader.js";
+import dataStore from "../src/data-store-factory.js";
+
+import {
+  executeBeforeSuiteHook,
+  executeBeforeSpecHook,
+  executeBeforeScenarioHook,
+  stepValidateResponse,
+  stepNameResponse,
+  stepPositions,
+  cacheFileResponse,
+  implementationGlobPatternResponse,
+} from "../src/message-processor.js";
+
+import mock from "mock-tmp";
+import path from "path";
 
 describe("Step Validate Request Processing", function () {
   let stepValidateRequests = [];
