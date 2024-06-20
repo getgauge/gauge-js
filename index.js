@@ -1,22 +1,25 @@
 #! /usr/bin/env node
 
 const version = process.versions.node.split(".");
-if (Number.parseInt(version[0]) < 16) {
+if (Number.parseInt(version[0]) < 20) {
   throw new Error(
-    "gauge-js requires Node.js version 16+. Current version: " +
-    process.versions.node,
+    `gauge-js requires Node.js version 16+. Current version: ${process.versions.node}`,
   );
 }
 
-import fs from "fs";
-import path from "path";
-import child_process from "child_process";
+import child_process from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const skeldir = path.join(__dirname, "skel"),
-  srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, "tests"),
-  envdir = path.join(process.env.GAUGE_PROJECT_ROOT, "env", "default"),
-  testCode = "step_implementation.js",
-  jsPropertyFile = "js.properties";
+
+const skeldir = path.join(__dirname, "skel");
+const srcdir = path.join(process.env.GAUGE_PROJECT_ROOT, "tests");
+const envdir = path.join(process.env.GAUGE_PROJECT_ROOT, "env", "default");
+const testCode = "step_implementation.js";
+const jsPropertyFile = "js.properties";
 
 if (process.argv[2] === "--init") {
   console.log("Initialising Gauge JavaScript project");
