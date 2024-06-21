@@ -1,9 +1,10 @@
 #! /usr/bin/env node
 
+const minNodeVersion = 18;
 const version = process.versions.node.split(".");
-if (Number.parseInt(version[0]) < 20) {
+if (Number.parseInt(version[0]) < minNodeVersion) {
   throw new Error(
-    `gauge-js requires Node.js version 16+. Current version: ${process.versions.node}`,
+    `gauge-js requires Node.js version ${minNodeVersion}+. Current version: ${process.versions.node}`,
   );
 }
 
