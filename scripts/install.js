@@ -5,12 +5,12 @@ import archiver from "archiver";
 import child_process from "node:child_process";
 const CWD = process.cwd();
 
-var localPath = (relativePath) =>
+const localPath = (relativePath) =>
   relativePath ? path.resolve(CWD, relativePath) : path.resolve(CWD);
 
-var plugin = JSON.parse(readFileSync(localPath("./js.json")));
+const plugin = JSON.parse(readFileSync(localPath("./js.json"), "utf8"));
 
-var cleanDir = (dirPath) => {
+const cleanDir = (dirPath) => {
   try {
     fs.removeSync(dirPath);
   } catch (err) {
@@ -18,7 +18,7 @@ var cleanDir = (dirPath) => {
   }
 };
 
-var createDir = (dirPath) => {
+const createDir = (dirPath) => {
   try {
     fs.ensureDirSync(dirPath);
   } catch (err) {
@@ -26,13 +26,13 @@ var createDir = (dirPath) => {
   }
 };
 
-var recreateDir = (dirPath) => {
+const recreateDir = (dirPath) => {
   cleanDir(dirPath);
   createDir(dirPath);
 };
 
-var prepareFiles = () => {
-  var buildDir = localPath("build"),
+const prepareFiles = () => {
+  const buildDir = localPath("build"),
     copyList = [
       "gauge-proto",
       "src",
@@ -49,7 +49,7 @@ var prepareFiles = () => {
   try {
     console.log("Installing dependencies...");
     fs.removeSync("./node_modules");
-    child_process.execSync("npm install --omit=dev", { cwd: localPath() });
+    child_process.execSync("npm install --omit=dev", {cwd: localPath()});
   } catch (err) {
     console.error("Error installing dependencies: %s", err.toString());
     console.error(err.stack);
@@ -92,18 +92,19 @@ var prepareFiles = () => {
   }
 };
 
-var createPackage = (callback) => {
-  var zip = archiver("zip"),
+const createPackage = (callback) => {
+  const zip = archiver("zip"),
     deployDir = localPath("deploy"),
     buildDir = localPath("build"),
     packageFile = `gauge-${plugin.id}-${plugin.version}.zip`;
 
-  callback = callback || (() => { });
+  callback = callback || (() => {
+  });
 
   recreateDir(deployDir);
   prepareFiles();
 
-  var packageStream = fs.createWriteStream(path.join(deployDir, packageFile));
+  const packageStream = fs.createWriteStream(path.join(deployDir, packageFile));
 
   zip.on("error", (err) => {
     throw err;
@@ -115,8 +116,7 @@ var createPackage = (callback) => {
       "To install this plugin, run:\n\t$ gauge install js --file %s",
       path.join("deploy", packageFile),
     );
-    typeof callback == "function" &&
-      callback(path.join(deployDir, packageFile));
+    typeof callback == "function" && callback(path.join(deployDir, packageFile));
   });
 
   zip.pipe(packageStream);
@@ -124,9 +124,9 @@ var createPackage = (callback) => {
   zip.directory(buildDir, "/").finalize();
 };
 
-var installPluginFiles = () => {
+const installPluginFiles = () => {
   createPackage((packageFilePath) => {
-    var log;
+    let log;
 
     try {
       log = child_process.execSync(
