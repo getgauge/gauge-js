@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import klawSync from "klaw-sync";
 import logger from "./logger.js";
 

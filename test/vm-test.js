@@ -1,9 +1,9 @@
 import { assert } from "chai";
-import nodevm from "vm";
+import nodevm from "node:vm";
 import sinon from "sinon";
-import fs from "fs";
+import fs from "node:fs";
 import VM from "../src/vm.js";
-import path from "path";
+import path from "node:path";
 import hookRegistry from "../src/hook-registry.js";
 
 describe("VM", function () {

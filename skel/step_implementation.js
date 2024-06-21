@@ -2,7 +2,7 @@
 
 "use strict";
 
-import assert from "assert";
+import assert from "node:assert";
 
 var vowels = ["a", "e", "i", "o", "u"];
 

@@ -1,6 +1,6 @@
 import Table from "../src/table.js";
 import { expect } from "chai";
-import util from "util";
+import util from "node:util";
 const setTimeoutPromise = util.promisify(setTimeout);
 
 describe("ProtoTable parsing", function() {

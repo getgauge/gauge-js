@@ -5,7 +5,7 @@
 /**
  * Loads the `assert` module provided by NodeJS
  */
-import assert from "assert";
+import assert from "node:assert";
 
 /**
  * Loads the local `vowels.js` module present in this directory

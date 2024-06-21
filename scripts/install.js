@@ -1,8 +1,8 @@
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import archiver from "archiver";
-import child_process from "child_process";
+import child_process from "node:child_process";
 const CWD = process.cwd();
 
 var localPath = (relativePath) =>

@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "node:fs";
 import esprima from "esprima";
 import estraverse from "estraverse";
 import fileUtil from "./file-util.js";

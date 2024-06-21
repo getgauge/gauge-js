@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
 
 describe("Package", function () {
 

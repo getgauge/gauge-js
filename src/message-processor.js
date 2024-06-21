@@ -1,5 +1,5 @@
-import fs, {readFileSync} from "fs";
-import path from "path";
+import fs, {readFileSync} from "node:fs";
+import path from "node:path";
 import factory from "./response-factory.js";
 import stepRegistry from "./step-registry.js";
 import customMessageRegistry from "./custom-message-registry.js";
@@ -8,7 +8,7 @@ import refactor from "./refactor.js";
 import dataStore from "./data-store-factory.js";
 import impl_loader from "./impl-loader.js";
 import loader from "./static-loader.js";
-import inspector from "inspector";
+import inspector from "node:inspector";
 import fileUtil from "./file-util.js";
 import customScreenshotRegistry from "./custom-screenshot-registry.js";
 import logger from "./logger.js";

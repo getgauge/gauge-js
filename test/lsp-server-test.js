@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import protobuf from "protobufjs";
 import mock from "mock-tmp";
 import { assert } from "chai";

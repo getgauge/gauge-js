@@ -18,7 +18,7 @@ import {
 } from "../src/message-processor.js";
 
 import mock from "mock-tmp";
-import path from "path";
+import path from "node:path";
 
 describe("Step Validate Request Processing", function () {
   let stepValidateRequests = [];

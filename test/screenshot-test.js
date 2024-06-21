@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import screenshot from "../src/screenshot.js";
-import child_process from "child_process";
-import fs from "fs";
-import path from "path";
+import child_process from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 import sinon from "sinon";
 const sandbox = sinon.createSandbox();
 

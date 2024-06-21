@@ -1,6 +1,6 @@
-import path from "path";
-import fs from "fs";
-import child_process from "child_process";
+import path from "node:path";
+import fs from "node:fs";
+import child_process from "node:child_process";
 import logger from "./logger.js";
 
 const SCREENSHOTS_DIR_ENV = "gauge_screenshots_dir";

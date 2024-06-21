@@ -1,5 +1,5 @@
 import Q from "q";
-import path from "path";
+import path from "node:path";
 
 var Test = function (fn, params, ms) {
   this.fn = fn;
