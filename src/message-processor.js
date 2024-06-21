@@ -1,4 +1,4 @@
-import fs, {readFileSync} from "node:fs";
+import fs from "node:fs";
 import path from "node:path";
 import factory from "./response-factory.js";
 import stepRegistry from "./step-registry.js";
@@ -13,7 +13,7 @@ import fileUtil from "./file-util.js";
 import customScreenshotRegistry from "./custom-screenshot-registry.js";
 import logger from "./logger.js";
 
-const config = JSON.parse(readFileSync("./package.json")) || {};
+const config = fileUtil.parseJsonFileSyncSafe("./package.json", "utf8");
 
 const ATTACH_DEBUGGER_EVENT = "Runner Ready for Debugging";
 

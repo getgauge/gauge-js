@@ -177,4 +177,14 @@ describe("File util functions", () => {
       assert.isFalse(fileUtil.isJSFile("step_impl.java"));
     });
   });
+
+  describe("parseJsonFileSyncSafe", () => {
+    it("should parse a json file that exists", () => {
+      assert.equal(fileUtil.parseJsonFileSyncSafe("./package.json").name, "gauge-js");
+    });
+
+    it("should default to empty object if json file does not exist", () => {
+      assert.deepStrictEqual(fileUtil.parseJsonFileSyncSafe("./not-here.json"), {});
+    });
+  });
 });
