@@ -3,7 +3,7 @@ import mod from "node:module";
 import path from "node:path";
 import logger from "./logger.js";
 
-const require = mod.createRequire(import.meta.url); // eslint-disable-line
+const require = mod.createRequire(import.meta.url);
 
 const Req = function(filepath, root) {
   this.Module = mod.Module;

@@ -6,7 +6,7 @@ export default [
       mocha
     },
     languageOptions: {
-      ecmaVersion: "latest",
+      ecmaVersion: 11,
       globals: {
         node: true,
         es6: true,
