@@ -39,4 +39,4 @@ HookRegistry.prototype.clear = function () {
   this.registry = {};
 };
 
-module.exports = new HookRegistry();
+export default new HookRegistry();

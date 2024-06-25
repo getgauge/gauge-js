@@ -1,5 +1,5 @@
-var fileUtil = require("./file-util");
-var stepParser = require("./step-parser");
+import fileUtil from "./file-util.js";
+import stepParser from "./step-parser.js";
 
 var StepRegistry = function () {
   this.registry = {};
@@ -151,4 +151,4 @@ StepRegistry.prototype.isFileCached = function (filePath) {
   return false;
 };
 
-module.exports = new StepRegistry();
+export default new StepRegistry();

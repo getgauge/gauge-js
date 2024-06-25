@@ -1,11 +1,10 @@
-var path = require("path");
-var protobuf = require("protobufjs");
-var mock = require("mock-tmp");
-var assert = require("chai").assert;
-
-var ServiceHandlers = require("../src/serviceHandlers");
-var registry = require("../src/step-registry");
-var loader = require("../src/static-loader");
+import path from "node:path";
+import protobuf from "protobufjs";
+import mock from "mock-tmp";
+import { assert } from "chai";
+import ServiceHandlers from "../src/serviceHandlers.js";
+import registry from "../src/step-registry.js";
+import loader from "../src/static-loader.js";
 
 describe("ServiceHandlers", function () {
   var options = null;

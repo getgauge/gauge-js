@@ -1,5 +1,5 @@
-var assert = require("chai").assert;
-var stepParser = require("../src/step-parser");
+import { assert } from "chai";
+import stepParser from "../src/step-parser.js";
 
 describe("Parsing steps", function() {
 

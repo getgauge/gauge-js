@@ -1,10 +1,9 @@
-var assert = require("chai").assert;
-var stepRegistry = require("../src/step-registry");
-
-var refactor = require("../src/refactor");
-var factory = require("../src/response-factory");
-var fs = require("fs");
-var sinon = require("sinon");
+import { assert } from "chai";
+import stepRegistry from "../src/step-registry.js";
+import refactor from "../src/refactor.js";
+import factory from "../src/response-factory.js";
+import fs from "node:fs";
+import sinon from "sinon";
 
 var sandbox, request, response;
 var contentInput, contentOutput, info;

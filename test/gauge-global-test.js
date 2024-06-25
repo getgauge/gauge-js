@@ -1,8 +1,8 @@
-var assert = require("chai").assert;
-var sinon  = require("sinon");
-var stepRegistry = require("../src/step-registry");
-var stepParser = require("../src/step-parser");
-var step = require("../src/gauge-global").step;
+import { assert } from "chai";
+import sinon from "sinon";
+import stepRegistry from "../src/step-registry.js";
+import stepParser from "../src/step-parser.js";
+import { step } from "../src/gauge-global.js";
 
 describe("Calling global gauge.step()", function() {
 

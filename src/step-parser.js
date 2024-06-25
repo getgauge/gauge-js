@@ -1,5 +1,3 @@
-exports = module.exports;
-
 /**
  * Returns the generalised form of a step description.
  * Example:
@@ -8,16 +6,16 @@ exports = module.exports;
  * @param  {[String]} stepName Description of the step.
  * @return {[String]}          Generalised form of the step.
  */
-exports.generalise = function(stepName) {
+export const generalise = function(stepName) {
   return stepName.replace(/(<.*?>)/g, "{}");
 };
 
-exports.getParams = function(step) {
+export const getParams = function(step) {
   var matches = step.match(/(<.*?>)/g);
   return (matches === null) ? [] : matches.map(function(item) { return item.substring(1, item.length-1); });
 };
 
-exports.isStepNode = function(node) {
+export const isStepNode = function(node) {
   var isGaugeStepFunction = function (node) {
     return node.callee.object && node.callee.object.name === "gauge" && node.callee.property && node.callee.property.name === "step";
   };
@@ -26,3 +24,5 @@ exports.isStepNode = function(node) {
   };
   return (node && node.type === "CallExpression" && (isGaugeStepFunction(node) || isGlobalStepFunction(node)));
 };
+
+export default { generalise, getParams, isStepNode };

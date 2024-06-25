@@ -1,14 +1,13 @@
-var Q = require("q");
-var Table = require("./table");
-
-var factory = require("./response-factory"),
-  Test = require("./test"),
-  screenshot = require("./screenshot"),
-  stepRegistry = require("./step-registry"),
-  hookRegistry = require("./hook-registry"),
-  customScreenshotRegistry = require("./custom-screenshot-registry"),
-  customMessageRegistry = require("./custom-message-registry"),
-  logger = require("./logger");
+import Q from "q";
+import Table from "./table.js";
+import factory from "./response-factory.js";
+import Test from "./test.js";
+import screenshot from "./screenshot.js";
+import stepRegistry from "./step-registry.js";
+import hookRegistry from "./hook-registry.js";
+import customScreenshotRegistry from "./custom-screenshot-registry.js";
+import customMessageRegistry from "./custom-message-registry.js";
+import logger from "./logger.js";
 
 
 /* If test_timeout env variable is not available set the default to 1000ms */
@@ -137,7 +136,7 @@ var executeHook = function (hookLevel, currentExecutionInfo) {
 };
 
 
-module.exports = {
+export default {
   step: executeStep,
   hook: executeHook
 };

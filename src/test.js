@@ -1,5 +1,5 @@
-var Q = require("q");
-var path = require("path");
+import Q from "q";
+import path from "node:path";
 
 var Test = function (fn, params, ms) {
   this.fn = fn;
@@ -109,4 +109,4 @@ Test.prototype.run = function () {
   return this.deferred.promise;
 };
 
-module.exports = Test;
+export default Test;

@@ -1,6 +1,6 @@
-var assert = require("chai").assert;
-var loader = require("../src/static-loader");
-var stepRegistry = require("../src/step-registry");
+import { assert } from "chai";
+import loader from "../src/static-loader.js";
+import stepRegistry from "../src/step-registry.js";
 
 describe("Static loader", function () {
   beforeEach(function () {

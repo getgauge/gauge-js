@@ -1,9 +1,9 @@
-var fs = require("fs"),
-  esprima = require("esprima"),
-  estraverse = require("estraverse"),
-  escodegen = require("escodegen"),
-  stepRegistry = require("./step-registry"),
-  stepParser = require("./step-parser");
+import fs from "node:fs";
+import esprima from "esprima";
+import estraverse from "estraverse";
+import escodegen from "escodegen";
+import stepRegistry from "./step-registry.js";
+import stepParser from "./step-parser.js";
 
 var isArrowFunction = function (node) {
   return node.type === "ArrowFunctionExpression";
@@ -137,4 +137,4 @@ var refactor = function (refactorRequest, response) {
   return response;
 };
 
-module.exports = refactor;
+export default refactor;

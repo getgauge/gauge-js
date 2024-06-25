@@ -1,5 +1,5 @@
-var assert = require("chai").assert;
-var customMessageRegistry = require("../src/custom-message-registry");
+import { assert } from "chai";
+import customMessageRegistry from "../src/custom-message-registry.js";
 
 describe("Custom Message registry", function () {
   

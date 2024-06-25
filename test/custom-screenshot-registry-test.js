@@ -1,7 +1,9 @@
-var assert = require("chai").assert;
-var sandbox = require("sinon").createSandbox();
-var screenshot = require("../src/screenshot");
-var customScreenshotRegistry = require("../src/custom-screenshot-registry");
+import { assert } from "chai";
+import sinon from "sinon";
+import screenshot from "../src/screenshot.js";
+import customScreenshotRegistry from "../src/custom-screenshot-registry.js";
+
+const sandbox = sinon.createSandbox();
 
 describe("Custom Screenshot Registry", () => {
   beforeEach(() => {

@@ -1,9 +1,10 @@
-const expect = require("chai").expect;
-const screenshot = require("../src/screenshot");
-const child_process = require("child_process");
-const fs = require("fs");
-const path = require("path");
-const sandbox = require("sinon").createSandbox();
+import { expect } from "chai";
+import screenshot from "../src/screenshot.js";
+import child_process from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import sinon from "sinon";
+const sandbox = sinon.createSandbox();
 
 
 function screenshotFunction() {

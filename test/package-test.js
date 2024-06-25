@@ -1,9 +1,10 @@
-var assert = require("chai").assert;
+import { assert } from "chai";
+import { readFileSync } from "node:fs";
 
 describe("Package", function () {
 
-  var packageJSON = require("../package.json"),
-    jsJSON = require("../js.json");
+  const packageJSON = JSON.parse(readFileSync("./package.json"));
+  const jsJSON = JSON.parse(readFileSync("./js.json"));
 
   describe("version", function () {
 

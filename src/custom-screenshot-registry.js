@@ -1,4 +1,4 @@
-var screenshot = require("./screenshot");
+import screenshot from "./screenshot.js";
 
 var ScreenshotFactory = function () {
   this.screenshots = [];
@@ -17,4 +17,4 @@ ScreenshotFactory.prototype.clear = function () {
   this.screenshots = [];
 };
 
-module.exports = new ScreenshotFactory();
+export default new ScreenshotFactory();

@@ -1,7 +1,7 @@
-var fs = require("fs");
-var path = require("path");
-var klawSync = require("klaw-sync");
-var logger = require("./logger");
+import fs from "node:fs";
+import path from "node:path";
+import klawSync from "klaw-sync";
+import logger from "./logger.js";
 
 function isJSFile(file) {
   return path.extname(file) === ".js";
@@ -25,14 +25,13 @@ function getImplDirs() {
 
 
 function getListOfFiles() {
-  var results = getImplDirs().reduce(function (files, dir) {
+  return getImplDirs().reduce(function (files, dir) {
     if (!fs.existsSync(dir)) {
       logger.info("Failed to load implementations from " + dir);
       return files;
     }
     return files.concat(collectFilesIn(dir));
   }, []);
-  return results;
 }
 
 function isSameFilePath(filePath1, filePath2) {
@@ -40,8 +39,8 @@ function isSameFilePath(filePath1, filePath2) {
 }
 
 function getFileName(dir, counter = 0) {
-  var tmpl = counter && "step_implementation_" + counter + ".js" || "step_implementation.js";
-  var fileName = path.join(dir, tmpl);
+  const tmpl = counter && "step_implementation_" + counter + ".js" || "step_implementation.js";
+  const fileName = path.join(dir, tmpl);
   if (!fs.existsSync(fileName)) {
     return fileName;
   }
@@ -56,11 +55,20 @@ function isInImplDir(filePath) {
   }) !== -1;
 }
 
-module.exports = {
+function parseJsonFileSyncSafe(filePath, encoding) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, encoding || "utf8"));
+  } catch (e) {
+    return {};
+  }
+}
+
+export default {
   getImplDirs: getImplDirs,
   getListOfFiles: getListOfFiles,
   isSameFilePath: isSameFilePath,
   getFileName: getFileName,
   isJSFile: isJSFile,
-  isInImplDir: isInImplDir
+  isInImplDir: isInImplDir,
+  parseJsonFileSyncSafe: parseJsonFileSyncSafe,
 };

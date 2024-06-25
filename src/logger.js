@@ -20,6 +20,6 @@ function fatal(message) {
   process.exit(1);
 }
 
-module.exports = {
+export default {
   debug: debug, info: info, error: error, fatal: fatal
 };

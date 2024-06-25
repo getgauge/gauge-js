@@ -1,21 +1,21 @@
-var hookRegistry = require("./hook-registry"),
-  customMessageRegistry = require("./custom-message-registry"),
-  dataStore = require("./data-store-factory"),
-  stepRegistry = require("./step-registry"),
-  customScreenshotFactory = require("./custom-screenshot-registry");
+import hookRegistry from "./hook-registry.js";
+import customMessageRegistry from "./custom-message-registry.js";
+import dataStore from "./data-store-factory.js";
+import stepRegistry from "./step-registry.js";
+import customScreenshotFactory from "./custom-screenshot-registry.js";
 
-var gauge = { hooks: {}, dataStore: dataStore };
+const gauge = {hooks: {}, dataStore: dataStore};
 
-var step = function (stepName, options, stepFunction) {
+export const step = function (stepName, options, stepFunction) {
   if (!stepName || !stepName.length) {
     throw new Error("Step text cannot be empty");
   }
   if (typeof options === "function" && !!options.call && !!options.apply) {
     stepFunction = options;
-    options = { continueOnFailure: false };
+    options = {continueOnFailure: false};
   }
 
-  var filepath = process.env.GAUGE_STEPFILEPATH;
+  const filepath = process.env.GAUGE_STEPFILEPATH;
   if (typeof stepName === "object" && !!stepName.length) {
     stepRegistry.addAlias(stepName, stepFunction, filepath, {}, options);
   } else if (typeof stepName === "string") {
@@ -23,7 +23,7 @@ var step = function (stepName, options, stepFunction) {
   }
 };
 
-var hooks = {};
+const hooks = {};
 
 hookRegistry.types.forEach(function (type) {
   hooks[type] = function (fn, options) {
@@ -44,7 +44,7 @@ gauge.screenshot = function() {
   customScreenshotFactory.add();
 };
 
-module.exports = {
+export default {
   gauge: gauge,
   step: step,
   hooks: hooks,

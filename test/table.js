@@ -1,6 +1,6 @@
-var Table = require("../src/table");
-var expect = require("chai").expect;
-const util = require("util");
+import Table from "../src/table.js";
+import { expect } from "chai";
+import util from "node:util";
 const setTimeoutPromise = util.promisify(setTimeout);
 
 describe("ProtoTable parsing", function() {
