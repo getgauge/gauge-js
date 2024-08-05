@@ -42,7 +42,7 @@
     "chai": "^5.1.1",
     "check-if-windows": "^1.0.0",
     "eslint": "^9.8.0",
-    "eslint-plugin-mocha": "^10.4.3",
+    "eslint-plugin-mocha": "^10.5.0",
     "fs-extra": "^11.2.0",
     "mocha": "^10.7.0",
     "mock-tmp": "^0.0.4",
