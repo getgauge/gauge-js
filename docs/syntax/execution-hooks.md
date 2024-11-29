@@ -1,6 +1,6 @@
 # Execution Hooks
 
-gauge-js supports tagged [execution hooks](http://getgauge.io/documentation/user/current/execution/execution_hooks.html). These methods are available for each type of hook:
+gauge-js supports tagged [execution hooks](https://docs.gauge.org/writing-specifications.html#execution-hooks). These methods are available for each type of hook:
 
 **"Before" hooks:**
 
