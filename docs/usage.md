@@ -1,6 +1,6 @@
 # Usage
 
-If you are new to Gauge, please consult the [Gauge documentation](http://getgauge.io/documentation/user/current/) to know about how Gauge works.
+If you are new to Gauge, please consult the [Gauge documentation](https://docs.gauge.org) to know about how Gauge works.
 
 ## Initialize
 
