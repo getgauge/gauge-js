@@ -43,7 +43,7 @@
     "check-if-windows": "^1.0.0",
     "eslint": "^9.18.0",
     "eslint-plugin-mocha": "^10.5.0",
-    "fs-extra": "^11.2.0",
+    "fs-extra": "^11.3.0",
     "mocha": "^11.0.1",
     "mock-tmp": "^0.0.4",
     "sinon": "^19.0.2"
