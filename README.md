@@ -34,7 +34,7 @@ For other details refer the documentation [here](https://docs.gauge.org)
 
 ### Plain Javascript
 
-Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_simple) gauge template
+Run the following command to create a [sample](https://github.com/getgauge/template-js-simple) gauge template
 
 ```
 $ gauge init js_simple
@@ -42,7 +42,7 @@ $ gauge init js_simple
 
 ### Taiko
 
-Run the following command to create a [sample](https://github.com/getgauge/gauge-repository/tree/master/templates/js_puppeteer) [Taiko](https://github.com/getgauge/taiko) template 
+Run the following command to create a [sample](https://github.com/getgauge/template-js) [Taiko](https://github.com/getgauge/taiko) template 
 
 ```
 $ gauge init js
