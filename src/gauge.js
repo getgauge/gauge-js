@@ -53,7 +53,6 @@ function run() {
         (err, port) => {
           if (!err) {
             logger.info(`Listening on port:${port}`);
-            server.start();
           } else {
             logger.error(err);
             process.exit();
