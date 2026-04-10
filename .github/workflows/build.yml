@@ -22,6 +22,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+          check-latest: true
 
       - name: Setup submodule
         run: |
@@ -53,6 +54,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+          check-latest: true
 
       - name: Setup java
         uses: actions/setup-java@v5
@@ -101,6 +103,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+          check-latest: true
 
       - name: Set up Go
         uses: actions/setup-go@v6
