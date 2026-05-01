@@ -34,18 +34,18 @@
     "esprima": "^4.0.1",
     "estraverse": "^5.3.0",
     "klaw-sync": "^7.0.0",
-    "protobufjs": "^8.0.1",
+    "protobufjs": "^8.0.3",
     "q": "^1.5.1"
   },
   "devDependencies": {
     "archiver": "^7.0.1",
     "chai": "^6.2.2",
     "check-if-windows": "^1.0.0",
-    "eslint": "^10.1.0",
+    "eslint": "^10.2.1",
     "eslint-plugin-mocha": "^11.2.0",
     "fs-extra": "^11.3.4",
     "mocha": "^11.7.5",
     "mock-tmp": "^0.0.4",
-    "sinon": "^21.0.3"
+    "sinon": "^21.1.2"
   }
 }
