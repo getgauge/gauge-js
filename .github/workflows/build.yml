@@ -31,7 +31,7 @@ jobs:
 
       - name: unit-tests
         run: |
-          npm install
+          npm ci
           npm test
 
   functional-tests:
@@ -68,7 +68,7 @@ jobs:
 
       - name: Install JS
         run: |
-          npm install
+          npm ci
           npm run installPlugin
 
       - name: Prep FTs
@@ -117,14 +117,14 @@ jobs:
 
       - name: Install JS
         run: |
-          npm install
+          npm ci
           npm run installPlugin
 
       - name: Prep LSP tests
         run: |
           git clone https://github.com/getgauge/gauge-lsp-tests
           cd gauge-lsp-tests
-          npm install
+          npm ci
           gauge install
 
       - name: Run LSP tests

@@ -18,21 +18,24 @@
     "postInstall": {
         "windows": [
             "npm",
-            "install",
+            "ci",
             "--omit=dev",
-            "--silent"
+            "--silent",
+            "--ignore-scripts"
         ],
         "darwin": [
             "npm",
-            "install",
+            "ci",
             "--omit=dev",
-            "--silent"
+            "--silent",
+            "--ignore-scripts"
         ],
         "linux": [
             "npm",
-            "install",
+            "ci",
             "--omit=dev",
-            "--silent"
+            "--silent",
+            "--ignore-scripts"
         ]
     },
     "gRPCSupport": true,
@@ -51,7 +54,7 @@
             "--init"
         ]
     },
-    "version": "5.0.3",
+    "version": "5.0.4",
     "gaugeVersionSupport": {
         "minimum": "1.0.7",
         "maximum": ""

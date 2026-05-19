@@ -25,7 +25,7 @@ jobs:
 
       - name: Build artifacts
         run: |
-          npm install
+          npm ci
           npm run package
 
       - name: update

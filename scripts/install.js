@@ -43,13 +43,13 @@ const prepareFiles = () => {
       "js.json",
       "package.json",
       "package-lock.json",
+      ".npmrc",
       ".node-inspectorrc",
       "README.md",
     ];
   try {
     console.log("Installing dependencies...");
-    fs.removeSync("./node_modules");
-    child_process.execSync("npm install --omit=dev", {cwd: localPath()});
+    child_process.execSync("npm ci --omit=dev", {cwd: localPath()});
   } catch (err) {
     console.error("Error installing dependencies: %s", err.toString());
     console.error(err.stack);
