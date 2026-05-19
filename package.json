@@ -38,7 +38,7 @@
     "q": "^1.5.1"
   },
   "devDependencies": {
-    "archiver": "^7.0.1",
+    "archiver": "^8.0.0",
     "chai": "^6.2.2",
     "check-if-windows": "^1.0.0",
     "eslint": "^10.2.1",
