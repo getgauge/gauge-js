@@ -18,21 +18,24 @@
     "postInstall": {
         "windows": [
             "npm",
-            "install",
+            "ci",
             "--omit=dev",
-            "--silent"
+            "--silent",
+            "--ignore-scripts"
         ],
         "darwin": [
             "npm",
-            "install",
+            "ci",
             "--omit=dev",
-            "--silent"
+            "--silent",
+            "--ignore-scripts"
         ],
         "linux": [
             "npm",
-            "install",
+            "ci",
             "--omit=dev",
-            "--silent"
+            "--silent",
+            "--ignore-scripts"
         ]
     },
     "gRPCSupport": true,
