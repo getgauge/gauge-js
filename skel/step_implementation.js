@@ -2,7 +2,7 @@
 
 "use strict";
 
-import assert from "node:assert";
+const assert = require("assert");
 
 const vowels = ["a", "e", "i", "o", "u"];
 
