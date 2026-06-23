@@ -54,7 +54,7 @@
             "--init"
         ]
     },
-    "version": "5.0.6",
+    "version": "5.0.7",
     "gaugeVersionSupport": {
         "minimum": "1.0.7",
         "maximum": ""
