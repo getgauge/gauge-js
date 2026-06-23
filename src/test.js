@@ -1,7 +1,6 @@
-import Q from "q";
 import path from "node:path";
 
-var Test = function (fn, params, ms) {
+const Test = function (fn, params, ms) {
   this.fn = fn;
   this.params = params;
   this.async = fn.length > params.length;
@@ -11,8 +10,8 @@ var Test = function (fn, params, ms) {
   this.ms = ms || 1000;
 };
 
-var done = function (err) {
-  var self = this;
+const done = function (err) {
+  const self = this;
   if (self.finished || self.timedOut) {
     return;
   }
@@ -21,21 +20,19 @@ var done = function (err) {
   clearTimeout(self.timer);
 
   if (err) {
-    self.deferred.reject({
+    self.reject({
       exception: err,
       duration: self.duration
     });
-    return;
   } else {
-    self.deferred.resolve({
+    self.resolve({
       duration: self.duration
     });
-    return;
   }
 };
 
-var resetTimeout = function () {
-  var self = this;
+const resetTimeout = function () {
+  const self = this;
   if (self.timer) {
     clearTimeout(self.timer);
   }
@@ -46,28 +43,28 @@ var resetTimeout = function () {
   }, self.ms);
 };
 
-var absoluteToRelativePath = function(stack) {
-  for (var i = 0; i< stack.length; i++) {
+const absoluteToRelativePath = function (stack) {
+  for (let i = 0; i < stack.length; i++) {
     stack[i] = stack[i].replace(process.env.GAUGE_PROJECT_ROOT + path.sep, "");
   }
   return stack;
 };
 
-var chopStackTrace = function (stack, pattern) {
-  var limit = stack.findIndex(function (frame) {
+const chopStackTrace = function (stack, pattern) {
+  const limit = stack.findIndex(function (frame) {
     return frame.match(pattern);
   });
   stack = limit > 0 ? stack.slice(0, limit) : stack;
   return absoluteToRelativePath(stack).join("\n");
 };
 
-var runFn = function () {
-  var self = this;
+const runFn = function () {
+  const self = this;
   try {
-    if (!process.env.DEBUGGING){
+    if (!process.env.DEBUGGING) {
       resetTimeout.call(self);
     }
-    var res = self.fn.apply({}, self.params);
+    const res = self.fn.apply({}, self.params);
     if (Object.prototype.toString.call(res) === "[object Promise]") {
       res.then(function () {
         done.call(self);
@@ -84,10 +81,10 @@ var runFn = function () {
   }
 };
 
-var runFnAsync = function () {
-  var self = this;
+const runFnAsync = function () {
+  const self = this;
   self.params.push(function (err) { done.call(self, err); });
-  if(!process.env.DEBUGGING){
+  if (!process.env.DEBUGGING) {
     resetTimeout.call(self);
   }
   try {
@@ -99,14 +96,18 @@ var runFnAsync = function () {
 };
 
 Test.prototype.run = function () {
-  this.deferred = Q.defer();
+  const self = this;
+  const promise = new Promise(function (resolve, reject) {
+    self.resolve = resolve;
+    self.reject = reject;
+  });
   if (this.async) {
     runFnAsync.call(this);
   }
   else {
     runFn.call(this);
   }
-  return this.deferred.promise;
+  return promise;
 };
 
 export default Test;

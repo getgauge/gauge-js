@@ -1,4 +1,4 @@
-var CustomMessageRegistry = function () {
+const CustomMessageRegistry = function () {
   this.messages = [];
 };
 

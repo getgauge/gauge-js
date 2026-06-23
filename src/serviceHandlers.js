@@ -7,7 +7,7 @@ class ServiceHandlers {
   }
 
   initializeSuiteDataStore(call, callback) {
-    var res = processors.successExecutionStatus(call.request);
+    const res = processors.successExecutionStatus(call.request);
     callback(null, res);
   }
 
@@ -19,7 +19,7 @@ class ServiceHandlers {
   }
 
   initializeSpecDataStore(call, callback) {
-    var res = processors.successExecutionStatus(call.request);
+    const res = processors.successExecutionStatus(call.request);
     callback(null, res);
   }
 
@@ -31,7 +31,7 @@ class ServiceHandlers {
   }
 
   initializeScenarioDataStore(call, callback) {
-    var res = processors.successExecutionStatus(call.request);
+    const res = processors.successExecutionStatus(call.request);
     callback(null, res);
   }
 
@@ -84,7 +84,7 @@ class ServiceHandlers {
   }
 
   getStepNames(call, callback) {
-    var res = processors.stepNamesResponse(call.request);
+    const res = processors.stepNamesResponse(call.request);
     callback(null, res.stepNamesResponse);
   }
 
@@ -94,37 +94,37 @@ class ServiceHandlers {
   }
 
   getStepPositions(call, callback) {
-    var res = processors.stepPositions(call.request);
+    const res = processors.stepPositions(call.request);
     callback(null, res.stepPositionsResponse);
   }
 
   getImplementationFiles(call, callback) {
-    var res = processors.implementationFiles(call.request);
+    const res = processors.implementationFiles(call.request);
     callback(null, res.implementationFileListResponse);
   }
 
   implementStub(call, callback) {
-    var res = processors.implementStubResponse(call.request);
+    const res = processors.implementStubResponse(call.request);
     callback(null, res.fileDiff);
   }
 
   validateStep(call, callback) {
-    var res = processors.stepValidateResponse(call.request, this.options.errorType);
+    const res = processors.stepValidateResponse(call.request, this.options.errorType);
     callback(null, res.stepValidateResponse);
   }
 
   refactor(call, callback) {
-    var res = processors.refactorResponse(call.request);
+    const res = processors.refactorResponse(call.request);
     callback(null, res.refactorResponse);
   }
 
   getStepName(call, callback) {
-    var res = processors.stepNameResponse(call.request);
+    const res = processors.stepNameResponse(call.request);
     callback(null, res.stepNameResponse);
   }
 
   getGlobPatterns(call, callback) {
-    var res = processors.implementationGlobPatternResponse(call.request);
+    const res = processors.implementationGlobPatternResponse(call.request);
     callback(null, res.implementationFileGlobPatternResponse);
   }
 

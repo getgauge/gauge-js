@@ -1,5 +1,5 @@
 function _print(level, message, isError = false) {
-  var log = isError ? console.error : console.log;
+  const log = isError ? console.error : console.log;
   log(JSON.stringify({ logLevel: level, message: message }));
 }
 

@@ -1,8 +1,8 @@
-var HookRegistry = function () {
+const HookRegistry = function () {
   this.registry = {};
 };
 
-var InvalidHookException = function (message) {
+const InvalidHookException = function (message) {
   this.message = message;
   this.name = "InvalidHookException";
 };

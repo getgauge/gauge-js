@@ -5,8 +5,8 @@ import factory from "../src/response-factory.js";
 import fs from "node:fs";
 import sinon from "sinon";
 
-var sandbox, request, response;
-var contentInput, contentOutput, info;
+let sandbox, request, response;
+let contentInput, contentOutput, info;
 
 describe("Refactor", function () {
   this.timeout(10000);
@@ -36,7 +36,7 @@ describe("Refactor", function () {
   });
 
   it("Should refactor step text without changing function ref", function () {
-    var output = [];
+    const output = [];
     output.push("var vowels=[\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];");
     output.push("hakunaMatata('What a wonderful phrase!');");
     output.push("gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});");
@@ -102,7 +102,7 @@ describe("Refactor", function () {
   });
 
   it("Should not save changes when request save changes is false", function () {
-    var output = [];
+    const output = [];
     output.push("var vowels=[\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];");
     output.push("hakunaMatata('What a wonderful phrase!');");
     output.push("gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});");
@@ -168,7 +168,7 @@ describe("Refactor", function () {
   });
 
   it("Should refactor global step text without changing function ref", function () {
-    var output = [];
+    const output = [];
     output.push("var vowels=[\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];");
     output.push("hakunaMatata('What a wonderful phrase!');");
     output.push("gauge.step('The word <word> has <number> vowels.', function (word, number) {\n});");

@@ -5,7 +5,7 @@ const setTimeoutPromise = util.promisify(setTimeout);
 
 describe("ProtoTable parsing", function() {
 
-  var protoTable = {
+  const protoTable = {
     headers: {
       cells: [ "Product", "Description" ]
     },
@@ -17,7 +17,7 @@ describe("ProtoTable parsing", function() {
     ]
   };
 
-  var table = new Table(protoTable);
+  const table = new Table(protoTable);
 
   let getRowData = function(entry) {
     const rowData = setTimeoutPromise(500, entry).then((value) => {
@@ -38,13 +38,13 @@ describe("ProtoTable parsing", function() {
   describe("Table entries", function () {
 
     it("Should have correct number of entries", function () {
-      var result = [];
+      const result = [];
       table.entries(entry => result.push(entry));
       expect(result.length).to.equal(4);
     });
 
     it("Should have correct entry object", function () {
-      var result = [];
+      const result = [];
       table.entries(entry => result.push(entry));
       expect(result[1]).to.deep.equal({
         "Product": "Mingle",

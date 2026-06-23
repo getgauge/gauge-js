@@ -314,7 +314,7 @@ describe("ImplementationFileGlobPatternRequest Processing", function () {
 
 describe("BeforeSpecHook", function () {
   this.timeout(10000);
-  var beforeDir;
+  let beforeDir;
 
   before(function () {
     stepRegistry.clear();

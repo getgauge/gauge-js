@@ -1,11 +1,11 @@
 import screenshot from "./screenshot.js";
 
-var ScreenshotFactory = function () {
+const ScreenshotFactory = function () {
   this.screenshots = [];
 };
 
 ScreenshotFactory.prototype.add = function () {
-  var bytePromise = screenshot.capture();
+  const bytePromise = screenshot.capture();
   this.screenshots.push(bytePromise);
 };
 

@@ -5,13 +5,13 @@ import stepRegistry from "../src/step-registry.js";
 
 
 describe("Executing steps", function () {
-  var executeStepRequest = null;
-  var executeStepFailingRequest = null;
+  let executeStepRequest = null;
+  let executeStepFailingRequest = null;
   this.timeout(10000);
-  var originalGlobalGauge;
+  let originalGlobalGauge;
 
   before(function () {
-    var opts = { continueOnFailure: false };
+    const opts = { continueOnFailure: false };
     stepRegistry.clear();
     stepRegistry.add("Say <hi> to <me>", function () { }, "executor-test.js", 3, opts);
     stepRegistry.add("failing test", function () { throw new Error("error message"); }, "executor-test.js", 6, opts);
@@ -44,17 +44,17 @@ describe("Executing steps", function () {
   });
 
   it("Should resolve promise when test function passes", function (done) {
-    var promise = executor.step(executeStepRequest);
+    const promise = executor.step(executeStepRequest);
     promise.then(
       function (value) {
         expect(value.executionResult.failed).to.equal(false);
         done();
       }
-    ).done();
+    );
   });
 
   it("Should reject the promise when test function fails", function (done) {
-    var promise = executor.step(executeStepFailingRequest);
+    const promise = executor.step(executeStepFailingRequest);
     promise.then(
       function () { },
       function (reason) {
@@ -63,7 +63,7 @@ describe("Executing steps", function () {
         expect(reason.executionResult.stackTrace).to.contains("executor-test.js");
         done();
       }
-    ).done();
+    );
   });
 
 });
