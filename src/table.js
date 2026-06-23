@@ -1,4 +1,4 @@
-var Table = function (protoTable) {
+const Table = function (protoTable) {
   Object.assign(this, protoTable);
 
   this.entries = async function (callback) {

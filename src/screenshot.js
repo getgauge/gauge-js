@@ -5,10 +5,10 @@ import logger from "./logger.js";
 
 const SCREENSHOTS_DIR_ENV = "gauge_screenshots_dir";
 
-var defaultScreenshotWriter = function () {
+const defaultScreenshotWriter = function () {
   return new Promise((resolve) => {
     const filePath = getScreenshotFileName();
-    var proc = child_process.spawnSync("gauge_screenshot", [filePath]);
+    const proc = child_process.spawnSync("gauge_screenshot", [filePath]);
     if (proc.error) {
       logger.error(proc.error.toString());
     }
@@ -71,7 +71,7 @@ function writeScreenshotToFile(data, screenshotFile, resolver) {
   }
 }
 function capture() {
-  var screenshotFn = getScreenshotFunc();
+  const screenshotFn = getScreenshotFunc();
   return screenshotFn();
 }
 

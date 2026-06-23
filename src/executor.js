@@ -1,4 +1,3 @@
-import Q from "q";
 import Table from "./table.js";
 import factory from "./response-factory.js";
 import Test from "./test.js";
@@ -11,22 +10,22 @@ import logger from "./logger.js";
 
 
 /* If test_timeout env variable is not available set the default to 1000ms */
-var timeout = process.env.test_timeout || 1000;
+const timeout = process.env.test_timeout || 1000;
 
 // Source: http://stackoverflow.com/a/26034767/575242
-var hasIntersection = function (arr1, arr2) {
-  var intArr = arr1.filter(function (elem) { return arr2.indexOf(elem) > -1; });
+const hasIntersection = function (arr1, arr2) {
+  const intArr = arr1.filter(function (elem) { return arr2.indexOf(elem) > -1; });
   return intArr.length;
 };
 
-var filterHooks = function (hooks, tags) {
+const filterHooks = function (hooks, tags) {
   return hooks.filter(function (hook) {
-    var hookTags = (hook.options && hook.options.tags) ? hook.options.tags : [];
-    var hookOperator = (hook.options && hook.options.operator) ? hook.options.operator : "AND";
+    const hookTags = (hook.options && hook.options.tags) ? hook.options.tags : [];
+    const hookOperator = (hook.options && hook.options.operator) ? hook.options.operator : "AND";
     if (!hookTags.length) {
       return true;
     }
-    var matched = hasIntersection(tags, hookTags);
+    const matched = hasIntersection(tags, hookTags);
     switch (hookOperator) {
     case "AND":
       return matched === hookTags.length;
@@ -38,101 +37,98 @@ var filterHooks = function (hooks, tags) {
 };
 
 
-var executeStep = function (executeStepRequest) {
-  var deferred = Q.defer();
+const executeStep = function (executeStepRequest) {
+  return new Promise(function (resolve, reject) {
+    const parsedStepText = executeStepRequest.parsedStepText;
 
-  var parsedStepText = executeStepRequest.parsedStepText;
+    const parameters = executeStepRequest.parameters.map(function (item) {
+      return item.value ? item.value : item.table ? new Table(item.table) : "";
+    });
 
-  var parameters = executeStepRequest.parameters.map(function (item) {
-    return item.value ? item.value : item.table? new Table(item.table) : "";
+    const step = stepRegistry.get(parsedStepText);
+    new Test(step.fn, parameters, timeout).run().then(
+      function (result) {
+        const screenshotPromises = customScreenshotRegistry.get();
+        const msgs = customMessageRegistry.get();
+        customScreenshotRegistry.clear();
+        customMessageRegistry.clear();
+        screenshotPromises.then(function (screenshots) {
+          const response = factory.createExecutionStatusResponse(false, result.duration, false, msgs, "", step.options.continueOnFailure, screenshots);
+          resolve(response);
+        });
+      },
+
+      function (result) {
+        const screenshotPromises = customScreenshotRegistry.get();
+        const msgs = customMessageRegistry.get();
+        customScreenshotRegistry.clear();
+        customMessageRegistry.clear();
+        screenshotPromises.then(function (screenshots) {
+          const errorResponse = factory.createExecutionStatusResponse(true, result.duration, result.exception, msgs, "", step.options.continueOnFailure, screenshots);
+          if (process.env.screenshot_on_failure !== "false") {
+            screenshot.capture().then(function (screenshotFile) {
+              errorResponse.executionResult.failureScreenshotFile = screenshotFile;
+              reject(errorResponse);
+            }).catch(function (error) {
+              logger.error("\nFailed to capture screenshot on failure.\n" + error);
+              reject(errorResponse);
+            });
+          } else {
+            reject(errorResponse);
+          }
+        });
+      }
+    );
   });
-
-  var step = stepRegistry.get(parsedStepText);
-  new Test(step.fn, parameters, timeout).run().then(
-    function (result) {
-      var screenshotPromises = customScreenshotRegistry.get();
-      var msgs = customMessageRegistry.get();
-      customScreenshotRegistry.clear();
-      customMessageRegistry.clear();
-      screenshotPromises.then(function (screenshots) {
-        var response = factory.createExecutionStatusResponse(false, result.duration, false, msgs, "", step.options.continueOnFailure, screenshots);
-        deferred.resolve(response);
-      });
-    },
-
-    function (result) {
-      var screenshotPromises = customScreenshotRegistry.get();
-      var msgs = customMessageRegistry.get();
-      customScreenshotRegistry.clear();
-      customMessageRegistry.clear();
-      screenshotPromises.then(function (screenshots) {
-        var errorResponse = factory.createExecutionStatusResponse(true, result.duration, result.exception, msgs, "", step.options.continueOnFailure, screenshots);
-        if (process.env.screenshot_on_failure !== "false") {
-          screenshot.capture().then(function (screenshotFile) {
-            errorResponse.executionResult.failureScreenshotFile = screenshotFile;
-            deferred.reject(errorResponse);
-          }).catch(function(error){
-            logger.error("\nFailed to capture screenshot on failure.\n" + error);
-            deferred.reject(errorResponse);
-          });
-        }else{
-          deferred.reject(errorResponse);
-        }
-      });
-    }
-  );
-
-  return deferred.promise;
 };
 
-var executeHook = function (hookLevel, currentExecutionInfo) {
-  var deferred = Q.defer(),
-    tags = [],
-    timestamp = Date.now();
+const executeHook = function (hookLevel, currentExecutionInfo) {
+  return new Promise(function (resolve, reject) {
+    let tags = [];
+    const timestamp = Date.now();
 
-  if (currentExecutionInfo) {
-    var specTags = currentExecutionInfo.currentSpec ? currentExecutionInfo.currentSpec.tags : [];
-    var sceanarioTags = currentExecutionInfo.currentScenario ? currentExecutionInfo.currentScenario.tags : [];
-    tags = specTags.concat(sceanarioTags);
-  }
-
-  var hooks = hookRegistry.get(hookLevel);
-  var filteredHooks = hooks.length ? filterHooks(hooks, tags) : [];
-
-  if (!filteredHooks.length) {
-    deferred.resolve(factory.createExecutionStatusResponse(false, Date.now() - timestamp));
-    return deferred.promise;
-  }
-
-  var number = 0;
-  var onPass = function (result) {
-    if (number === filteredHooks.length - 1) {
-      var response = factory.createExecutionStatusResponse(false, result.duration);
-      deferred.resolve(response);
+    if (currentExecutionInfo) {
+      const specTags = currentExecutionInfo.currentSpec ? currentExecutionInfo.currentSpec.tags : [];
+      const scenarioTags = currentExecutionInfo.currentScenario ? currentExecutionInfo.currentScenario.tags : [];
+      tags = specTags.concat(scenarioTags);
     }
-    number++;
-  };
 
-  var onError = function (result) {
-    var errorResponse = factory.createExecutionStatusResponse(true, result.duration, result.exception);
-    if (process.env.screenshot_on_failure !== "false") {
-      screenshot.capture().then(function (screenshotFile) {
-        errorResponse.executionResult.failureScreenshotFile = screenshotFile;
-        deferred.reject(errorResponse);
-      }).catch(function(error){
-        logger.error("\nFailed to capture screenshot on failure.\n" + error);
-        deferred.reject(errorResponse);
-      });
-    } else {
-      deferred.reject(errorResponse);
+    const hooks = hookRegistry.get(hookLevel);
+    const filteredHooks = hooks.length ? filterHooks(hooks, tags) : [];
+
+    if (!filteredHooks.length) {
+      resolve(factory.createExecutionStatusResponse(false, Date.now() - timestamp));
+      return;
     }
-  };
 
-  for (var i = 0; i < filteredHooks.length; i++) {
-    new Test(filteredHooks[i].fn, [currentExecutionInfo], timeout).run().then(onPass, onError);
-  }
+    let number = 0;
+    const onPass = function (result) {
+      if (number === filteredHooks.length - 1) {
+        const response = factory.createExecutionStatusResponse(false, result.duration);
+        resolve(response);
+      }
+      number++;
+    };
 
-  return deferred.promise;
+    const onError = function (result) {
+      const errorResponse = factory.createExecutionStatusResponse(true, result.duration, result.exception);
+      if (process.env.screenshot_on_failure !== "false") {
+        screenshot.capture().then(function (screenshotFile) {
+          errorResponse.executionResult.failureScreenshotFile = screenshotFile;
+          reject(errorResponse);
+        }).catch(function (error) {
+          logger.error("\nFailed to capture screenshot on failure.\n" + error);
+          reject(errorResponse);
+        });
+      } else {
+        reject(errorResponse);
+      }
+    };
+
+    for (let i = 0; i < filteredHooks.length; i++) {
+      new Test(filteredHooks[i].fn, [currentExecutionInfo], timeout).run().then(onPass, onError);
+    }
+  });
 };
 
 

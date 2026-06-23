@@ -2,7 +2,7 @@ import { assert } from "chai";
 import stepRegistry from "../src/step-registry.js";
 
 describe("Store and retrieve steps", function () {
-  var sampleFunction;
+  let sampleFunction;
 
   beforeEach(function () {
     sampleFunction = function () { };
@@ -36,7 +36,7 @@ describe("Store and retrieve steps", function () {
   });
 
   it("Should delete steps for given filepath", function (done) {
-    var filepath = "impl.js";
+    const filepath = "impl.js";
     stepRegistry.add("Sample Step <1>", sampleFunction, filepath, 2);
     stepRegistry.deleteSteps(filepath);
     assert.deepEqual({}, stepRegistry.registry);
@@ -44,14 +44,14 @@ describe("Store and retrieve steps", function () {
   });
 
   it("Should delete only fileLocation steps for duplicate steps", function (done) {
-    var filepath = "impl.js";
-    var anotherFilePath = "impl2.js";
+    const filepath = "impl.js";
+    const anotherFilePath = "impl2.js";
     stepRegistry.add("Sample Step <1>", sampleFunction, filepath, { start: 2, end: 4 }, {});
     stepRegistry.add("Sample Step <1>", sampleFunction, anotherFilePath, { start: 2, end: 4 }, {});
     assert.equal(2, stepRegistry.get("Sample Step {}").count());
 
     stepRegistry.deleteSteps(filepath);
-    var step = stepRegistry.get("Sample Step {}");
+    const step = stepRegistry.get("Sample Step {}");
     assert.equal(1, step.count());
     assert.deepEqual({ filePath: anotherFilePath, span: { start: 2, end: 4 } }, step.fileLocations[0]);
     done();
@@ -76,7 +76,7 @@ describe("Store and retrieve steps", function () {
   });
 
   it("Should check if given filepath is already cached", function (done) {
-    var filepath = "impl.js";
+    const filepath = "impl.js";
     stepRegistry.add("Sample Step <1>", sampleFunction, filepath, 2);
     assert.isTrue(stepRegistry.isFileCached(filepath));
     assert.isNotTrue(stepRegistry.isFileCached("some_impl.js"));

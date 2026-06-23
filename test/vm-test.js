@@ -8,7 +8,7 @@ import hookRegistry from "../src/hook-registry.js";
 
 describe("VM", function () {
 
-  var sandbox;
+  let sandbox;
 
   before( function () {
     sandbox = sinon.createSandbox();
@@ -24,7 +24,7 @@ describe("VM", function () {
 
   it("should instantiate with sane defaults", function (done) {
     sinon.spy(nodevm, "createContext");
-    var vm = new VM();
+    const vm = new VM();
     vm.contextify();
 
     assert(nodevm.createContext.calledOnce);
@@ -44,13 +44,13 @@ describe("VM", function () {
 
   describe("should expose", function() {
     it("global.gauge", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify();
       assert.doesNotThrow(function () { vm.run("var ohai = gauge.step"); });
     });
 
     it("__dirname", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify(path.join(process.cwd(), "some", "file.js"));
       assert.doesNotThrow(function () {
         vm.run(`
@@ -64,7 +64,7 @@ describe("VM", function () {
     });
 
     it("__filename", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify(path.join(process.cwd(), "some", "file.js"));
       assert.doesNotThrow(function () {
         vm.run(`
@@ -78,31 +78,31 @@ describe("VM", function () {
     });
 
     it("require", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify();
       assert.doesNotThrow(function () { vm.run("var fs = require('fs')"); });
     });
 
     it("console", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify();
       assert.doesNotThrow(function () { vm.run("var log = console.log"); });
     });
 
     it("process.env", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify();
       assert.doesNotThrow(function () { vm.run("var GAUGE_PROJECT_ROOT = process.env.GAUGE_PROJECT_ROOT"); });
     });
 
     it("step", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify();
       assert.doesNotThrow(function () { vm.run("step('step', function(){})"); });
     });
 
     it("hooks", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify();
       hookRegistry.types.forEach(function (type) {
         assert.doesNotThrow(function () { vm.run(type + "(function(){})"); });
@@ -110,20 +110,20 @@ describe("VM", function () {
     });
 
     it("setImmediate", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify();
       assert.doesNotThrow(function () { vm.run("setImmediate(function () {})"); });
     });
 
     it("clearImmediate", function () {
-      var vm = new VM();
+      const vm = new VM();
       vm.contextify();
       assert.doesNotThrow(function () { vm.run("clearImmediate()"); });
     });
   });
 
   it("should not read from file and run code", function () {
-    var vm = new VM();
+    const vm = new VM();
     vm.contextify();
     assert.doesNotThrow(function () { vm.runFile("mytest_implementation.js"); });
     assert.equal(vm.options.filename, "mytest_implementation.js");

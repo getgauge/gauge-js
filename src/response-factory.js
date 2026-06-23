@@ -45,7 +45,7 @@ export const createStepValidateResponse = function (errorType, validated, sugges
     };
   }
 
-  var errortype,
+  let errortype,
     errmsg = "Invalid step.";
 
   switch (validated.reason) {

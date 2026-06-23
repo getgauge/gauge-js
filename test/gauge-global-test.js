@@ -11,7 +11,7 @@ describe("Calling global gauge.step()", function() {
   });
 
   it("should throw error if steptext is empty", function (done) {
-    var dumb = function () {};
+    const dumb = function () {};
     assert.throw(function () { step(); });
     assert.throw(function () { step("", dumb); });
     assert.throw(function () { step([], dumb); });
@@ -23,7 +23,7 @@ describe("Calling global gauge.step()", function() {
     sinon.spy(stepRegistry, "add");
     sinon.spy(stepParser, "generalise");
 
-    var sampleFunction = function() {};
+    const sampleFunction = function () {};
 
     step("Step <1>", sampleFunction);
 
@@ -39,14 +39,14 @@ describe("Calling global gauge.step()", function() {
   });
 
   it("should support step aliases", function(done) {
-    var sampleFunction = function(stepnum) { console.log(stepnum); };
+    const sampleFunction = function (stepnum) { console.log(stepnum); };
     sinon.spy(stepRegistry, "addAlias");
 
     step(["Step <stepnum>","Another step <stepnum>"], sampleFunction);
 
     assert(stepRegistry.addAlias.calledOnce);
 
-    var list = stepRegistry.registry;
+    const list = stepRegistry.registry;
 
     assert(list["Step {}"]);
     assert(list["Another step {}"]);

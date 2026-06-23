@@ -1,7 +1,7 @@
 import fileUtil from "./file-util.js";
 import stepParser from "./step-parser.js";
 
-var StepRegistry = function () {
+const StepRegistry = function () {
   this.registry = {};
 };
 
@@ -19,7 +19,7 @@ StepRegistry.prototype.add = function (stepText, stepFunction, filePath, span, o
   if (!stepText.length) {
     throw new Error("Step text cannot be empty.");
   }
-  var generalisedText = stepParser.generalise(stepText);
+  const generalisedText = stepParser.generalise(stepText);
   if (this.exists(generalisedText)) {
     this.registry[generalisedText].fileLocations.push({ filePath: filePath, span: span });
     return this.registry[generalisedText];
@@ -56,7 +56,7 @@ StepRegistry.prototype.add = function (stepText, stepFunction, filePath, span, o
  */
 StepRegistry.prototype.addAlias = function (stepTexts, stepFunction, filePath, span, options) {
   stepTexts.forEach((stepText) => {
-    var step = this.add(stepText, stepFunction, filePath, span, options);
+    const step = this.add(stepText, stepFunction, filePath, span, options);
     step.hasAlias = true;
     step.aliases = stepTexts;
   }, this);
@@ -73,16 +73,16 @@ StepRegistry.prototype.get = function (stepName) {
 };
 
 StepRegistry.prototype.getStepTexts = function () {
-  var reg = this.registry;
+  const reg = this.registry;
   return Object.keys(reg).map(function (key) {
     return reg[key].stepText;
   });
 };
 
 StepRegistry.prototype.getStepPositions = function (filePath) {
-  var stepPositions = [];
-  for (var step in this.registry) {
-    for (var i = 0; i < this.registry[step].fileLocations.length; i++) {
+  const stepPositions = [];
+  for (let step in this.registry) {
+    for (let i = 0; i < this.registry[step].fileLocations.length; i++) {
       if (fileUtil.isSameFilePath(this.registry[step].fileLocations[i].filePath, filePath)) {
         stepPositions.push({ stepValue: step, span: this.registry[step].fileLocations[i].span });
       }
@@ -92,7 +92,7 @@ StepRegistry.prototype.getStepPositions = function (filePath) {
 };
 
 StepRegistry.prototype.isRecoverable = function (stepName) {
-  var step = this.registry[stepName];
+  const step = this.registry[stepName];
   if (!step) {
     return false;
   }
@@ -113,7 +113,7 @@ StepRegistry.prototype.exists = function (stepName) {
  * Checks if a given step is valid
  */
 StepRegistry.prototype.validate = function (stepName) {
-  var step = this.get(stepName);
+  const step = this.get(stepName);
   if (!step) {
     return { valid: false, reason: "notfound", file: null };
   }
@@ -128,10 +128,10 @@ StepRegistry.prototype.clear = function () {
 };
 
 StepRegistry.prototype.deleteSteps = function (filePath) {
-  var filterFunc = function (location) {
+  const filterFunc = function (location) {
     return !fileUtil.isSameFilePath(location.filePath, filePath);
   };
-  for (var stepText in this.registry) {
+  for (let stepText in this.registry) {
     this.registry[stepText].fileLocations = this.registry[stepText].fileLocations.filter(filterFunc);
     if (this.registry[stepText].count() === 0) {
       delete this.registry[stepText];
@@ -140,10 +140,10 @@ StepRegistry.prototype.deleteSteps = function (filePath) {
 };
 
 StepRegistry.prototype.isFileCached = function (filePath) {
-  var filterFunc = function (location) {
+  const filterFunc = function (location) {
     return fileUtil.isSameFilePath(location.filePath, filePath);
   };
-  for (var stepText in this.registry) {
+  for (let stepText in this.registry) {
     if(this.registry[stepText].fileLocations.find(filterFunc)) {
       return true;
     }

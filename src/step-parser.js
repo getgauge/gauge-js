@@ -11,15 +11,15 @@ export const generalise = function(stepName) {
 };
 
 export const getParams = function(step) {
-  var matches = step.match(/(<.*?>)/g);
+  const matches = step.match(/(<.*?>)/g);
   return (matches === null) ? [] : matches.map(function(item) { return item.substring(1, item.length-1); });
 };
 
 export const isStepNode = function(node) {
-  var isGaugeStepFunction = function (node) {
+  const isGaugeStepFunction = function (node) {
     return node.callee.object && node.callee.object.name === "gauge" && node.callee.property && node.callee.property.name === "step";
   };
-  var isGlobalStepFunction = function (node) {
+  const isGlobalStepFunction = function (node) {
     return node.callee && node.callee.name === "step";
   };
   return (node && node.type === "CallExpression" && (isGaugeStepFunction(node) || isGlobalStepFunction(node)));

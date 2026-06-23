@@ -5,8 +5,8 @@ import reqman from "./req-manager.js";
 import gaugeGlobal from "./gauge-global.js";
 import logger from "./logger.js";
 
-var VM = function () {
-  var self = this;
+const VM = function () {
+  const self = this;
 
   self.options = {
     filename: "test",
@@ -19,14 +19,14 @@ var VM = function () {
 };
 
 VM.prototype.contextify = function (filePath, root) {
-  var self = this;
+  const self = this;
 
   filePath = filePath || self.options.filepath;
   root = root || self.options.root;
 
   self.setFile(filePath);
   self.require = reqman(filePath, root);
-  var sandbox = {
+  const sandbox = {
     isVM: true,
     console: console,
     __dirname: path.dirname(path.resolve(filePath)),
@@ -46,7 +46,7 @@ VM.prototype.contextify = function (filePath, root) {
     gauge_runner_root: process.cwd(),
     gauge_project_root: self.options.root
   };
-  for (var type in gaugeGlobal.hooks) {
+  for (let type in gaugeGlobal.hooks) {
     sandbox[type] = gaugeGlobal.hooks[type];
   }
 

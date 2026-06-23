@@ -4,10 +4,10 @@
 
 import assert from "node:assert";
 
-var vowels = ["a", "e", "i", "o", "u"];
+const vowels = ["a", "e", "i", "o", "u"];
 
-var numberOfVowels = function (word) {
-  var vowelArr = word.split("").filter(function (elem) { return vowels.indexOf(elem) > -1; });
+const numberOfVowels = function (word) {
+  const vowelArr = word.split("").filter(function (elem) { return vowels.indexOf(elem) > -1; });
   return vowelArr.length;
 };
 

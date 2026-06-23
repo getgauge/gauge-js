@@ -49,11 +49,11 @@ describe("Hook registry", function () {
   });
 
   describe("Adding and removing", function () {
-    var hookfn = function () { assert(1 + 1, 2); },
-      hookopts = { tags: ["hello world"]};
+    const hookfn = function () { assert(1 + 1, 2); },
+      hookopts = { tags: ["hello world"] };
 
     it("Should store and retrieve hooks for valid hook types", function (done) {
-      var got;
+      let got;
 
       hookRegistry.types.forEach(function (hook) {
         hookRegistry.add(hook, hookfn, hookopts);
@@ -67,7 +67,7 @@ describe("Hook registry", function () {
     });
 
     it("Should retrieve all hooks when calling HookRegistry.get without arguments", function (done) {
-      var list = {};
+      const list = {};
 
       hookRegistry.types.forEach(function (hook) {
         list[hook] = list[hook] || [];
@@ -81,7 +81,7 @@ describe("Hook registry", function () {
     });
 
     it("Should throw error when trying to add hook for invalid hook type", function () {
-      var add = function () { hookRegistry.add("blah", hookfn, hookopts); };
+      const add = function () { hookRegistry.add("blah", hookfn, hookopts); };
       assert.throw(add);
     });
 

@@ -21,8 +21,8 @@ function addAliases(aliases, info) {
 }
 
 function processNode(node, filePath) {
-  var stepNode = node.arguments[0];
-  var span = {
+  const stepNode = node.arguments[0];
+  const span = {
     start: node.loc.start.line,
     end: node.loc.end.line,
     startChar: node.loc.start.column,
@@ -47,8 +47,8 @@ function traverser(filePath) {
   };
 }
 
-var loadFile = function (filePath, ast) {
-  estraverse.traverse(ast, { enter: traverser(filePath) });
+const loadFile = function (filePath, ast) {
+  estraverse.traverse(ast, {enter: traverser(filePath)});
 };
 
 function createAst(content) {
@@ -62,7 +62,7 @@ function createAst(content) {
 
 function loadFiles(projectRoot) {
   fileUtil.getListOfFiles(projectRoot).forEach(function (filePath) {
-    var ast = createAst(fs.readFileSync(filePath, "utf8"));
+    const ast = createAst(fs.readFileSync(filePath, "utf8"));
     if (ast) {
       loadFile(filePath, ast);
     }
@@ -74,7 +74,7 @@ function unloadFile(filePath) {
 }
 
 function reloadFile(filePath, content) {
-  var ast = createAst(content);
+  const ast = createAst(content);
   if (ast) {
     unloadFile(filePath);
     loadFile(filePath, ast);

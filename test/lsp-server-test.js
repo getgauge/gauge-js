@@ -7,7 +7,7 @@ import registry from "../src/step-registry.js";
 import loader from "../src/static-loader.js";
 
 describe("ServiceHandlers", function () {
-  var options = null;
+  let options = null;
   before(function (done) {
     protobuf.load("gauge-proto/messages.proto").then(function (root) {
       options = {
@@ -21,7 +21,7 @@ describe("ServiceHandlers", function () {
 
   it(".getGlobPatterns should give the file glob patterns", function (done) {
     process.env.GAUGE_PROJECT_ROOT = "";
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
     handler.getGlobPatterns({ request: {} }, function (err, res) {
       assert.isNull(err);
       assert.ok(res.globPatterns.includes("tests/**/*.js"));
@@ -35,10 +35,10 @@ describe("ServiceHandlers", function () {
         "example.js": "file content"
       },
     });
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
     handler.getImplementationFiles({ request: {} }, function (err, res) {
       assert.isNull(err);
-      var files = res.implementationFilePaths;
+      const files = res.implementationFilePaths;
       assert.equal(files.length, 1);
       assert.equal(path.basename(files[0]), "example.js");
       done();
@@ -47,7 +47,7 @@ describe("ServiceHandlers", function () {
 
   it(".getStepName should get step info", function (done) {
     registry.add("foo <bar>", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
     handler.getStepName({ request: { stepValue: "foo {}" } }, function (err, res) {
       assert.isNull(err);
       assert.ok(res.isStepPresent);
@@ -60,7 +60,7 @@ describe("ServiceHandlers", function () {
     registry.add("foo <bar>", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
     registry.add("foo", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
     registry.add("bar", null, "example.js", { start: 0, end: 0, statCahr: 0, endChar: 0 }, {});
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
     handler.getStepNames({ request: {} }, function (err, res) {
       assert.isNull(err);
       assert.ok(res.steps.length, 3);
@@ -76,7 +76,7 @@ describe("ServiceHandlers", function () {
     registry.add("foo <bar>", null, "nothing.js", { start: 1, end: 2, statCahr: 0, endChar: 0 }, {});
     registry.add("foo", null, "example.js", { start: 1, end: 3, statCahr: 0, endChar: 0 }, {});
     registry.add("bar", null, "example.js", { start: 4, end: 6, statCahr: 0, endChar: 0 }, {});
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
     process.env.GAUGE_PROJECT_ROOT = "";
     handler.getStepPositions({ request: { filePath: "nothing.js" } }, function (err, res) {
       assert.isNull(err);
@@ -92,7 +92,7 @@ describe("ServiceHandlers", function () {
 
   it(".implementStub should add stub in file when does not exists", function () {
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
     const req = { request: { implementationFilePath: "New File", codes: ["foo", "bar"] } };
     handler.implementStub(req, function (err, res) {
       assert.isNull(err);
@@ -107,7 +107,7 @@ describe("ServiceHandlers", function () {
         "example.js": "something is here"
       }
     });
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
     const req = { request: { implementationFilePath: path.join(process.env.GAUGE_PROJECT_ROOT, "tests", "example.js"), codes: ["foo", "bar"] } };
     handler.implementStub(req, function (err, res) {
       assert.isNull(err);
@@ -117,11 +117,11 @@ describe("ServiceHandlers", function () {
   });
 
   it(".refactor should refactor step", function () {
-    var content = "step('shhh',function(){\n\tconsole.log('hello')\n})";
+    const content = "step('shhh',function(){\n\tconsole.log('hello')\n})";
     process.env.GAUGE_PROJECT_ROOT = mock({ "tests": { "example.js": content } });
     loader.reloadFile(path.join(process.env.GAUGE_PROJECT_ROOT, "tests", "example.js"), content);
 
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
     const req = {
       request: {
         saveChanges: false,
@@ -146,7 +146,7 @@ describe("ServiceHandlers", function () {
 
   it(".validateStep should validate a step", function () {
     registry.add("foo", null, "example.js", { start: 1, end: 3, statCahr: 0, endChar: 0 }, {});
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
     const req = {
       request: {
         stepText: "foo",
@@ -165,10 +165,10 @@ describe("ServiceHandlers", function () {
 
   it(".cacheFile should update registry with new steps", function () {
     process.env.GAUGE_PROJECT_ROOT = process.cwd();
-    var filePath = path.join(process.cwd(), "tests", "example.js");
-    var fileContent = "step('shhh',function(){\n\tconsole.log('hello')\n})";
+    const filePath = path.join(process.cwd(), "tests", "example.js");
+    const fileContent = "step('shhh',function(){\n\tconsole.log('hello')\n})";
     loader.reloadFile(filePath, fileContent);
-    var handler = new ServiceHandlers(null, options);
+    const handler = new ServiceHandlers(null, options);
 
     const req = {
       request: {

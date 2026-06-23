@@ -1,4 +1,4 @@
-var DataStore = function () {
+const DataStore = function () {
   this.store = {};
 };
 
@@ -14,7 +14,7 @@ DataStore.prototype.clear = function () {
   this.store = {};
 };
 
-var DataStoreFactory = function () {
+const DataStoreFactory = function () {
 
   this.suiteStore = new DataStore();
   this.specStore = new DataStore();
