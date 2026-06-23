@@ -46,7 +46,7 @@ describe("VM", function () {
     it("global.gauge", function () {
       const vm = new VM();
       vm.contextify();
-      assert.doesNotThrow(function () { vm.run("var ohai = gauge.step"); });
+      assert.doesNotThrow(function () { vm.run("var ohai = step"); });
     });
 
     it("__dirname", function () {

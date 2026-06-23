@@ -4,22 +4,22 @@ gauge-js supports tagged [execution hooks](https://docs.gauge.org/writing-specif
 
 **"Before" hooks:**
 
-- **`gauge.hooks.beforeSuite(fn, [opts]) { ... }`** - Executed before the test suite begins
-- **`gauge.hooks.beforeSpec(fn, [opts]) { ... }`** - Executed before each specification
-- **`gauge.hooks.beforeScenario(fn, [opts]) { ... }`** - Executed before each scenario
-- **`gauge.hooks.beforeStep(fn, [opts]) { ... }`**- Execute before each step
+- **`beforeSuite(fn, [opts]) { ... }`** - Executed before the test suite begins
+- **`beforeSpec(fn, [opts]) { ... }`** - Executed before each specification
+- **`beforeScenario(fn, [opts]) { ... }`** - Executed before each scenario
+- **`beforeStep(fn, [opts]) { ... }`**- Execute before each step
 
 **"After" hooks:**
 
-- **`gauge.hooks.afterSuite(fn, [opts]) { ... }`** - Executed after the test suite ends
-- **`gauge.hooks.afterSpec(fn, [opts]) { ... }`** - Executed after each specification
-- **`gauge.hooks.afterScenario(fn, [opts]) { ... }`** - Executed after each scenario
-- **`gauge.hooks.afterStep(fn, [opts]) { ... }`**- Execute after each step
+- **`afterSuite(fn, [opts]) { ... }`** - Executed after the test suite ends
+- **`afterSpec(fn, [opts]) { ... }`** - Executed after each specification
+- **`afterScenario(fn, [opts]) { ... }`** - Executed after each scenario
+- **`afterStep(fn, [opts]) { ... }`**- Execute after each step
 
 Here's an example of a hook that is executed before each scenario:
 
 ```js
-gauge.hooks.beforeScenario(function () {
+beforeScenario(function () {
   assert.equal(vowels.join(""), "aeiou");
 });
 ```
@@ -36,7 +36,7 @@ This controls whether the current callback is executed when all of the tags matc
 Example of a tagged execution hook implementation:
 
 ```js
-gauge.hooks.beforeScenario(function () {
+beforeScenario(function () {
   assert.equal(vowels[0], "a");
 }, { tags: [ "single word" ]});
 ```
@@ -44,7 +44,7 @@ gauge.hooks.beforeScenario(function () {
 ## Async operations in execution hooks
 
 ```js
-gauge.hooks.beforeStep(function (context, done) {
+beforeStep(function (context, done) {
   setTimeout(function() {
     done();
   }, 1000);

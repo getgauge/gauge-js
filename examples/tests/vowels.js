@@ -7,7 +7,7 @@ const numVowels = function (word) {
   return vowelArr.length;
 };
 
-export default {
+module.exports = {
   vowelList: vowelList,
   numVowels: numVowels
 };

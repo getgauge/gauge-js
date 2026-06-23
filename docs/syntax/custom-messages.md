@@ -7,7 +7,7 @@ Use the `gauge.message(<String>)` function to send custom messages to `gauge` in
 Example:
 
 ```js
-gauge.step("Vowels in English language are <vowels>.", function (vowelsGiven) {
+step("Vowels in English language are <vowels>.", function (vowelsGiven) {
   gauge.message("Vowels are " + vowelsGiven);
 });
 ```

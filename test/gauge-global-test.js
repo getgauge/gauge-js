@@ -4,7 +4,7 @@ import stepRegistry from "../src/step-registry.js";
 import stepParser from "../src/step-parser.js";
 import { step } from "../src/gauge-global.js";
 
-describe("Calling global gauge.step()", function() {
+describe("Calling global step()", function() {
 
   beforeEach(function() {
     stepRegistry.clear();

@@ -23,7 +23,7 @@ You can set `debugger;` inside step implementation or hook callbacks to pause ex
 Example:
 
 ```js
-gauge.step("There are <num> vowels.", function (num) {
+step("There are <num> vowels.", function (num) {
   debugger;
   assert.equal(num, 5);
 });

@@ -1,6 +1,6 @@
 # Gauge JS syntax
 
-- [Step implentation](step-implementation.md)
+- [Step implementation](step-implementation.md)
 - [Execution hooks](execution-hooks.md)
 - [Custom messages](custom-messages.md)
 - [Data stores](data-stores.md)
