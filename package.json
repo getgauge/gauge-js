@@ -39,11 +39,11 @@
     "archiver": "^7.0.1",
     "chai": "^6.2.2",
     "check-if-windows": "^1.0.0",
-    "eslint": "^10.6.0",
-    "eslint-plugin-mocha": "^11.2.0",
-    "fs-extra": "^11.3.6",
+    "eslint": "^10.8.0",
+    "eslint-plugin-mocha": "^12.0.1",
+    "fs-extra": "^11.4.0",
     "mocha": "^11.7.6",
     "mock-tmp": "^0.0.4",
-    "sinon": "^22.0.0"
+    "sinon": "^22.1.0"
   }
 }
