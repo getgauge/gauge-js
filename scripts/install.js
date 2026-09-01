@@ -129,18 +129,24 @@ const installPluginFiles = () => {
     let log;
 
     try {
-      log = child_process.execSync(
-        `gauge uninstall ${plugin.id} --version "${plugin.version}"`,
-      );
+      log = child_process.execFileSync("gauge", [
+        "uninstall",
+        plugin.id,
+        "--version",
+        plugin.version,
+      ]);
       console.log(log.toString());
     } catch (err) {
       console.error("Could not uninstall existing plugin: %s", err.message);
     }
 
     try {
-      log = child_process.execSync(
-        `gauge install ${plugin.id} --file "${packageFilePath}"`,
-      );
+      log = child_process.execFileSync("gauge", [
+        "install",
+        plugin.id,
+        "--file",
+        packageFilePath,
+      ]);
       console.log(log.toString());
     } catch (err) {
       console.error("Failed to install plugin: %s", err.message);
