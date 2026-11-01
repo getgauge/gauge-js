@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/getgauge/gauge-js",
   "dependencies": {
-    "@grpc/grpc-js": "^1.14.5",
+    "@grpc/grpc-js": "^1.14.6",
     "@grpc/proto-loader": "^0.8.0",
     "escodegen": "^2.0.0",
     "esprima": "^4.0.1",
@@ -37,12 +37,12 @@
   },
   "devDependencies": {
     "archiver": "^7.0.1",
-    "chai": "^6.2.2",
+    "chai": "^6.3.0",
     "check-if-windows": "^1.0.0",
-    "eslint": "^10.11.0",
+    "eslint": "^10.13.0",
     "eslint-plugin-mocha": "^12.0.2",
     "fs-extra": "^11.4.1",
-    "mocha": "^12.0.2",
+    "mocha": "^12.0.3",
     "mock-tmp": "^0.0.4",
     "sinon": "^22.1.0"
   }
