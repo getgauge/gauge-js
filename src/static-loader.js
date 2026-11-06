@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import esprima from "esprima";
+import sourceParser from "./source-parser.js";
 import estraverse from "estraverse";
 import fileUtil from "./file-util.js";
 import stepRegistry from "./step-registry.js";
@@ -53,7 +53,7 @@ const loadFile = function (filePath, ast) {
 
 function createAst(content) {
   try {
-    return esprima.parse(content, { loc: true });
+    return sourceParser.parse(content, { loc: true }).ast;
   } catch (e) {
     logger.error(e.message);
     return "";

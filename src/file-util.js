@@ -3,8 +3,10 @@ import path from "node:path";
 import klawSync from "klaw-sync";
 import logger from "./logger.js";
 
+const implExtensions = [".js", ".mjs"];
+
 function isJSFile(file) {
-  return path.extname(file) === ".js";
+  return implExtensions.includes(path.extname(file));
 }
 
 function collectFilesIn(dir) {

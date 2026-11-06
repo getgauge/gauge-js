@@ -3,19 +3,18 @@ import VM from "./vm.js";
 
 let loaded = false;
 
-function loadImpl(stepRegistry) {
-  return new Promise((resolve)=>{
-    if(loaded) {return resolve();}
-    stepRegistry.clear();
-    const vm = new VM();
-    fileUtil.getListOfFiles().forEach(function(filePath) {
-      process.env.GAUGE_STEPFILEPATH = filePath;
-      vm.contextify(filePath, process.env.GAUGE_PROJECT_ROOT);
-      vm.runFile(filePath);
-    });
-    loaded = true;
-    resolve();
-  });
+async function loadImpl(stepRegistry) {
+  if (loaded) {
+    return;
+  }
+  stepRegistry.clear();
+  const vm = new VM();
+  for (const filePath of fileUtil.getListOfFiles()) {
+    process.env.GAUGE_STEPFILEPATH = filePath;
+    vm.contextify(filePath, process.env.GAUGE_PROJECT_ROOT);
+    await vm.runFile(filePath);
+  }
+  loaded = true;
 }
 
 export default {

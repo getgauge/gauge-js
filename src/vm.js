@@ -1,8 +1,10 @@
 import vm from "node:vm";
 import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import reqman from "./req-manager.js";
 import gaugeGlobal from "./gauge-global.js";
+import sourceParser from "./source-parser.js";
 import logger from "./logger.js";
 
 const VM = function () {
@@ -70,7 +72,22 @@ VM.prototype.setFile = function (filePath) {
 
 VM.prototype.runFile = function (filePath) {
   this.setFile(filePath);
-  this.run(fs.readFileSync(filePath, "utf8"));
+  const code = fs.readFileSync(filePath, "utf8");
+  if (sourceParser.isModule(code)) {
+    return this.importModule(filePath);
+  }
+  this.run(code);
+};
+
+// An ES module cannot run inside a vm context, so Node imports it into the
+// runner itself, with the globals the context would have provided.
+VM.prototype.importModule = function (filePath) {
+  const self = this;
+  Object.assign(globalThis, gaugeGlobal.hooks, { gauge: gaugeGlobal.gauge, step: gaugeGlobal.step });
+  process.chdir(self.options.root);
+  return import(pathToFileURL(path.resolve(filePath)).href).catch(function (e) {
+    logger.fatal("Error executing " + self.options.filename + "\n" + e.stack);
+  });
 };
 
 export default VM;
