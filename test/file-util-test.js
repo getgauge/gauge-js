@@ -56,6 +56,15 @@ describe("File util functions", () => {
   });
 
   describe("getListOfFiles", () => {
+    it("should get mjs files as well", () => {
+      process.env.GAUGE_PROJECT_ROOT = mock({
+        tests: { "a.js": "", "b.mjs": "", "c.txt": "" },
+      });
+      const files = fileUtil.getListOfFiles().map((f) => path.basename(f));
+      assert.deepEqual(files.sort(), ["a.js", "b.mjs"]);
+      mock.reset();
+    });
+
     it("should get all the js file", () => {
       process.env.GAUGE_PROJECT_ROOT = path.join(__dirname, "testdata");
       const files = fileUtil.getListOfFiles();

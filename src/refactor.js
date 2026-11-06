@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import esprima from "esprima";
+import sourceParser from "./source-parser.js";
 import estraverse from "estraverse";
 import escodegen from "escodegen";
 import stepRegistry from "./step-registry.js";
@@ -99,7 +99,7 @@ const createDiff = function (oldNode, newNode) {
 };
 
 const refactor_content = function (content, info, req) {
-  const ast = esprima.parse(content, {loc: true});
+  const ast = sourceParser.parse(content, {loc: true}).ast;
   let diffs = null;
   estraverse.replace(ast, {
     enter: function (node) {

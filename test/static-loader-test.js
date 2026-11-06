@@ -24,6 +24,22 @@ describe("Static loader", function () {
     done();
   });
 
+  it("Should load the steps from ES module contents", function (done) {
+    const filepath = "step_implementation.mjs";
+    const source = "import assert from 'node:assert';\n" +
+      "export const vowels = 'aeiou';\n" +
+      "step('esm step', function () {\n" +
+      "\tassert.ok(vowels);\n" +
+      "});";
+
+    loader.reloadFile(filepath, source);
+    const step = stepRegistry.get("esm step");
+    assert.isDefined(step);
+    assert.isNull(step.fn);
+    assert.deepEqual(step.fileLocations, [{ filePath: filepath, span: { start: 3, end: 5, startChar: 0, endChar: 2 } }]);
+    done();
+  });
+
   it("Should load the aliases steps from provided js contents", function (done) {
     const filepath = "step_implementation.js";
     const source = "step(['vsdvsv', 'oohooo'], function () {\n" +

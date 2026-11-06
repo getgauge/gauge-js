@@ -57,3 +57,16 @@ step("Vowels in English language are <vowels>.", { continueOnFailure: true}, fun
   assert.equal(vowelsGiven, "aeio"); // This will cause the step to fail, but it will not break execution
 });
 ```
+
+## ES modules
+
+A step implementation file runs as a script, like a CommonJS module, unless it uses `import` or `export`. Such a file is imported by Node instead, so it has to be one Node treats as a module: name it `*.mjs`, or set `"type": "module"` in the project's `package.json`. `step`, `gauge` and the execution hooks are available as globals either way.
+
+```js
+import assert from "node:assert";
+import { vowels } from "./vowels.js";
+
+step("Vowels in English language are <vowels>.", function (vowelsGiven) {
+  assert.equal(vowelsGiven, vowels);
+});
+```

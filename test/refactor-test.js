@@ -101,6 +101,45 @@ describe("Refactor", function () {
     });
   });
 
+  it("Should refactor a step in an ES module", function () {
+    contentInput = [
+      "import assert from 'node:assert';",
+      "export const vowels = 'aeiou';",
+      "step('The word <word> has <number> vowels.', function (word, number) {\n});"
+    ].join("\n");
+
+    request = {
+      oldStepValue: {
+        stepValue: "The word {} has {} vowels.",
+        parameterizedStepValue: "The word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      newStepValue: {
+        stepValue: "This English word {} has {} vowels.",
+        parameterizedStepValue: "This English word <word> has <number> vowels.",
+        parameters: ["word", "number"]
+      },
+      paramPositions: [{ oldPosition: 0, newPosition: 0 }, { oldPosition: 1, newPosition: 1 }],
+      saveChanges: true
+    };
+
+    info = {
+      fn: function (word, number) { console.log(word, number); },
+      stepText: "The word <word> has <number> vowels.",
+      generalisedText: "The word {} has {} vowels.",
+      fileLocations: [{ filePath: "test/data/refactor-output.mjs" }]
+    };
+
+    response = refactor(request, response, fs);
+    assert.strictEqual(response.refactorResponse.error, "");
+    assert.strictEqual(response.refactorResponse.success, true);
+    assert.strictEqual(contentOutput, [
+      "import assert from 'node:assert';",
+      "export const vowels = 'aeiou';",
+      "step('This English word <word> has <number> vowels.', function (word, number) {\n});"
+    ].join("\n"));
+  });
+
   it("Should not save changes when request save changes is false", function () {
     const output = [];
     output.push("var vowels=[\n    'a',\n    'e',\n    'i',\n    'o',\n    'u'\n];");
